@@ -16,15 +16,16 @@ import javax.servlet.http.HttpServletResponse;
 public class CountryCodeServlet extends HttpServlet {
 
   @Override
-  public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, FileNotFoundException {
+  public void doGet(HttpServletRequest request, HttpServletResponse response)
+      throws IOException, FileNotFoundException {
     response.setContentType("application/json;");
-    ArrayList<Country> countries =new ArrayList<Country>();
+    ArrayList<Country> countries = new ArrayList<Country>();
     String csvFile = "WEB-INF/countries_codes.csv";
     BufferedReader br = new BufferedReader(new FileReader(csvFile));
     // discard headers
     br.readLine();
-    while(br.ready()) {
-        countries.add(new Country(br.readLine()));
+    while (br.ready()) {
+      countries.add(new Country(br.readLine()));
     }
     response.getWriter().println(new Gson().toJson(countries));
   }
