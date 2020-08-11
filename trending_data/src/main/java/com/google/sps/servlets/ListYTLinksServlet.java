@@ -13,16 +13,15 @@
 // limitations under the License.
 
 package com.google.sps.servlets;
+
+import com.google.gson.Gson;
+import com.google.sps.data.YTVid;
 import java.io.IOException;
+import java.util.ArrayList;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import com.google.gson.Gson;
-import com.google.sps.data.YTVid;
-
-import java.util.List;
-import java.util.ArrayList;
 
 /*
  *  Servlet that returns json file of top videos
@@ -32,7 +31,7 @@ public class ListYTLinksServlet extends HttpServlet {
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    String regionCode = "ru";//request.getParameter("regionCode");
+    String regionCode = "ru"; // request.getParameter("regionCode");
     ArrayList<YTVid> videos = Search.getData(regionCode);
     String json = convertToJson(videos);
     System.out.println(json);
