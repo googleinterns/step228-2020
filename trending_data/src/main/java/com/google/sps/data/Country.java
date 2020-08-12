@@ -27,7 +27,7 @@ public class Country {
   private static ArrayList<String> parse(String countryInfo) {
     ArrayList<String> fields = new ArrayList<String>();
     // true if the index (i) is inside a pair of ("")
-    boolean insideQuote = false;
+   boolean insideQuote = false;
     StringBuilder token = new StringBuilder();
     for (int i = 0; i < countryInfo.length(); i++) {
       if (countryInfo.charAt(i) == '"') {
