@@ -4,7 +4,7 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>com.google.sps</groupId>
-  <artifactId>portfolio</artifactId>
+  <artifactId>trending_data</artifactId>
   <version>1</version>
   <packaging>war</packaging>
 
@@ -38,6 +38,13 @@
       <artifactId>google-cloud-language</artifactId>
       <version>1.55.0</version>
     </dependency>
+    
+    <dependency>
+      <groupId>com.google.apis</groupId>
+      <artifactId>google-api-services-youtube</artifactId>
+      <version>v3-rev182-1.22.0</version>
+    </dependency>
+
   </dependencies>
 
   <build>
@@ -49,7 +56,7 @@
         <artifactId>appengine-maven-plugin</artifactId>
         <version>2.2.0</version>
         <configuration>
-          <deploy.projectId>ioanalazar-step-2020</deploy.projectId>
+          <deploy.projectId>ioanalazar_yahiaabdelbar_annasedova-step-2020</deploy.projectId>
           <deploy.version>1</deploy.version>
         </configuration>
       </plugin>
