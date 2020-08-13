@@ -28,8 +28,15 @@ public class CountryCodeServlet extends HttpServlet {
                 CountryCodeServlet.class.getResourceAsStream("/countries_codes.csv")));
     // discard headers
     br.readLine();
+    // TODO: remove this 
+    ArrayList<String> debug = new ArrayList<String>();
     while (br.ready()) {
-      countries.add(new Country(br.readLine()));
+      Country c = new Country(br.readLine());
+      if(debug.contains(c.alpha2Code)) {
+        System.out.println(c.alpha2Code);
+      }
+      debug.add(c.alpha2Code);
+      countries.add(c);
     }
     response.getWriter().println(new Gson().toJson(countries));
   }

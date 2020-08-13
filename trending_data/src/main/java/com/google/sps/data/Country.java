@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 public class Country {
   String name = "";
-  String alpha2Code = "";
+  public String alpha2Code = "";
   double lat;
   double lng;
   // Given a String in this format:
