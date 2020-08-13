@@ -50,7 +50,7 @@ function addAllMarkers(map) {
 /**
  * Adds one marker for the given country
  * See CountryCodeServlet.java for more details
- * @param {Object} country A JSON object {name: String, 
+ * @param {Object} country A JSON object {name: String,
  * alpha2Code: String, lng: number, lat: number}
  * @param {Object} map
  */
