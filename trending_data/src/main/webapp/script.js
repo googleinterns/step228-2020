@@ -22,6 +22,7 @@ function initMap() {
     maxWidth: 200,
   });
 
+  // TODO: remove this marker after we're done
   const marker = new google.maps.Marker({
     position: initPos,
     map,
@@ -31,6 +32,48 @@ function initMap() {
   marker.addListener('click', () => {
     infoWindow.open(map, marker);
   });
-} /* eslint-enable no-unused-vars */
+  addAllMarkers(map);
+}
+/**
+ * Adds one marker for each country to the map
+ * See CountryCodeServlet.java for more details
+ * @param {Object} map
+ */
+function addAllMarkers(map) {
+  fetch('/countries').then((response) => response.json())
+      .then((countries) => {
+        for (const country of countries) {
+          addMarkerToMapGivenCountry(country, map);
+        }
+      });
+}
+/**
+ * Adds one marker for the given country
+ * See CountryCodeServlet.java for more details
+ * @param {Object} country A JSON object {name: String, 
+ * alpha2Code: String, lng: number, lat: number}
+ * @param {Object} map
+ */
+function addMarkerToMapGivenCountry(country, map) {
+  addMarkerToMapGivenInfo(country.name, country.alpha2Code,
+      country.lat, country.lng, map);
+}
+/**
+ * Adds one marker given country name, code, average longitude and latitude
+ * @param {string} countryName
+ * @param {string} countryCode  (ISO 3166-1) Alpha-2 code
+ * @param {number} lat Latitude (average)
+ * @param {number} lng Longitude (average)
+ * @param {Object} map
+ */
+function addMarkerToMapGivenInfo(countryName, countryCode, lat, lng, map) {
+  const marker = new google.maps.Marker({
+    position: {lat, lng},
+    map: map,
+    title: countryName,
+  });
+  marker.countryCode = countryCode;
+}
+/* eslint-enable no-unused-vars */
 
 
