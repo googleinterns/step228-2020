@@ -30,7 +30,7 @@ public class Country {
   }
 
   // gets the info out of the string in the above format
-  // splitting on (,) will not work because some country names have (,) 
+  // splitting on (,) will not work because some country names have (,)
   private static ArrayList<String> parse(String countryInfo) {
     ArrayList<String> fields = new ArrayList<String>();
     // true if the index (i) is inside a pair of ("")
