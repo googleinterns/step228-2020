@@ -76,7 +76,7 @@ function addMarkerToMapGivenInfo(countryName, countryCode, lat, lng, map) {
 
   marker.addListener('click', () => {
     fetch('/ListYTLinks?country-code=' + marker.countryCode).then((response) =>
-    response.json()).then((videos) => {
+      response.json()).then((videos) => {
       const VidNode = getVideosNode(videos);
       const infoWindow = new google.maps.InfoWindow(); // infoWindow
       infoWindow.setContent(VidNode);
@@ -90,15 +90,15 @@ function addMarkerToMapGivenInfo(countryName, countryCode, lat, lng, map) {
 /**
  * Creates iframe element
  * @param {String} videoId id of video on Youtube
- * @param id id that will have iframe element
+ * @param {number} id id that will have iframe element
  * @param {boolean} hidden flag if iframe will be hidden
+ * @returns {HTMLElement}
  */
 function createIframeById(videoId, id, hidden) {
-  var video = document.createElement('iframe');
+  let video = document.createElement('iframe');
   video.height = '150';
   video.width = '200';
   video.id = id;
-  video.allowfullscreen = "allowfullscreen";
   video.hidden = hidden;
   video.src = 'https://www.youtube.com/embed/' + videoId + '';
   return video;
@@ -107,15 +107,12 @@ function createIframeById(videoId, id, hidden) {
 /**
  * Creates DOM node element with videos
  * @param {Array} videos list that was fetched from servlet
+ * @returns {HTMLElement}
  */
 function getVideosNode(videos) {
-  var div = document.createElement('div');
-  for(var i = 0; i < videos.length; i++) {
-    if(i == 0) {
-      var currentVideo = createIframeById(videos[i]["id"], i, false);
-    } else {
-      var currentVideo = createIframeById(videos[i]["id"], i, false);
-    }
+  let div = document.createElement('div');
+  for (var i = 0; i < videos.length; i++) {
+    let currentVideo = createIframeById(videos[i]['id'], i, false);
     div.appendChild(currentVideo);
   }
   return div;
