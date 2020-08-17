@@ -3,7 +3,6 @@ let map;
 
 /* eslint-disable no-unused-vars */
 /**
-
  * Initialise map
  */
 function initMap() {
@@ -15,6 +14,7 @@ function initMap() {
 
   addAllMarkers(map);
 }
+
 /**
  * Adds one marker for each country to the map
  * See CountryCodeServlet.java for more details
@@ -28,6 +28,7 @@ function addAllMarkers(map) {
         }
       });
 }
+
 /**
  * Adds one marker for the given country
  * See CountryCodeServlet.java for more details
@@ -39,6 +40,7 @@ function addMarkerToMapGivenCountry(country, map) {
   addMarkerToMapGivenInfo(country.name, country.alpha2Code,
       country.lat, country.lng, map);
 }
+
 /**
  * Adds one marker given country name, code, average longitude and latitude
  * @param {string} countryName
@@ -55,18 +57,29 @@ function addMarkerToMapGivenInfo(countryName, countryCode, lat, lng, map) {
   });
   marker.countryCode = countryCode;
 
+  /* For each new marker, listen for a click event; If marker is clicked =>
+  fetch posts for the country corresponding to that marker and display them */
   marker.addListener('click', () => {
-    fetch('/ListYTLinks?country-code=' + marker.countryCode).then((response) =>
-      response.json()).then((videos) => {
-      const VidNode = getVideosNode(videos);
-      const infoWindow = new google.maps.InfoWindow(); // infoWindow
-      infoWindow.setContent(VidNode);
-      infoWindow.open(map, marker);
-    });
-  }); // clickListener
+    displayPosts(marker);
+  });
 }
-
 /* eslint-enable no-unused-vars */
+
+/**
+ * Displays in a popup trending posts based on the country code of marker.
+ * Sends country code to servlet which then sends back trending
+ * data based on that country code.
+ * @param {Marker} marker
+ */
+function displayPosts(marker) {
+  fetch('/ListYTLinks?country-code=' + marker.countryCode).then((response) =>
+    response.json()).then((videos) => {
+    const vidNode = getVideosNode(videos);
+    const infoWindow = new google.maps.InfoWindow();
+    infoWindow.setContent(vidNode);
+    infoWindow.open(map, marker);
+  });
+}
 
 /**
  * Creates iframe element
