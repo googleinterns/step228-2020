@@ -77,13 +77,10 @@ function addMarkerToMapGivenInfo(countryName, countryCode, lat, lng, map) {
   marker.addListener('click', () => {
     fetch('/ListYTLinks?country-code=' + marker.countryCode).then((response) =>
       response.json()).then((videos) => {
-        const ytLinks = jsonToHtml(videos);
-
-        const infoWindow = new google.maps.InfoWindow({
-          content: ytLinks,
-          maxWidth: 200,
-        }); // infoWindow
-      infoWindow.open(map, marker);
+        const VidNode = getVideosNode(videos);
+        const infoWindow = new google.maps.InfoWindow(); // infoWindow
+        infoWindow.setContent(VidNode);
+        infoWindow.open(map, marker);
     });
   }); // clickListener
 }
@@ -103,4 +100,26 @@ function jsonToHtml(videos) {
 }
 /* eslint-enable no-unused-vars */
 
+function createIframeById(videoId, id, hidden) {
+  var video = document.createElement('iframe');
+  video.height = '150';
+  video.width = '200';
+  video.id = id;
+  video.allowfullscreen = "allowfullscreen";
+  video.hidden = hidden;
+  video.src = 'https://www.youtube.com/embed/' + videoId + '';
+  return video;
+}
 
+function getVideosNode(videosId) {
+    var div = document.createElement('div');
+    for(var i = 0; i < videosId.length; i++) {
+        if(i == 0) {
+            var currentVideo = createIframeById(videosId[i]["id"], i, false);
+        } else {
+            var currentVideo = createIframeById(videosId[i]["id"], i, false);
+        }
+        div.appendChild(currentVideo);
+    }
+    return div;
+}
