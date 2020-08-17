@@ -77,9 +77,23 @@ function addMarkerToMapGivenInfo(countryName, countryCode, lat, lng, map) {
   marker.addListener('click', () => {
     fetch('/ListYTLinks?country-code=' + marker.countryCode).then((response) =>
       response.json()).then((videos) => {
-        console.log(videos);
+        const ytLinks = jsonToHtml(videos);
     });
   }); // clickListener
+}
+
+function jsonToHtml(videos) {
+  var listHTML = '<ul>';
+  videos.forEach((video) => {
+    listHTML += '<li>';
+    listHTML += '<a href=\"'
+    listHTML += video.link;
+    listHTML += '\">Link</a>';
+    listHTML += '</li>';
+  });
+  listHTML += '</ul>';
+  console.log(listHTML);
+  return listHTML;
 }
 /* eslint-enable no-unused-vars */
 
