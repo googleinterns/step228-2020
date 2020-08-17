@@ -76,30 +76,23 @@ function addMarkerToMapGivenInfo(countryName, countryCode, lat, lng, map) {
 
   marker.addListener('click', () => {
     fetch('/ListYTLinks?country-code=' + marker.countryCode).then((response) =>
-      response.json()).then((videos) => {
-        const VidNode = getVideosNode(videos);
-        const infoWindow = new google.maps.InfoWindow(); // infoWindow
-        infoWindow.setContent(VidNode);
-        infoWindow.open(map, marker);
+    response.json()).then((videos) => {
+      const VidNode = getVideosNode(videos);
+      const infoWindow = new google.maps.InfoWindow(); // infoWindow
+      infoWindow.setContent(VidNode);
+      infoWindow.open(map, marker);
     });
   }); // clickListener
 }
 
-function jsonToHtml(videos) {
-  var listHTML = '<ul>';
-  videos.forEach((video) => {
-    listHTML += '<li>';
-    listHTML += '<a href=\"'
-    listHTML += video.link;
-    listHTML += '\">Link</a>';
-    listHTML += '</li>';
-  });
-  listHTML += '</ul>';
-  console.log(listHTML);
-  return listHTML;
-}
 /* eslint-enable no-unused-vars */
 
+/**
+ * Creates iframe element
+ * @param {String} videoId id of video on Youtube
+ * @param id id that will have iframe element
+ * @param {boolean} hidden flag if iframe will be hidden
+ */
 function createIframeById(videoId, id, hidden) {
   var video = document.createElement('iframe');
   video.height = '150';
@@ -111,15 +104,19 @@ function createIframeById(videoId, id, hidden) {
   return video;
 }
 
-function getVideosNode(videosId) {
-    var div = document.createElement('div');
-    for(var i = 0; i < videosId.length; i++) {
-        if(i == 0) {
-            var currentVideo = createIframeById(videosId[i]["id"], i, false);
-        } else {
-            var currentVideo = createIframeById(videosId[i]["id"], i, false);
-        }
-        div.appendChild(currentVideo);
+/**
+ * Creates DOM node element with videos
+ * @param {Array} videos list that was fetched from servlet
+ */
+function getVideosNode(videos) {
+  var div = document.createElement('div');
+  for(var i = 0; i < videos.length; i++) {
+    if(i == 0) {
+      var currentVideo = createIframeById(videos[i]["id"], i, false);
+    } else {
+      var currentVideo = createIframeById(videos[i]["id"], i, false);
     }
-    return div;
+    div.appendChild(currentVideo);
+  }
+  return div;
 }
