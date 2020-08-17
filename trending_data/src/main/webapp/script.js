@@ -77,30 +77,43 @@ function addMarkerToMapGivenInfo(countryName, countryCode, lat, lng, map) {
   marker.addListener('click', () => {
     fetch('/ListYTLinks?country-code=' + marker.countryCode).then((response) =>
       response.json()).then((videos) => {
-        const ytLinks = jsonToHtml(videos);
-
-        const infoWindow = new google.maps.InfoWindow({
-          content: ytLinks,
-          maxWidth: 200,
-        }); // infoWindow
+      const VidNode = getVideosNode(videos);
+      const infoWindow = new google.maps.InfoWindow(); // infoWindow
+      infoWindow.setContent(VidNode);
       infoWindow.open(map, marker);
     });
   }); // clickListener
 }
 
-function jsonToHtml(videos) {
-  var listHTML = '<ul>';
-  videos.forEach((video) => {
-    listHTML += '<li>';
-    listHTML += '<a href=\"'
-    listHTML += video.link;
-    listHTML += '\">Link</a>';
-    listHTML += '</li>';
-  });
-  listHTML += '</ul>';
-  console.log(listHTML);
-  return listHTML;
-}
 /* eslint-enable no-unused-vars */
 
+/**
+ * Creates iframe element
+ * @param {String} videoId id of video on Youtube
+ * @param {number} id id that will have iframe element
+ * @param {boolean} hidden flag if iframe will be hidden
+ * @return {HTMLElement}
+ */
+function createIframeById(videoId, id, hidden) {
+  const video = document.createElement('iframe');
+  video.height = '150';
+  video.width = '200';
+  video.id = id;
+  video.hidden = hidden;
+  video.src = 'https://www.youtube.com/embed/' + videoId + '';
+  return video;
+}
 
+/**
+ * Creates DOM node element with videos
+ * @param {Array} videos list that was fetched from servlet
+ * @return {HTMLElement}
+ */
+function getVideosNode(videos) {
+  const div = document.createElement('div');
+  for (let i = 0; i < videos.length; i++) {
+    const currentVideo = createIframeById(videos[i]['id'], i, false);
+    div.appendChild(currentVideo);
+  }
+  return div;
+}

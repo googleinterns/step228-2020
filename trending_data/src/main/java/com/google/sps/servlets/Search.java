@@ -38,7 +38,7 @@ public class Search {
 
   public static final HttpTransport HTTP_TRANSPORT = new NetHttpTransport();
   public static final JsonFactory JSON_FACTORY = new JacksonFactory();
-  private static final long NUMBER_OF_VIDEOS_RETURNED = 5;
+  private static final long NUMBER_OF_VIDEOS_RETURNED = 6;
 
   private static final ArrayList<YTVid> EMPTY_LIST = new ArrayList<>();
 
