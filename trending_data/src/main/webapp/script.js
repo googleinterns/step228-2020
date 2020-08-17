@@ -13,25 +13,6 @@ function initMap() {
     zoom: 8,
   });
 
-  const infoString =
-    '<h2>This is a hardcoded tweet</h2>' +
-    '<p>@twitter_person says: Super popular #tweet :o</p>';
-
-  const infoWindow = new google.maps.InfoWindow({
-    content: infoString,
-    maxWidth: 200,
-  });
-
-  // TODO: remove this marker after we're done
-  const marker = new google.maps.Marker({
-    position: initPos,
-    map,
-    title: 'Trending Tweet',
-  });
-
-  marker.addListener('click', () => {
-    infoWindow.open(map, marker);
-  });
   addAllMarkers(map);
 }
 /**
