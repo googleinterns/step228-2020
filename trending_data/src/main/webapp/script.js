@@ -78,6 +78,12 @@ function addMarkerToMapGivenInfo(countryName, countryCode, lat, lng, map) {
     fetch('/ListYTLinks?country-code=' + marker.countryCode).then((response) =>
       response.json()).then((videos) => {
         const ytLinks = jsonToHtml(videos);
+
+        const infoWindow = new google.maps.InfoWindow({
+          content: ytLinks,
+          maxWidth: 200,
+        }); // infoWindow
+      infoWindow.open(map, marker);
     });
   }); // clickListener
 }
