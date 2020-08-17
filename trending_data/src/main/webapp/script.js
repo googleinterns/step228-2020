@@ -92,10 +92,10 @@ function addMarkerToMapGivenInfo(countryName, countryCode, lat, lng, map) {
  * @param {String} videoId id of video on Youtube
  * @param {number} id id that will have iframe element
  * @param {boolean} hidden flag if iframe will be hidden
- * @returns {HTMLElement}
+ * @return {HTMLElement}
  */
 function createIframeById(videoId, id, hidden) {
-  let video = document.createElement('iframe');
+  const video = document.createElement('iframe');
   video.height = '150';
   video.width = '200';
   video.id = id;
@@ -107,12 +107,12 @@ function createIframeById(videoId, id, hidden) {
 /**
  * Creates DOM node element with videos
  * @param {Array} videos list that was fetched from servlet
- * @returns {HTMLElement}
+ * @return {HTMLElement}
  */
 function getVideosNode(videos) {
-  let div = document.createElement('div');
-  for (var i = 0; i < videos.length; i++) {
-    let currentVideo = createIframeById(videos[i]['id'], i, false);
+  const div = document.createElement('div');
+  for (let i = 0; i < videos.length; i++) {
+    const currentVideo = createIframeById(videos[i]['id'], i, false);
     div.appendChild(currentVideo);
   }
   return div;
