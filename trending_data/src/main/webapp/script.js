@@ -73,6 +73,13 @@ function addMarkerToMapGivenInfo(countryName, countryCode, lat, lng, map) {
     title: countryName,
   });
   marker.countryCode = countryCode;
+
+  marker.addListener('click', () => {
+    fetch('/ListYTLinks?country-code=' + marker.countryCode).then((response) =>
+      response.json()).then((videos) => {
+        console.log(videos);
+    });
+  }); // clickListener
 }
 /* eslint-enable no-unused-vars */
 
