@@ -13,7 +13,7 @@ function initMap() {
     zoom: 3,
     minZoom: 2,
   });
-  infoWindws = new InfoWindowSingleton(map);
+  infoWindws = new UniqueWindowHandler(map);
   addAllMarkers(map);
 }
 
@@ -115,7 +115,7 @@ function getVideosNode(videos) {
 /**
 *  Class to keep only one open info window
 */
-class InfoWindowSingleton {
+class UniqueWindowHandler {
   /**
   * @param {Map} map
   */
