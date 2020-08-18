@@ -11,7 +11,7 @@ function initMap() {
   map = new google.maps.Map(document.getElementById('map'), {
     center: initPos,
     zoom: 3,
-    minZoom: 2,
+    minZoom: 2
   });
   windowsHandler = new UniqueWindowHandler(map);
   addAllMarkers(map);
