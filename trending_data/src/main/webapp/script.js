@@ -1,5 +1,6 @@
 
 let map;
+let infoWindws;
 
 /* eslint-disable no-unused-vars */
 /**
@@ -12,7 +13,7 @@ function initMap() {
     zoom: 3,
     minZoom: 2,
   });
-
+  infoWindws = new InfoWindowSingleton(map);
   addAllMarkers(map);
 }
 
@@ -76,9 +77,7 @@ function displayPosts(marker) {
   fetch('/ListYTLinks?country-code=' + marker.countryCode).then((response) =>
     response.json()).then((videos) => {
     const vidNode = getVideosNode(videos);
-    const infoWindow = new google.maps.InfoWindow();
-    infoWindow.setContent(vidNode);
-    infoWindow.open(map, marker);
+    infoWindws.openwindow(marker, vidNode);
   });
 }
 
@@ -111,4 +110,44 @@ function getVideosNode(videos) {
     div.appendChild(currentVideo);
   }
   return div;
+}
+
+/**
+*  Class to keep only one open info window
+*/
+class InfoWindowSingleton {
+  /**
+  * @param {Map} map
+  */
+  contructor(map) {
+    this.currentWindow = null;
+    this.map = map;
+  }
+
+  /**
+  * Checks if the current window is open
+  * @return {boolean}
+  */
+  isInfoWindowOpen() {
+    if (this.currentWindow == null) {
+      return false;
+    } else {
+      const map = this.currentWindow.getMap();
+      return (map !== null && typeof map !== 'undefined');
+    }
+  }
+
+  /**
+  * Creates a new current window
+  * @param {Marker} marker
+  * @param {HTMLElement} content
+  */
+  openwindow(marker, content) {
+    if (this.isInfoWindowOpen()) {
+      this.currentWindow.close();
+    }
+    this.currentWindow = new google.maps.InfoWindow();
+    this.currentWindow.setContent(content);
+    this.currentWindow.open(map, marker);
+  }
 }
