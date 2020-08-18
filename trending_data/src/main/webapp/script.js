@@ -10,7 +10,7 @@ function initMap() {
   map = new google.maps.Map(document.getElementById('map'), {
     center: initPos,
     zoom: 3,
-    minZoom: 2
+    minZoom: 2,
   });
 
   addAllMarkers(map);
