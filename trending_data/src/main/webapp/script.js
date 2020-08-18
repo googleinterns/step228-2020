@@ -1,6 +1,6 @@
 
 let map;
-let infoWindws;
+let windowsHandler;
 
 /* eslint-disable no-unused-vars */
 /**
@@ -13,7 +13,7 @@ function initMap() {
     zoom: 3,
     minZoom: 2,
   });
-  infoWindws = new UniqueWindowHandler(map);
+  windowsHandler = new UniqueWindowHandler(map);
   addAllMarkers(map);
 }
 
@@ -77,7 +77,7 @@ function displayPosts(marker) {
   fetch('/ListYTLinks?country-code=' + marker.countryCode).then((response) =>
     response.json()).then((videos) => {
     const vidNode = getVideosNode(videos);
-    infoWindws.openwindow(marker, vidNode);
+    windowsHandler.openwindow(marker, vidNode);
   });
 }
 
