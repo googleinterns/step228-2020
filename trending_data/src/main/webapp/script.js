@@ -6,10 +6,11 @@ let map;
  * Initialise map
  */
 function initMap() {
-  const initPos = new google.maps.LatLng(-34.397, 150.644);
+  const initPos = new google.maps.LatLng(0, 0);
   map = new google.maps.Map(document.getElementById('map'), {
     center: initPos,
-    zoom: 8,
+    zoom: 3,
+    minZoom: 2
   });
 
   addAllMarkers(map);
