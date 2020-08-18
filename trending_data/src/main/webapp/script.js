@@ -16,6 +16,13 @@ function initMap() {
   addAllMarkers(map);
 }
 
+function getYTSupportedCountries() {
+  fetch('yt-supported-countries').then((response) =>
+    response.json()).then((ytSupportedCountries) => {
+      console.log(ytSupportedCountries);
+  });
+}
+
 /**
  * Adds one marker for each country to the map
  * See CountryCodeServlet.java for more details
