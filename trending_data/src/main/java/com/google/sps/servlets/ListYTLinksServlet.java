@@ -31,10 +31,13 @@ public class ListYTLinksServlet extends HttpServlet {
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    String regionCode = "ru"; // request.getParameter("regionCode");
-    ArrayList<YTVid> videos = Search.getData(regionCode);
+    String countryCode = request.getParameter("country-code");
+
+    ArrayList<YTVid> videos = Search.getData(countryCode);
     String json = convertToJson(videos);
-    System.out.println(json);
+
+    response.setContentType("application/json;");
+    response.getWriter().println(json);
   }
 
   private String convertToJson(ArrayList<YTVid> videos) {
