@@ -21,6 +21,7 @@ public class Country {
     this.lat = Double.parseDouble(fields[COUNTRY_LATITUDE_INDEX]);
     this.lng = Double.parseDouble(fields[COUNTRY_LONGITUDE_INDEX]);
   }
+
   public String[] parse(String countryInfo) {
     return countryInfo.split("\t");
   }
