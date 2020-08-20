@@ -14,14 +14,14 @@
 
 package com.google.sps.data;
 
-/** item coding comment. */
+/** class for Youtube Videos */
 public final class YTVid {
 
   private final String id;
   private final String link;
 
-  public YTVid(String id, String link) {
+  public YTVid(String id) {
     this.id = id;
-    this.link = link;
+    this.link = "https://www.youtube.com/watch?v=" + id;
   }
 }
