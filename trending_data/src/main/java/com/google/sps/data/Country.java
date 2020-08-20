@@ -31,4 +31,24 @@ public class Country {
 
     return countryInfo.split("\t");
   }
+
+  /** Get the name of the country */
+  public String getName() {
+    return this.name;
+  }
+
+  /** Get the alpha 2 code of the country */
+  public String getAlpha2Code() {
+    return this.alpha2Code;
+  }
+
+  /** Get the latitude of the country */
+  public double getLat() {
+    return this.lat;
+  }
+
+  /** Get the longitude of the country */
+  public double getLng() {
+    return this.lng;
+  }
 }
