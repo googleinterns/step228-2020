@@ -74,11 +74,12 @@ function addMarkerToMapGivenInfo(countryName, countryCode, lat, lng, map) {
  * @param {Marker} marker
  */
 function displayPosts(marker) {
-  fetch('/ListYTLinks?country-code=' + marker.countryCode).then((response) =>
-    response.json()).then((videos) => {
-    const vidNode = getVideosNode(videos);
-    windowsHandler.openwindow(marker, vidNode);
-  });
+  fetch('/GetTrendingYTVideos?country-code=' + marker.countryCode)
+      .then((response) =>
+        response.json()).then((videos) => {
+        const vidNode = getVideosNode(videos);
+        windowsHandler.openwindow(marker, vidNode);
+      });
 }
 
 /**
