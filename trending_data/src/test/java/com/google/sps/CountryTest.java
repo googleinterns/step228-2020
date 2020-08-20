@@ -1,7 +1,6 @@
 package com.google.sps.data;
 
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -14,8 +13,6 @@ import org.junit.runners.JUnit4;
 @RunWith(JUnit4.class)
 public final class CountryTest {
   private static final String EMPTY_STRING = "";
-  private static final String INIT = "\tCountry\tCO\tCOU\t0\t0\t0";
-  /** Use this to construct a Country() object */
   private static final String ALBANIA_TSV_ROW = "Albania\tAL\tALB\t8\t41\t20";
 
   private static final String[] ALBANIA_ARRAY = {"Albania", "AL", "ALB", "8", "41", "20"};
@@ -30,17 +27,10 @@ public final class CountryTest {
 
   private static final int CORRECT_NUMBER_OF_FIELDS = 6;
 
-  private Country parser;
-
-  @Before
-  public void setUp() {
-    parser = new Country(INIT);
-  }
-
   @Test
   public void parseTSVIntoCorrectFields() {
     /** Checks that for a tab-separated string, the correct fields are returned */
-    String[] parsingResult = parser.parse(ALBANIA_TSV_ROW);
+    String[] parsingResult = Country.parse(ALBANIA_TSV_ROW);
     Assert.assertEquals(ALBANIA_ARRAY, parsingResult);
   }
 
@@ -64,13 +54,13 @@ public final class CountryTest {
      * Checks that an IllegalArgumentException is thrown if the parsing of an empty string is
      * attempted
      */
-    String[] parsingResult = parser.parse(EMPTY_STRING);
+    String[] parsingResult = Country.parse(EMPTY_STRING);
   }
 
   @Test
   public void parseTSVIntoCorrectNumberOfFields() {
     /** Checks that for a tab-separated string, the correct number of fields are returned */
-    String[] parsingResult = parser.parse(ALBANIA_TSV_ROW);
+    String[] parsingResult = Country.parse(ALBANIA_TSV_ROW);
     Assert.assertEquals(CORRECT_NUMBER_OF_FIELDS, parsingResult.length);
   }
 }

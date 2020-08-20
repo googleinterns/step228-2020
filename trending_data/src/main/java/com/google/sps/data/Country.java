@@ -23,7 +23,7 @@ public class Country {
     this.lng = Double.parseDouble(fields[COUNTRY_LONGITUDE_INDEX]);
   }
 
-  public String[] parse(String countryInfo) {
+  public static String[] parse(String countryInfo) {
     /** If countryInfo is empty, throw exception */
     if (countryInfo.isEmpty()) {
       throw new IllegalArgumentException("Country info should not be empty");
