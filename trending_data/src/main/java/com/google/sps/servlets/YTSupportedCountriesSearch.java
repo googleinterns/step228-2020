@@ -42,7 +42,7 @@ public class YTSupportedCountriesSearch {
                   new HttpRequestInitializer() {
                     public void initialize(HttpRequest request) throws IOException {}
                   })
-              .setApplicationName("search-by-location")
+              .setApplicationName("search-unsupported-countries")
               .build();
 
       // Define and execute the API request
