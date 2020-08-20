@@ -23,9 +23,6 @@ public class YTSupportedCountriesSearch {
   /** Declare a YouTube object to search for videos on YouTube */
   private static YouTube youtube;
 
-  /** Return empty list if anything goes wrong */
-  private static final ArrayList<String> EMPTY_LIST = new ArrayList<>();
-
   /*
    * Return a list of ids of supported countries as specified by the
    * YouTube API. The ids are the country codes in the format of Alpha-2 codes.
@@ -73,7 +70,7 @@ public class YTSupportedCountriesSearch {
     } catch (Throwable t) {
       t.printStackTrace();
     }
-    return EMPTY_LIST;
+    return new ArrayList<String>();
   }
 
   /*
