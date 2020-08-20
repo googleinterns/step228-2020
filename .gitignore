@@ -1,4 +1,4 @@
 target/
 node_modules/
 WEB-INF/
-
+src/main/resources/config.properties
