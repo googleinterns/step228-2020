@@ -26,7 +26,7 @@ import javax.servlet.http.HttpServletResponse;
 /*
  *  Servlet that returns json file of top videos
  */
-@WebServlet("/ListYTLinks")
+@WebServlet("/GetTrendingYTVideos")
 public class ListYTLinksServlet extends HttpServlet {
 
   @Override
