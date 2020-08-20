@@ -24,6 +24,7 @@ import com.google.api.services.youtube.YouTube;
 import com.google.api.services.youtube.model.Video;
 import com.google.api.services.youtube.model.VideoListResponse;
 import com.google.sps.data.YTVid;
+import java.io.*;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -31,24 +32,20 @@ import java.util.List;
 import java.util.Properties;
 
 public class Search {
-
-  /** Identify the developer's API key. */
-  private static final String apiKey =
-      "AIzaSyClpjaOk1vj_SEtnbkhFLQJya4ZoG7jq6c"; // key to access API
-
   public static final HttpTransport HTTP_TRANSPORT = new NetHttpTransport();
   public static final JsonFactory JSON_FACTORY = new JacksonFactory();
   private static final long NUMBER_OF_VIDEOS_RETURNED = 6;
-
-  private static final ArrayList<YTVid> EMPTY_LIST = new ArrayList<>();
 
   /** Initialize a YouTube object to search for videos on YouTube */
   private static YouTube youtube;
 
   /** Initialize a YouTube object to search for videos on YouTube */
   public static ArrayList<YTVid> getData(String regionCode) {
-    Properties properties = new Properties();
     try {
+      Properties properties = new Properties();
+      InputStream in = Search.class.getResourceAsStream("/config.properties");
+      properties.load(in);
+      String apiKey = properties.getProperty("APIkey");
       // Object to make YouTube Data API requests
       youtube =
           new YouTube.Builder(
@@ -75,6 +72,8 @@ public class Search {
       if (searchResultList != null) {
         ArrayList result = convertToYTVid(searchResultList.iterator());
         return result;
+      } else {
+        System.err.println("Result of the search was null");
       }
     } catch (GoogleJsonResponseException e) {
       System.err.println(
@@ -87,7 +86,7 @@ public class Search {
     } catch (Throwable t) {
       t.printStackTrace();
     }
-    return EMPTY_LIST;
+    return new ArrayList<YTVid>();
   }
 
   /*
@@ -98,8 +97,7 @@ public class Search {
     while (iteratorSearchResults.hasNext()) {
       Video singleVideo = iteratorSearchResults.next();
       String Id = singleVideo.getId();
-      String link = "https://www.youtube.com/watch?v=" + Id;
-      YTVid video = new YTVid(Id, link);
+      YTVid video = new YTVid(Id);
       result.add(video);
     }
     return result;
