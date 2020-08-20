@@ -17,10 +17,6 @@ import java.util.List;
 import java.util.Properties;
 
 public class YTSupportedCountriesSearch {
-
-  private static final String apiKey =
-      "AIzaSyClpjaOk1vj_SEtnbkhFLQJya4ZoG7jq6c"; // key to access API
-
   public static final HttpTransport HTTP_TRANSPORT = new NetHttpTransport();
   public static final JsonFactory JSON_FACTORY = new JacksonFactory();
 
@@ -35,8 +31,12 @@ public class YTSupportedCountriesSearch {
    * YouTube API. The ids are the country codes in the format of Alpha-2 codes.
    */
   public static ArrayList<String> getSupportedCountries() {
-    Properties properties = new Properties();
     try {
+      Properties properties = new Properties();
+      InputStream in = Search.class.getResourceAsStream("/config.properties");
+      properties.load(in);
+      String apiKey = properties.getProperty("APIkey");
+
       // Object to make YouTube Data API requests
       youtube =
           new YouTube.Builder(
