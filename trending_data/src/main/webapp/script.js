@@ -14,19 +14,22 @@ function initMap() {
     minZoom: 2,
   });
   windowsHandler = new UniqueWindowHandler(map);
-  addAllMarkers(map);
+  // Add a marker clusterer to manage the markers.
+  const markerCluster = new MarkerClusterer(map, [],
+      {imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m'});
+  addAllMarkers(markerCluster);
 }
 
 /**
- * Adds one marker for each country to the map
+ * Adds one marker for each country to the markerCluster
  * See CountryCodeServlet.java for more details
- * @param {Object} map
+ * @param {Object} markerCluster
  */
-function addAllMarkers(map) {
+function addAllMarkers(markerCluster) {
   fetch('/countries').then((response) => response.json())
       .then((countries) => {
         for (const country of countries) {
-          addMarkerToMapGivenCountry(country, map);
+          addMarkerToMapGivenCountry(country, markerCluster);
         }
       });
 }
@@ -36,11 +39,11 @@ function addAllMarkers(map) {
  * See CountryCodeServlet.java for more details
  * @param {Object} country A JSON object {name: String,
  * alpha2Code: String, lng: number, lat: number}
- * @param {Object} map
+ * @param {Object} markerCluster
  */
-function addMarkerToMapGivenCountry(country, map) {
+function addMarkerToMapGivenCountry(country, markerCluster) {
   addMarkerToMapGivenInfo(country.name, country.alpha2Code,
-      country.lat, country.lng, map);
+      country.lat, country.lng, markerCluster);
 }
 
 /**
@@ -49,16 +52,17 @@ function addMarkerToMapGivenCountry(country, map) {
  * @param {string} countryCode  (ISO 3166-1) Alpha-2 code
  * @param {number} lat Latitude (average)
  * @param {number} lng Longitude (average)
- * @param {Object} map
+ * @param {Object} markerCluster
  */
-function addMarkerToMapGivenInfo(countryName, countryCode, lat, lng, map) {
+function addMarkerToMapGivenInfo(countryName, countryCode, lat, lng,
+    markerCluster) {
   const marker = new google.maps.Marker({
     position: {lat, lng},
     map: map,
     title: countryName,
   });
   marker.countryCode = countryCode;
-
+  markerCluster.addMarker(marker);
   /* For each new marker, listen for a click event; If marker is clicked =>
   fetch posts for the country corresponding to that marker and display them */
   marker.addListener('click', () => {
