@@ -50,15 +50,12 @@ public class YTSupportedCountriesSearch {
       YouTube.I18nRegions.List request = youtube.i18nRegions().list("snippet");
 
       request.setKey(apiKey);
-      request.setHl("es_MX");
 
       I18nRegionListResponse response = request.execute();
       List<I18nRegion> supportedCountriesResponse = response.getItems();
 
       if (supportedCountriesResponse != null) {
-        ArrayList<String> supportedCountriesCodes =
-            convertToListOfCountryCodes(supportedCountriesResponse.iterator());
-        return supportedCountriesCodes;
+        return convertToListOfCountryCodes(supportedCountriesResponse.iterator());
       }
     } catch (GoogleJsonResponseException e) {
       System.err.println(
