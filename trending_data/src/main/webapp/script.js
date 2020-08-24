@@ -1,5 +1,6 @@
 /** Array of country codes supported by YouTube API */
 let ytSupportedCountries;
+let windowsHandler;
 
 /* eslint-disable no-unused-vars */
 /**
@@ -14,6 +15,8 @@ function initMap() {
   });
 
   getYTSupportedCountries();
+  windowsHandler = new UniqueWindowHandler(map);
+
   addAllMarkers(map);
 } /* eslint-enable no-unused-vars */
 
@@ -97,18 +100,16 @@ function isCountrySupportedbyYT(countryCode) {
  * @param {Marker} marker
  */
 function displayPosts(marker) {
-  const infoWindow = new google.maps.InfoWindow(); // initialize popup
-
   if (!isCountrySupportedbyYT(marker.countryCode)) {
-    infoWindow.setContent('<h2>Region not supported by YouTube</h2>');
+    const ytErr = '<h2>Region not supported by YouTube</h2>';
+    windowsHandler.openwindow(marker, ytErr);
   } else { // if country is supported, fetch data
     fetch('/ListYTLinks?country-code=' + marker.countryCode).then((response) =>
       response.json()).then((videos) => {
       const vidNode = getVideosNode(videos);
-      infoWindow.setContent(vidNode);
+      windowsHandler.openwindow(marker, vidNode);
     });
   }
-  infoWindow.open(map, marker); // display popup
 }
 
 /**
@@ -140,4 +141,44 @@ function getVideosNode(videos) {
     div.appendChild(currentVideo);
   }
   return div;
+}
+
+/**
+*  Class to keep only one open info window
+*/
+class UniqueWindowHandler {
+  /**
+  * @param {Map} map
+  */
+  contructor(map) {
+    this.currentWindow = null;
+    this.map = map;
+  }
+
+  /**
+  * Checks if the current window is open
+  * @return {boolean}
+  */
+  isInfoWindowOpen() {
+    if (this.currentWindow == null) {
+      return false;
+    } else {
+      const map = this.currentWindow.getMap();
+      return (map !== null && typeof map !== 'undefined');
+    }
+  }
+
+  /**
+  * Creates a new current window
+  * @param {Marker} marker
+  * @param {HTMLElement} content
+  */
+  openwindow(marker, content) {
+    if (this.isInfoWindowOpen()) {
+      this.currentWindow.close();
+    }
+    this.currentWindow = new google.maps.InfoWindow();
+    this.currentWindow.setContent(content);
+    this.currentWindow.open(map, marker);
+  }
 }
