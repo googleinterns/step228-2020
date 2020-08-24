@@ -75,7 +75,7 @@ function addMarkerToMapGivenInfo(countryName, countryCode, lat, lng, map) {
   data is available for this country => fetch posts for the country
   corresponding to that marker and display them. */
   marker.addListener('click', () => {
-    displayPosts(marker, isCountrySupportedbyYT(marker.countryCode));
+    displayPosts(marker);
   });
 }
 
@@ -95,13 +95,11 @@ function isCountrySupportedbyYT(countryCode) {
  * Sends country code to servlet which then sends back trending
  * data based on that country code.
  * @param {Marker} marker
- * @param {Boolean} isCountrySupported true only if there is data available for
- * the country which correspons to the marker
  */
-function displayPosts(marker, isCountrySupported) {
+function displayPosts(marker) {
   const infoWindow = new google.maps.InfoWindow(); // initialize popup
 
-  if (!isCountrySupported) {
+  if (!isCountrySupportedbyYT(marker.countryCode)) {
     infoWindow.setContent('<h2>Region not supported by YouTube</h2>');
   } else { // if country is supported, fetch data
     fetch('/ListYTLinks?country-code=' + marker.countryCode).then((response) =>
