@@ -1,5 +1,5 @@
-
-let map;
+/** Array of country codes supported by YouTube API */
+let ytSupportedCountries;
 let windowsHandler;
 
 /* eslint-disable no-unused-vars */
@@ -8,16 +8,31 @@ let windowsHandler;
  */
 function initMap() {
   const initPos = new google.maps.LatLng(0, 0);
-  map = new google.maps.Map(document.getElementById('map'), {
+  const map = new google.maps.Map(document.getElementById('map'), {
     center: initPos,
     zoom: 3,
     minZoom: 2,
   });
+
+  getYTSupportedCountries();
   windowsHandler = new UniqueWindowHandler(map);
+
   // Add a marker clusterer to manage the markers.
   const markerCluster = new MarkerClusterer(map, [],
       {imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m'});
   addAllMarkers(markerCluster);
+} /* eslint-enable no-unused-vars */
+
+/**
+ * Fetch country codes that are supported by the
+ * YouTube API and store them in the global array:
+ * ytSupportedCountries
+ */
+function getYTSupportedCountries() {
+  fetch('yt-supported-countries').then((response) =>
+    response.json()).then((supported) => {
+    ytSupportedCountries = supported;
+  });
 }
 
 /**
@@ -63,13 +78,25 @@ function addMarkerToMapGivenInfo(countryName, countryCode, lat, lng,
   });
   marker.countryCode = countryCode;
   markerCluster.addMarker(marker);
-  /* For each new marker, listen for a click event; If marker is clicked =>
-  fetch posts for the country corresponding to that marker and display them */
+
+  /* For each new marker, listen for a click event; If marker is clicked and
+  data is available for this country => fetch posts for the country
+  corresponding to that marker and display them. */
   marker.addListener('click', () => {
     displayPosts(marker);
   });
 }
-/* eslint-enable no-unused-vars */
+
+/**
+ * Returns true if the country code belongs to a country that
+ * is supported by the YouTube API.
+ * @param {String} countryCode alpha-2 code
+ * @return {Boolean} true if countryCode is amongst supported countries
+ * false otherwise
+ */
+function isCountrySupportedbyYT(countryCode) {
+  return ytSupportedCountries.includes(countryCode);
+}
 
 /**
  * Displays in a popup trending posts based on the country code of marker.
@@ -78,11 +105,16 @@ function addMarkerToMapGivenInfo(countryName, countryCode, lat, lng,
  * @param {Marker} marker
  */
 function displayPosts(marker) {
-  fetch('/ListYTLinks?country-code=' + marker.countryCode).then((response) =>
-    response.json()).then((videos) => {
-    const vidNode = getVideosNode(videos);
-    windowsHandler.openwindow(marker, vidNode);
-  });
+  if (!isCountrySupportedbyYT(marker.countryCode)) {
+    const ytErr = '<h2>Region not supported by YouTube</h2>';
+    windowsHandler.openwindow(marker, ytErr);
+  } else { // if country is supported, fetch data
+    fetch('/ListYTLinks?country-code=' + marker.countryCode).then((response) =>
+      response.json()).then((videos) => {
+      const vidNode = getVideosNode(videos);
+      windowsHandler.openwindow(marker, vidNode);
+    });
+  }
 }
 
 /**
