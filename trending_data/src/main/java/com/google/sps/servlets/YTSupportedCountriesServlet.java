@@ -11,11 +11,20 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet("/yt-supported-countries")
 public class YTSupportedCountriesServlet extends HttpServlet {
 
+  /** This variable is empty upon class instantion */
+  private ArrayList<String> ytSupportedCountries = new ArrayList<>();
+
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
-    ArrayList<String> ytSupportedCountries =
-        YTSupportedCountriesSearch.getSupportedCountries(); // codes of countries supported by YT
+    if (ytSupportedCountries.isEmpty()) {
+      /**
+       * if this is the first request, fetch the supported countries this will only occur once,
+       * after the servlet is instantiated
+       */
+      ytSupportedCountries =
+          YTSupportedCountriesSearch.getSupportedCountries(); // codes of countries supported by YT
+    }
 
     Gson gson = new Gson();
 
