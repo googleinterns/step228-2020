@@ -76,10 +76,10 @@ function addMarkerToMapGivenInfo(countryName, countryCode, lat, lng, map) {
 function displayPosts(marker) {
   if (marker.countryCode != windowsHandler.getCountryCode()) {
     fetch('/ListYTLinks?country-code=' + marker.countryCode).then((response) =>
-    response.json()).then((videos) => {
-    const vidNode = getVideosNode(videos);
-    windowsHandler.openwindow(marker, vidNode);
-  });
+      response.json()).then((videos) => {
+      const vidNode = getVideosNode(videos);
+      windowsHandler.openwindow(marker, vidNode);
+    });
   }
 }
 
@@ -162,5 +162,4 @@ class UniqueWindowHandler {
   getCountryCode() {
     return this.countryCode;
   }
-
 }
