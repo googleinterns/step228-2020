@@ -2,13 +2,15 @@
 let ytSupportedCountries;
 let windowsHandler;
 
+let map;
+
 /* eslint-disable no-unused-vars */
 /**
  * Initialise map
  */
 function initMap() {
   const initPos = new google.maps.LatLng(0, 0);
-  const map = new google.maps.Map(document.getElementById('map'), {
+  map = new google.maps.Map(document.getElementById('map'), {
     center: initPos,
     zoom: 3,
     minZoom: 2,
