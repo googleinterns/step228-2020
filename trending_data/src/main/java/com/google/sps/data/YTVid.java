@@ -21,10 +21,10 @@ package com.google.sps.data;
 public final class YTVid {
 
   private final String id;
-  private final String link;
+  private final String embeddedLink;
 
   public YTVid(String id) {
     this.id = id;
-    this.link = "https://www.youtube.com/watch?v=" + id;
+    this.embeddedLink = "https://www.youtube.com/embed/" + id;
   }
 }
