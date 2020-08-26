@@ -107,15 +107,17 @@ function isCountrySupportedbyYT(countryCode) {
  * @param {Marker} marker
  */
 function displayPosts(marker) {
-  if (!isCountrySupportedbyYT(marker.countryCode)) {
-    const ytErr = '<h2>Region not supported by YouTube</h2>';
-    windowsHandler.openwindow(marker, ytErr);
-  } else { // if country is supported, fetch data
-    fetch('/ListYTLinks?country-code=' + marker.countryCode).then((response) =>
-      response.json()).then((videos) => {
-      const vidNode = getVideosNode(videos);
-      windowsHandler.openwindow(marker, vidNode);
-    });
+  if (marker.countryCode != windowsHandler.getCountryCode()) {
+    if (!isCountrySupportedbyYT(marker.countryCode)) {
+      const ytErr = '<h2>Region not supported by YouTube</h2>';
+      windowsHandler.openwindow(marker, ytErr);
+    } else { // if country is supported, fetch data
+      fetch('/GetTrendingYTVideos?country-code=' + marker.countryCode).
+          then((response) => response.json()).then((videos) => {
+            const vidNode = getVideosNode(videos);
+            windowsHandler.openwindow(marker, vidNode);
+          });
+    }
   }
 }
 
@@ -160,6 +162,7 @@ class UniqueWindowHandler {
   contructor(map) {
     this.currentWindow = null;
     this.map = map;
+    this.countryCode = null;
   }
 
   /**
@@ -187,5 +190,14 @@ class UniqueWindowHandler {
     this.currentWindow = new google.maps.InfoWindow();
     this.currentWindow.setContent(content);
     this.currentWindow.open(map, marker);
+    this.countryCode = marker.countryCode;
+  }
+
+  /**
+  * Returns current country code
+  * @return {String}
+  */
+  getCountryCode() {
+    return this.countryCode;
   }
 }
