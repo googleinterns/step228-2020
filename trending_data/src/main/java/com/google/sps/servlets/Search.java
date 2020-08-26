@@ -70,11 +70,6 @@ public class Search {
       List<Video> searchResultList = searchResponse.getItems();
 
       if (searchResultList != null) {
-        if (searchResultList.size() == 0) {
-          // if there are no videos return empty array
-          return new ArrayList<YTVid>();
-        }
-
         ArrayList result = convertToYTVid(searchResultList.iterator());
         return result;
       } else {
