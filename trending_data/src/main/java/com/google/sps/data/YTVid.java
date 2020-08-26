@@ -14,10 +14,10 @@
 
 package com.google.sps.data;
 
-/** class for storing and representing Youtube Videos
-*   contains video's id and html link
-*   construct element of class with id 
-*/
+/**
+ * class for storing and representing Youtube Videos contains video's id and html link construct
+ * element of class with id
+ */
 public final class YTVid {
 
   private final String id;
