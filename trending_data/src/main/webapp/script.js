@@ -123,19 +123,18 @@ function displayPosts(marker) {
 
 /**
  * Creates iframe element
- * @param {String} videoId id of video on Youtube
+ * @param {object} video id of video on Youtube
  * @param {number} id id that will have iframe element
- * @param {boolean} hidden flag if iframe will be hidden
  * @return {HTMLElement}
  */
-function createIframeById(videoId, id, hidden) {
-  const video = document.createElement('iframe');
-  video.height = '150';
-  video.width = '200';
-  video.id = id;
-  video.hidden = hidden;
-  video.src = 'https://www.youtube.com/embed/' + videoId + '';
-  return video;
+function createIframeById(video, id) {
+  console.log(typeof(video));
+  const videoEl = document.createElement('iframe');
+  videoEl.height = '150';
+  videoEl.width = '200';
+  videoEl.id = id;
+  videoEl.src = video.embeddedLink;
+  return videoEl;
 }
 
 /**
@@ -146,7 +145,7 @@ function createIframeById(videoId, id, hidden) {
 function getVideosNode(videos) {
   const div = document.createElement('div');
   for (let i = 0; i < videos.length; i++) {
-    const currentVideo = createIframeById(videos[i]['id'], i, false);
+    const currentVideo = createIframeById(videos[i], i);
     div.appendChild(currentVideo);
   }
   return div;

@@ -14,14 +14,17 @@
 
 package com.google.sps.data;
 
-/** item coding comment. */
+/** class for storing and representing Youtube Videos
+*   contains video's id and html link
+*   construct element of class with id 
+*/
 public final class YTVid {
 
   private final String id;
-  private final String link;
+  private final String embeddedLink;
 
-  public YTVid(String id, String link) {
+  public YTVid(String id) {
     this.id = id;
-    this.link = link;
+    this.embeddedLink = "https://www.youtube.com/embed/" + id;
   }
 }
