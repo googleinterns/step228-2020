@@ -112,11 +112,11 @@ function displayPosts(marker) {
       const ytErr = '<h2>Region not supported by YouTube</h2>';
       windowsHandler.openwindow(marker, ytErr);
     } else { // if country is supported, fetch data
-      fetch('/ListYTLinks?country-code=' + marker.countryCode).then((response) 
-        => response.json()).then((videos) => {
-        const vidNode = getVideosNode(videos);
-        windowsHandler.openwindow(marker, vidNode);
-      });
+      fetch('/ListYTLinks?country-code=' + marker.countryCode).
+          then((response) => response.json()).then((videos) => {
+            const vidNode = getVideosNode(videos);
+            windowsHandler.openwindow(marker, vidNode);
+          });
     }
   }
 }
