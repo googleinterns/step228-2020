@@ -111,17 +111,17 @@ function displayPosts(marker) {
     const ytErr = '<h2>Region not supported by YouTube</h2>';
     windowsHandler.openwindow(marker, ytErr);
   } else { // if country is supported, fetch data
-    fetch('/ListYTLinks?country-code=' + marker.countryCode).then((response) =>
-      response.json()).then((videos) => {
-      const vidNode = getVideosNode(videos);
-      windowsHandler.openwindow(marker, vidNode);
-    });
+    fetch('/GetTrendingYTVideos?country-code=' + marker.countryCode).
+        then((response) =>response.json()).then((videos) => {
+          const vidNode = getVideosNode(videos);
+          windowsHandler.openwindow(marker, vidNode);
+        });
   }
 }
 
 /**
  * Creates iframe element
- * @param {String} videoId id of video on Youtube
+ * @param {object} video id of video on Youtube
  * @param {number} id id that will have iframe element
  * @return {HTMLElement}
  */
@@ -131,7 +131,7 @@ function createIframeById(video, id) {
   videoEl.height = '150';
   videoEl.width = '200';
   videoEl.id = id;
-  videoEl.src = video.embeddedLink ;
+  videoEl.src = video.embeddedLink;
   return videoEl;
 }
 
