@@ -1,6 +1,8 @@
+/** Array of country codes supported by YouTube API */
+let ytSupportedCountries;
+let windowsHandler;
 
 let map;
-let windowsHandler;
 
 /* eslint-disable no-unused-vars */
 /**
@@ -13,20 +15,38 @@ function initMap() {
     zoom: 3,
     minZoom: 2,
   });
+
+  getYTSupportedCountries();
   windowsHandler = new UniqueWindowHandler(map);
-  addAllMarkers(map);
+
+  // Add a marker clusterer to manage the markers.
+  const markerCluster = new MarkerClusterer(map, [],
+      {imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m'});
+  addAllMarkers(markerCluster);
+} /* eslint-enable no-unused-vars */
+
+/**
+ * Fetch country codes that are supported by the
+ * YouTube API and store them in the global array:
+ * ytSupportedCountries
+ */
+function getYTSupportedCountries() {
+  fetch('yt-supported-countries').then((response) =>
+    response.json()).then((supported) => {
+    ytSupportedCountries = supported;
+  });
 }
 
 /**
- * Adds one marker for each country to the map
+ * Adds one marker for each country to the markerCluster
  * See CountryCodeServlet.java for more details
- * @param {Object} map
+ * @param {Object} markerCluster
  */
-function addAllMarkers(map) {
+function addAllMarkers(markerCluster) {
   fetch('/countries').then((response) => response.json())
       .then((countries) => {
         for (const country of countries) {
-          addMarkerToMapGivenCountry(country, map);
+          addMarkerToMapGivenCountry(country, markerCluster);
         }
       });
 }
@@ -36,11 +56,11 @@ function addAllMarkers(map) {
  * See CountryCodeServlet.java for more details
  * @param {Object} country A JSON object {name: String,
  * alpha2Code: String, lng: number, lat: number}
- * @param {Object} map
+ * @param {Object} markerCluster
  */
-function addMarkerToMapGivenCountry(country, map) {
+function addMarkerToMapGivenCountry(country, markerCluster) {
   addMarkerToMapGivenInfo(country.name, country.alpha2Code,
-      country.lat, country.lng, map);
+      country.lat, country.lng, markerCluster);
 }
 
 /**
@@ -49,23 +69,36 @@ function addMarkerToMapGivenCountry(country, map) {
  * @param {string} countryCode  (ISO 3166-1) Alpha-2 code
  * @param {number} lat Latitude (average)
  * @param {number} lng Longitude (average)
- * @param {Object} map
+ * @param {Object} markerCluster
  */
-function addMarkerToMapGivenInfo(countryName, countryCode, lat, lng, map) {
+function addMarkerToMapGivenInfo(countryName, countryCode, lat, lng,
+    markerCluster) {
   const marker = new google.maps.Marker({
     position: {lat, lng},
     map: map,
     title: countryName,
   });
   marker.countryCode = countryCode;
+  markerCluster.addMarker(marker);
 
-  /* For each new marker, listen for a click event; If marker is clicked =>
-  fetch posts for the country corresponding to that marker and display them */
+  /* For each new marker, listen for a click event; If marker is clicked and
+  data is available for this country => fetch posts for the country
+  corresponding to that marker and display them. */
   marker.addListener('click', () => {
     displayPosts(marker);
   });
 }
-/* eslint-enable no-unused-vars */
+
+/**
+ * Returns true if the country code belongs to a country that
+ * is supported by the YouTube API.
+ * @param {String} countryCode alpha-2 code
+ * @return {Boolean} true if countryCode is amongst supported countries
+ * false otherwise
+ */
+function isCountrySupportedbyYT(countryCode) {
+  return ytSupportedCountries.includes(countryCode);
+}
 
 /**
  * Displays in a popup trending posts based on the country code of marker.
@@ -75,11 +108,16 @@ function addMarkerToMapGivenInfo(countryName, countryCode, lat, lng, map) {
  */
 function displayPosts(marker) {
   if (marker.countryCode != windowsHandler.getCountryCode()) {
-    fetch('/ListYTLinks?country-code=' + marker.countryCode).then((response) =>
-      response.json()).then((videos) => {
-      const vidNode = getVideosNode(videos);
-      windowsHandler.openwindow(marker, vidNode);
-    });
+    if (!isCountrySupportedbyYT(marker.countryCode)) {
+      const ytErr = '<h2>Region not supported by YouTube</h2>';
+      windowsHandler.openwindow(marker, ytErr);
+    } else { // if country is supported, fetch data
+      fetch('/ListYTLinks?country-code=' + marker.countryCode).then((response) =>
+        response.json()).then((videos) => {
+        const vidNode = getVideosNode(videos);
+        windowsHandler.openwindow(marker, vidNode);
+      });
+    }
   }
 }
 
