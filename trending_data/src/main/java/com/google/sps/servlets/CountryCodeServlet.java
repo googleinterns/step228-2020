@@ -14,20 +14,17 @@ import javax.servlet.http.HttpServletResponse;
 
 @WebServlet("/countries")
 public class CountryCodeServlet extends HttpServlet {
-
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response)
       throws IOException, FileNotFoundException {
     response.setContentType("application/json;");
     ArrayList<Country> countries = new ArrayList<Country>();
-    // String csvFile = "WEB-INF/countries_codes.csv";
 
     BufferedReader br =
         new BufferedReader(
             new InputStreamReader(
-                CountryCodeServlet.class.getResourceAsStream("/countries_codes.csv")));
-    // discard headers
-    br.readLine();
+                CountryCodeServlet.class.getResourceAsStream("/countries_codes.tsv")));
+
     while (br.ready()) {
       countries.add(new Country(br.readLine()));
     }

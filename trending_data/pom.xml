@@ -38,6 +38,12 @@
       <artifactId>google-api-services-youtube</artifactId>
       <version>v3-rev182-1.22.0</version>
     </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.12</version>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 
   <build>
