@@ -15,7 +15,9 @@ public final class CountryTest {
   private static final String EMPTY_STRING = "";
   private static final String ALBANIA_TSV_ROW = "Albania\tAL\tALB\t8\t41\t20\t23424742";
 
-  private static final String[] ALBANIA_ARRAY = {"Albania", "AL", "ALB", "8", "41", "20", "23424742"};
+  private static final String[] ALBANIA_ARRAY = {
+    "Albania", "AL", "ALB", "8", "41", "20", "23424742"
+  };
 
   private static final String AL_NAME = "Albania";
   private static final String AL_ALPHA2 = "AL";

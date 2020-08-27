@@ -10,7 +10,8 @@ public class Country {
   private static final int COUNTRY_ALPHA_2_CODE_INDEX = 1;
   private static final int COUNTRY_LATITUDE_INDEX = 4;
   private static final int COUNTRY_LONGITUDE_INDEX = 5;
-  private static final int WOEID_INDEX = 6; /** Where On Earth ID*/
+  private static final int WOEID_INDEX = 6;
+  /** Where On Earth ID */
   private static final int NUMBER_OF_FIELDS = 7;
   // Given a String in this format: Country\tAlpha-2 code\tAlpha-3 code\t
   // \tNumeric code\tLatitude(average)\tLongitude(average)
