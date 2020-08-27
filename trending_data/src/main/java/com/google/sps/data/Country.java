@@ -5,6 +5,7 @@ public class Country {
   private String alpha2Code = "";
   private double lat;
   private double lng;
+  private long woeid;
   private static final int COUNTRY_NAME_INDEX = 0;
   private static final int COUNTRY_ALPHA_2_CODE_INDEX = 1;
   private static final int COUNTRY_LATITUDE_INDEX = 4;
@@ -55,7 +56,7 @@ public class Country {
   }
 
   /** Get the WOEID of the country */
-  public double getWoeid() {
+  public long getWoeid() {
     return this.woeid;
   }
 }
