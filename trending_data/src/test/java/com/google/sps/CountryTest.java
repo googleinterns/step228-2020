@@ -13,19 +13,20 @@ import org.junit.runners.JUnit4;
 @RunWith(JUnit4.class)
 public final class CountryTest {
   private static final String EMPTY_STRING = "";
-  private static final String ALBANIA_TSV_ROW = "Albania\tAL\tALB\t8\t41\t20";
+  private static final String ALBANIA_TSV_ROW = "Albania\tAL\tALB\t8\t41\t20\t23424742";
 
-  private static final String[] ALBANIA_ARRAY = {"Albania", "AL", "ALB", "8", "41", "20"};
+  private static final String[] ALBANIA_ARRAY = {"Albania", "AL", "ALB", "8", "41", "20", "23424742"};
 
   private static final String AL_NAME = "Albania";
   private static final String AL_ALPHA2 = "AL";
   private static final double AL_LAT = 41;
   private static final double AL_LNG = 20;
+  private static final long AL_WOEID = 23424742;
 
   /** Use this for floating point comparison. Math.abs( expected – actual ) <= delta */
   private static final double delta = 0.001;
 
-  private static final int CORRECT_NUMBER_OF_FIELDS = 6;
+  private static final int CORRECT_NUMBER_OF_FIELDS = 7;
 
   @Test
   public void parseTSVIntoCorrectFields() {
@@ -46,6 +47,7 @@ public final class CountryTest {
     Assert.assertEquals(AL_ALPHA2, albania.getAlpha2Code());
     Assert.assertEquals(AL_LAT, albania.getLat(), delta); // floating point
     Assert.assertEquals(AL_LNG, albania.getLng(), delta); // comparison
+    Assert.assertEquals(AL_WOEID, albania.getWoeid());
   }
 
   @Test(expected = IllegalArgumentException.class)
