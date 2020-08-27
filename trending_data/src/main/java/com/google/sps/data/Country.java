@@ -53,4 +53,9 @@ public class Country {
   public double getLng() {
     return this.lng;
   }
+
+  /** Get the WOEID of the country */
+  public double getWoeid() {
+    return this.woeid;
+  }
 }
