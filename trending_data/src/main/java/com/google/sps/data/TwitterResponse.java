@@ -4,6 +4,6 @@ public class TwitterResponse {
   private TrendingTopic[] trends;
   
   public TrendingTopic[] getTrends() {
-      return trends;
+    return trends;
   }
 }
