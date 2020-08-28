@@ -15,8 +15,8 @@
 package com.google.sps.data;
 
 /**
- * class for storing and representing Youtube Videos contains video's id and html link construct
- * element of class with id
+ * Class that constructs a YTVid object from a base link and an id which uniquely identifies a
+ * YouTube video
  */
 public final class YTVid {
 

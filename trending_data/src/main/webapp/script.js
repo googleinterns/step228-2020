@@ -114,7 +114,13 @@ function displayPosts(marker) {
     } else { // if country is supported, fetch data
       fetch('/GetTrendingYTVideos?country-code=' + marker.countryCode).
           then((response) => response.json()).then((videos) => {
-            const vidNode = getVideosNode(videos);
+            let vidNode;
+
+            if (videos.length == 0) {
+              vidNode = '<h2>No YouTube videos available for this country</h2>';
+            } else {
+              vidNode = getVideosNode(videos);
+            }
             windowsHandler.openwindow(marker, vidNode);
           });
     }
