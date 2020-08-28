@@ -1,6 +1,6 @@
 import com.google.gson.Gson;
-import com.google.sps.data.TwitterResponse;
 import com.google.sps.data.TrendingTopic;
+import com.google.sps.data.TwitterResponse;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -21,9 +21,8 @@ public class TwitterServlet extends HttpServlet {
     response.getWriter().println(new Gson().toJson(trendingTopics));
   }
 
-  /** 
-   * returns a Collection of all the TrendingTopics returned by the Twitter API for this WOEID
-   */
+   /** returns a Collection of all the TrendingTopics returned by the Twitter API for this WOEID */
+  
   private Collection<TrendingTopic> getTrendingTopics(String woeid) {
     // get all twitter responses
     TwitterResponse[] twitterResponses = getTwitterResponses(woeid);
