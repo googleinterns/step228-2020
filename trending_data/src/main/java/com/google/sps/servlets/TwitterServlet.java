@@ -21,7 +21,7 @@ public class TwitterServlet extends HttpServlet {
     response.getWriter().println(new Gson().toJson(trendingTopics));
   }
 
-   /** returns a Collection of all the TrendingTopics returned by the Twitter API for this WOEID */
+  /** returns a Collection of all the TrendingTopics returned by the Twitter API for this WOEID */
   
   private Collection<TrendingTopic> getTrendingTopics(String woeid) {
     // get all twitter responses
