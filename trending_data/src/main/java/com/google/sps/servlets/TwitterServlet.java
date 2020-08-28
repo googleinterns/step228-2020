@@ -22,7 +22,7 @@ public class TwitterServlet extends HttpServlet {
   }
 
   /** returns a Collection of all the TrendingTopics returned by the Twitter API for this WOEID */
-  
+
   private Collection<TrendingTopic> getTrendingTopics(String woeid) {
     // get all twitter responses
     TwitterResponse[] twitterResponses = getTwitterResponses(woeid);
@@ -55,7 +55,7 @@ public class TwitterServlet extends HttpServlet {
             + " null}],\"as_of\": \"2017-02-08T16:18:18Z\",\"created_at\":"
             + " \"2017-02-08T16:10:33Z\",\"locations\": [{\"name\": \"Worldwide\",\"woeid\":"
             + " 1}]}]";
-    
+  
     return new Gson().fromJson(response, TwitterResponse[].class);
   }
 
