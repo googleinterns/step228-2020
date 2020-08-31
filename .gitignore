@@ -3,3 +3,4 @@ node_modules/
 WEB-INF/
 trending_data/src/main/resources/config.properties
 trending_data/src/main/webapp/key.txt
+trending_data/src/main/resources/twitter4j.properties
