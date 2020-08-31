@@ -79,6 +79,7 @@ function addMarkerToMapGivenInfo(countryName, countryCode, lat, lng,
     title: countryName,
   });
   marker.countryCode = countryCode;
+  marker.countryName = countryName;
   markerCluster.addMarker(marker);
 
   /* For each new marker, listen for a click event; If marker is clicked and
@@ -108,20 +109,26 @@ function isCountrySupportedbyYT(countryCode) {
  */
 function displayPosts(marker) {
   if (marker.countryCode != windowsHandler.getCountryCode()) {
+    windowsHandler.update(marker);
+
     if (!isCountrySupportedbyYT(marker.countryCode)) {
-      const ytErr = '<h2>Region not supported by YouTube</h2>';
+      const ytErr = document.createElement('h2');
+      ytErr.innerText = 'Region not supported by YouTube';
+
       windowsHandler.openwindow(marker, ytErr);
     } else { // if country is supported, fetch data
       fetch('/GetTrendingYTVideos?country-code=' + marker.countryCode).
           then((response) => response.json()).then((videos) => {
             let vidNode;
+            const ytErr = document.createElement('h2');
 
             if (videos.length == 0) {
-              vidNode = '<h2>No YouTube videos available for this country</h2>';
+              ytErr.innerText = 'No YouTube videos available for this country';
+              windowsHandler.openwindow(marker, ytErr);
             } else {
               vidNode = getVideosNode(videos);
+              windowsHandler.openwindow(marker, vidNode);
             }
-            windowsHandler.openwindow(marker, vidNode);
           });
     }
   }
@@ -136,8 +143,6 @@ function displayPosts(marker) {
 function createIframeById(video, id) {
   console.log(typeof(video));
   const videoEl = document.createElement('iframe');
-  videoEl.height = '150';
-  videoEl.width = '200';
   videoEl.id = id;
   videoEl.src = video.embeddedLink;
   return videoEl;
@@ -150,6 +155,15 @@ function createIframeById(video, id) {
  */
 function getVideosNode(videos) {
   const div = document.createElement('div');
+  div.className = 'video-list';
+
+  /** Add title to list of videos to make it clear
+    what data is being displayed */
+  const ytTitle = document.createElement('h2');
+  ytTitle.innerText = 'YouTube videos trending in ' +
+    windowsHandler.getCountryName();
+  div.appendChild(ytTitle);
+
   for (let i = 0; i < videos.length; i++) {
     const currentVideo = createIframeById(videos[i], i);
     div.appendChild(currentVideo);
@@ -168,6 +182,7 @@ class UniqueWindowHandler {
     this.currentWindow = null;
     this.map = map;
     this.countryCode = null;
+    this.countryName = null;
   }
 
   /**
@@ -195,7 +210,16 @@ class UniqueWindowHandler {
     this.currentWindow = new google.maps.InfoWindow();
     this.currentWindow.setContent(content);
     this.currentWindow.open(map, marker);
+  }
+
+  /**
+  * Update the country code and name
+  * that correspond to the currently open window
+  * @param {Marker} marker
+  */
+  update(marker) {
     this.countryCode = marker.countryCode;
+    this.countryName = marker.countryName;
   }
 
   /**
@@ -204,5 +228,13 @@ class UniqueWindowHandler {
   */
   getCountryCode() {
     return this.countryCode;
+  }
+
+  /**
+  * Returns current country name
+  * @return {String}
+  */
+  getCountryName() {
+    return this.countryName;
   }
 }

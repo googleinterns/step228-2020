@@ -8,3 +8,17 @@ body {
   margin: 0;
   padding: 0;
 }
+
+iframe {
+  height: 450px;
+  width: 600px;
+}
+
+.video-list {
+  margin-left: auto;
+  margin-right: auto;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  overflow: scroll;
+}
