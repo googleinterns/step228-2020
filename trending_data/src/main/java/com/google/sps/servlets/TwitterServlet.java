@@ -37,6 +37,11 @@ public class TwitterServlet extends HttpServlet {
    */
   private Trend[] getTwitterResponse(int woeid) throws TwitterException {
     Twitter twitter = new TwitterFactory().getInstance();
+    for(Location l : twitter.getAvailableTrends()) {
+        if(l.getPlaceCode() == 12){ // checking if the location is a country, if you want to see towns/states remove this
+          System.out.println(l);
+        }
+    }
     return twitter.getPlaceTrends(woeid).getTrends();
   }
 }
