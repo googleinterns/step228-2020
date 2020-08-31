@@ -8,7 +8,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import twitter4j.Trend;
-import twitter4j.Trends;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
 import twitter4j.TwitterFactory;
@@ -32,7 +31,9 @@ public class TwitterServlet extends HttpServlet {
   }
 
   /**
-   * returns an unmodifiable Collection that contains the top 10 Trend objects corresponding to the given WOEID
+   * returns an unmodifiable Collection that contains the top 10 Trend objects corresponding to the
+   * given WOEID
+   *
    * @see twitter4j.Trend
    */
   private Collection<Trend> getTrends(int woeid) throws TwitterException {
