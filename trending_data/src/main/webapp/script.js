@@ -113,7 +113,7 @@ function displayPosts(marker) {
 
     if (!isCountrySupportedbyYT(marker.countryCode)) {
       const ytErr = document.createElement('h2');
-      ytErr.innerText = marker.countryName + ' is not supported by YouTube';
+      ytErr.innerText = 'Region not supported by YouTube';
 
       windowsHandler.openwindow(marker, ytErr);
     } else { // if country is supported, fetch data
@@ -123,8 +123,7 @@ function displayPosts(marker) {
             const ytErr = document.createElement('h2');
 
             if (videos.length == 0) {
-              ytErr.innerText = 'No YouTube videos available for ' +
-                marker.countryName;
+              ytErr.innerText = 'No YouTube videos available for this country';
               windowsHandler.openwindow(marker, ytErr);
             } else {
               vidNode = getVideosNode(videos);
