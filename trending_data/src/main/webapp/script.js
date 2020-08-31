@@ -136,8 +136,6 @@ function displayPosts(marker) {
 function createIframeById(video, id) {
   console.log(typeof(video));
   const videoEl = document.createElement('iframe');
-  videoEl.height = '150';
-  videoEl.width = '200';
   videoEl.id = id;
   videoEl.src = video.embeddedLink;
   return videoEl;
@@ -150,6 +148,7 @@ function createIframeById(video, id) {
  */
 function getVideosNode(videos) {
   const div = document.createElement('div');
+  div.className = 'video-list';
   for (let i = 0; i < videos.length; i++) {
     const currentVideo = createIframeById(videos[i], i);
     div.appendChild(currentVideo);
