@@ -60,18 +60,19 @@ function addAllMarkers(markerCluster) {
  */
 function addMarkerToMapGivenCountry(country, markerCluster) {
   addMarkerToMapGivenInfo(country.name, country.alpha2Code,
-      country.lat, country.lng, markerCluster);
+      country.woeid, country.lat, country.lng, markerCluster);
 }
 
 /**
  * Adds one marker given country name, code, average longitude and latitude
  * @param {string} countryName
  * @param {string} countryCode  (ISO 3166-1) Alpha-2 code
+  * @param {string} woeidCode  WOEID code
  * @param {number} lat Latitude (average)
  * @param {number} lng Longitude (average)
  * @param {Object} markerCluster
  */
-function addMarkerToMapGivenInfo(countryName, countryCode, lat, lng,
+function addMarkerToMapGivenInfo(countryName, countryCode, woeidCode, lat, lng,
     markerCluster) {
   const marker = new google.maps.Marker({
     position: {lat, lng},
@@ -79,6 +80,7 @@ function addMarkerToMapGivenInfo(countryName, countryCode, lat, lng,
     title: countryName,
   });
   marker.countryCode = countryCode;
+  marker.woeidCode = woeidCode;
   markerCluster.addMarker(marker);
 
   /* For each new marker, listen for a click event; If marker is clicked and
@@ -195,6 +197,7 @@ class UniqueWindowHandler {
     this.currentWindow = new google.maps.InfoWindow();
     this.currentWindow.setContent(content);
     this.currentWindow.open(map, marker);
+    console.log(content);
     this.countryCode = marker.countryCode;
   }
 
