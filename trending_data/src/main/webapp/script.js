@@ -157,13 +157,49 @@ function prepareYTPosts(marker) {
  */
 function prepareTwitterPosts(marker) {
   /** Fetch data from servlet here */
+    woeidCode = marker.woeidCode;
+    console.log(woeidCode);
+    var content;
+    fetch('/twitter?woeid=' + woeidCode).
+      then((response) => response.json()).then((topics) => {
+        console.log(topics['0']);
+        if (topics.length == 0) {
+          content = "<h2>No Twitter data available for this country<h2>"
+        } else {
+          content = getTopics(topics);
+        }
+        windowsHandler.openwindow(marker, content);
+      });
 
-  console.log(marker.countryName);
-  const harcodedTweet = document.createElement('h2');
-  harcodedTweet.innerText = 'Hardcoded tweet';
+//   console.log(marker.countryName);
+//   const harcodedTweet = document.createElement('h2');
+//   harcodedTweet.innerText = 'Hardcoded tweet';
 
-  windowsHandler.loadTwitterData(harcodedTweet);
+  windowsHandler.loadTwitterData(content);
 }
+
+  /**
+  * Creates DOM node element with videos
+  * @param {Array} videos list that was fetched from servlet
+  * @return {HTMLElement}
+  */
+  function getTopics(topics) {
+    const ul = document.createElement('ul');
+    for (let i = 0; i < topics.length; i++) {
+        const currentTopic = createTrendElement(topics[i]);
+        ul.appendChild(currentTopic);
+    }
+    return ul;
+  }
+
+  function createTrendElement(topic) {
+      const topicEl = document.createElement('li');
+      const link =document.createElement('a');
+      link.href = topic.url;
+      link.innerText = topic.name;
+      topicEl.appendChild(link);
+      return topicEl;
+  }
 
 /**
  * Creates iframe element
