@@ -93,7 +93,7 @@ function addMarkerToMapGivenInfo(countryName, countryCode, lat, lng,
 
     /** initialize YouTube and Twitter divs
       (the data will be cached in these divs)*/
-    windowsHandler.initContentDivs();
+    windowsHandler.initDataDivs();
 
     /** cache YouTube posts and open popup which contains them */
     prepareYTPosts(marker);
