@@ -25,6 +25,9 @@ function initMap() {
   const markerCluster = new MarkerClusterer(map, [],
       {imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m'});
   addAllMarkers(markerCluster);
+  google.maps.event.addListener(map, 'click', function(){
+            windowsHandler.currentWindow.close();
+        });
 } /* eslint-enable no-unused-vars */
 
 /**
@@ -127,7 +130,7 @@ function isCountrySupportedbyYT(countryCode) {
 function prepareYTPosts(marker) {
   if (!windowsHandler.isInfoWindowOpen() || marker.countryCode != windowsHandler.getCountryCode()) {
     windowsHandler.update(marker);
-    
+
     if (!isCountrySupportedbyYT(marker.countryCode)) {
       const ytErr = document.createElement('h2');
       ytErr.innerText = 'Region not supported by YouTube';
