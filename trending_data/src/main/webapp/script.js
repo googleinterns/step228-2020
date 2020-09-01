@@ -136,43 +136,54 @@ function displayYoutubeData(marker) {
   }
 }
 
+/**
+ * Displays in a popup trending topics based on the woeid code of marker.
+ * Sends country code to servlet which then sends back trending
+ * data based on that country code.
+ * @param {Marker} marker
+ */
 function displayTwitterData(marker) {
-    woeidCode = marker.woeidCode;
-    console.log(woeidCode);
-    fetch('/twitter?woeid=' + woeidCode).
+  woeidCode = marker.woeidCode;
+  console.log(woeidCode);
+  fetch('/twitter?woeid=' + woeidCode).
       then((response) => response.json()).then((topics) => {
         console.log(topics['0']);
         if (topics.length == 0) {
-          content = "<h2>No Twitter data available for this country<h2>"
+          content = '<h2>No Twitter data available for this country<h2>';
         } else {
           content = getTopics(topics);
         }
         windowsHandler.openwindow(marker, content);
       });
-  }
+}
 
-  /**
+/**
   * Creates DOM node element with videos
-  * @param {Array} videos list that was fetched from servlet
+  * @param {Array} topics list that was fetched from servlet
   * @return {HTMLElement}
   */
-  function getTopics(topics) {
-    const ul = document.createElement('ul');
-    for (let i = 0; i < topics.length; i++) {
-        const currentTopic = createTrendElement(topics[i]);
-        ul.appendChild(currentTopic);
-    }
-    return ul;
+function getTopics(topics) {
+  const ul = document.createElement('ul');
+  for (let i = 0; i < topics.length; i++) {
+    const currentTopic = createTrendElement(topics[i]);
+    ul.appendChild(currentTopic);
   }
+  return ul;
+}
 
-  function createTrendElement(topic) {
-      const topicEl = document.createElement('li');
-      const link =document.createElement('a');
-      link.href = topic.url;
-      link.innerText = topic.name;
-      topicEl.appendChild(link);
-      return topicEl;
-  }
+/**
+* Creates li element with link based on topic
+* @param {object} topic one topic
+* @return {HTMLElement}
+*/
+function createTrendElement(topic) {
+  const topicEl = document.createElement('li');
+  const link =document.createElement('a');
+  link.href = topic.url;
+  link.innerText = topic.name;
+  topicEl.appendChild(link);
+  return topicEl;
+}
 
 
 /**
