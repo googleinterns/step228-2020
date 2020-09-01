@@ -147,7 +147,6 @@ function displayTwitterData(marker) {
   console.log(woeidCode);
   fetch('/twitter?woeid=' + woeidCode).
       then((response) => response.json()).then((topics) => {
-        console.log(topics['0']);
         if (topics.length == 0) {
           content = '<h2>No Twitter data available for this country<h2>';
         } else {
@@ -181,6 +180,7 @@ function createTrendElement(topic) {
   const link =document.createElement('a');
   link.href = topic.url;
   link.innerText = topic.name;
+  link.target='_blank';
   topicEl.appendChild(link);
   return topicEl;
 }
