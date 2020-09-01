@@ -265,7 +265,7 @@ class UniqueWindowHandler {
 
   /**
   * Creates a container with 2 buttons, one for Twitter
-  * and one for YouTube and adds them to the top of the 
+  * and one for YouTube and adds them to the top of the
   * window where data will be displayed
   * @return {HTMLElement} bttnDiv
   */
@@ -273,12 +273,12 @@ class UniqueWindowHandler {
     const bttnDiv = document.createElement('div');
 
     /** YouTube button */
-    var ytBttn = document.createElement("button");
+    const ytBttn = document.createElement('button');
     ytBttn.textContent = 'YouTube';
     bttnDiv.appendChild(ytBttn);
 
     /** Twitter button */
-    var twitterBttn = document.createElement("button");
+    const twitterBttn = document.createElement('button');
     twitterBttn.textContent = 'Twitter';
     bttnDiv.appendChild(twitterBttn);
 
@@ -292,7 +292,7 @@ class UniqueWindowHandler {
     twitterBttn.addEventListener('click', () => {
       this.showTwitterData();
     });
-  
+
     return bttnDiv;
   }
 
