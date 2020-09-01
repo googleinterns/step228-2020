@@ -144,7 +144,6 @@ function displayYoutubeData(marker) {
  */
 function displayTwitterData(marker) {
   woeidCode = marker.woeidCode;
-  console.log(woeidCode);
   fetch('/twitter?woeid=' + woeidCode).
       then((response) => response.json()).then((topics) => {
         if (topics.length == 0) {
@@ -177,10 +176,10 @@ function getTopics(topics) {
 */
 function createTrendElement(topic) {
   const topicEl = document.createElement('li');
-  const link =document.createElement('a');
+  const link = document.createElement('a');
   link.href = topic.url;
   link.innerText = topic.name;
-  link.target='_blank';
+  link.target = '_blank';
   topicEl.appendChild(link);
   return topicEl;
 }
