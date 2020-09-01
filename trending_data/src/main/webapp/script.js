@@ -17,7 +17,9 @@ function initMap() {
   });
 
   getYTSupportedCountries();
+
   windowsHandler = new UniqueWindowHandler(map);
+  windowsHandler.initDataWindow();
 
   // Add a marker clusterer to manage the markers.
   const markerCluster = new MarkerClusterer(map, [],
@@ -86,7 +88,19 @@ function addMarkerToMapGivenInfo(countryName, countryCode, lat, lng,
   data is available for this country => fetch posts for the country
   corresponding to that marker and display them. */
   marker.addListener('click', () => {
-    displayPosts(marker);
+    /** initialize the section where data will be displayed */
+    windowsHandler.initDataWindow();
+
+    /** initialize YouTube and Twitter divs
+      (the data will be cached in these divs)*/
+    windowsHandler.initContentDivs();
+
+    /** cache YouTube posts and open popup which contains them */
+    prepareYTPosts(marker);
+
+    /** cache Twitter posts (they will be displayed when
+      Twitter button is pressed) */
+    prepareTwitterPosts(marker);
   });
 }
 
@@ -105,9 +119,10 @@ function isCountrySupportedbyYT(countryCode) {
  * Displays in a popup trending posts based on the country code of marker.
  * Sends country code to servlet which then sends back trending
  * data based on that country code.
+ * Caches the data for being re-displayed in the current window.
  * @param {Marker} marker
  */
-function displayPosts(marker) {
+function prepareYTPosts(marker) {
   if (marker.countryCode != windowsHandler.getCountryCode()) {
     windowsHandler.update(marker);
 
@@ -115,7 +130,7 @@ function displayPosts(marker) {
       const ytErr = document.createElement('h2');
       ytErr.innerText = 'Region not supported by YouTube';
 
-      windowsHandler.openwindow(marker, ytErr);
+      windowsHandler.loadYTDataAndOpenWindow(marker, ytErr);
     } else { // if country is supported, fetch data
       fetch('/GetTrendingYTVideos?country-code=' + marker.countryCode).
           then((response) => response.json()).then((videos) => {
@@ -124,14 +139,30 @@ function displayPosts(marker) {
 
             if (videos.length == 0) {
               ytErr.innerText = 'No YouTube videos available for this country';
-              windowsHandler.openwindow(marker, ytErr);
+              windowsHandler.loadYTDataAndOpenWindow(marker, ytErr);
             } else {
               vidNode = getVideosNode(videos);
-              windowsHandler.openwindow(marker, vidNode);
+              windowsHandler.loadYTDataAndOpenWindow(marker, vidNode);
             }
           });
     }
   }
+}
+
+/**
+ * Fetches twitter data from TwitterServlet.
+ * Caches fetched twitter data for being re-displayed in
+ * the current window.
+ * @param {Marker} marker
+ */
+function prepareTwitterPosts(marker) {
+  /** Fetch data from servlet here */
+
+  console.log(marker.countryName);
+  const harcodedTweet = document.createElement('h2');
+  harcodedTweet.innerText = 'Hardcoded tweet';
+
+  windowsHandler.loadTwitterData(harcodedTweet);
 }
 
 /**
@@ -172,7 +203,10 @@ function getVideosNode(videos) {
 }
 
 /**
-*  Class to keep only one open info window
+*  Class to keep only one open info window and
+* deal with displaying data. Saves data so that
+* it does not need to be re-fetched so long as
+* the window is open
 */
 class UniqueWindowHandler {
   /**
@@ -181,8 +215,85 @@ class UniqueWindowHandler {
   contructor(map) {
     this.currentWindow = null;
     this.map = map;
+    this.marker = marker;
     this.countryCode = null;
     this.countryName = null;
+  }
+
+  /**
+  * Initializes the divs where YouTube and Twitter data
+  * will be cached.
+  */
+  initDataDivs() {
+    this.ytDataDiv = document.createElement('div');
+    this.twitterDataDiv = document.createElement('div');
+  }
+
+  /**
+  * DataWindow contains a button container with the 2
+  * buttons (YouTube, Twitter) and the content corresponding
+  * to each platform. This method initializes the DataWindow
+  * with the button container.
+  */
+  initDataWindow() {
+    this.dataWindow = document.createElement('div');
+    this.dataWindow.className = 'popup';
+    this.dataWindow.appendChild(this.createBttnDiv());
+  }
+
+  /**
+  * Called when Twitter button is clicked. Clears
+  * current content of window and shows the most recently
+  * cached Twitter data
+  */
+  showYTData() {
+    this.initDataWindow(); // clear current content and re-add buttons
+    this.dataWindow.appendChild(this.ytDataDiv);
+    this.currentWindow.setContent(this.dataWindow);
+  }
+
+  /**
+  * Called when YouTube button is clicked. Clears
+  * current content of window and shows the most recently
+  * cached YouTube data
+  */
+  showTwitterData() {
+    this.initDataWindow();
+    this.dataWindow.appendChild(this.twitterDataDiv);
+    this.currentWindow.setContent(this.dataWindow);
+  }
+
+  /**
+  * Creates a container with 2 buttons, one for Twitter
+  * and one for YouTube and adds them to the top of the 
+  * window where data will be displayed
+  * @return {HTMLElement} bttnDiv
+  */
+  createBttnDiv() {
+    const bttnDiv = document.createElement('div');
+
+    /** YouTube button */
+    var ytBttn = document.createElement("button");
+    ytBttn.textContent = 'YouTube';
+    bttnDiv.appendChild(ytBttn);
+
+    /** Twitter button */
+    var twitterBttn = document.createElement("button");
+    twitterBttn.textContent = 'Twitter';
+    bttnDiv.appendChild(twitterBttn);
+
+    /** Toggle platforms. If YouTube button is clicked ->
+      show YouTube data. If Twitter button is clicked ->
+      show Twitter data */
+    ytBttn.addEventListener('click', () => {
+      this.showYTData();
+    });
+
+    twitterBttn.addEventListener('click', () => {
+      this.showTwitterData();
+    });
+  
+    return bttnDiv;
   }
 
   /**
@@ -199,17 +310,28 @@ class UniqueWindowHandler {
   }
 
   /**
-  * Creates a new current window
+  * Loads the current YouTube data and opens a window
+  * which contains it
   * @param {Marker} marker
   * @param {HTMLElement} content
   */
-  openwindow(marker, content) {
+  loadYTDataAndOpenWindow(marker, content) {
+    this.ytDataDiv = content; /** save the current yt data */
     if (this.isInfoWindowOpen()) {
       this.currentWindow.close();
     }
     this.currentWindow = new google.maps.InfoWindow();
-    this.currentWindow.setContent(content);
+    this.dataWindow.appendChild(content);
+    this.currentWindow.setContent(this.dataWindow);
     this.currentWindow.open(map, marker);
+  }
+
+  /**
+  * Loads the current Twitter data
+  * @param {HTMLElement} content
+  */
+  loadTwitterData(content) {
+    this.twitterDataDiv = content;
   }
 
   /**
@@ -218,6 +340,7 @@ class UniqueWindowHandler {
   * @param {Marker} marker
   */
   update(marker) {
+    this.marker = marker;
     this.countryCode = marker.countryCode;
     this.countryName = marker.countryName;
   }
