@@ -161,23 +161,17 @@ function prepareTwitterPosts(marker) {
   /** Fetch data from servlet here */
     woeidCode = marker.woeidCode;
     console.log(woeidCode);
-    var content;
     fetch('/twitter?woeid=' + woeidCode).
       then((response) => response.json()).then((topics) => {
+        var content;
         console.log(topics['0']);
         if (topics.length == 0) {
           content = "<h2>No Twitter data available for this country<h2>"
         } else {
           content = getTopics(topics);
         }
-        windowsHandler.openwindow(marker, content);
+        windowsHandler.loadTwitterData(content);
       });
-
-//   console.log(marker.countryName);
-//   const harcodedTweet = document.createElement('h2');
-//   harcodedTweet.innerText = 'Hardcoded tweet';
-
-  windowsHandler.loadTwitterData(content);
 }
 
   /**
