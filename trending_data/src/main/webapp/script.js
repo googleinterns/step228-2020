@@ -162,11 +162,18 @@ function prepareTwitterPosts(marker) {
     woeidCode = marker.woeidCode;
     console.log(woeidCode);
     fetch('/twitter?woeid=' + woeidCode).
-      then((response) => response.json()).then((topics) => {
+      then((response) => {
+          if (response.ok) {
+            return response.json();
+          } else {
+            return 'error';
+          }
+      }).then((topics) => {
         var content;
-        console.log(topics['0']);
-        if (topics.length == 0) {
-          content = "<h2>No Twitter data available for this country<h2>"
+        
+        if (topics == 'error') {
+          content = document.createElement('h2');
+          content.innerText = "No Twitter data available for this country";
         } else {
           content = getTopics(topics);
         }
@@ -193,6 +200,7 @@ function prepareTwitterPosts(marker) {
       const link =document.createElement('a');
       link.href = topic.url;
       link.innerText = topic.name;
+      link.target='_blank';
       topicEl.appendChild(link);
       return topicEl;
   }
