@@ -125,9 +125,9 @@ function isCountrySupportedbyYT(countryCode) {
  * @param {Marker} marker
  */
 function prepareYTPosts(marker) {
-  if (marker.countryCode != windowsHandler.getCountryCode()) {
+  if (!windowsHandler.isInfoWindowOpen() || marker.countryCode != windowsHandler.getCountryCode()) {
     windowsHandler.update(marker);
-
+    
     if (!isCountrySupportedbyYT(marker.countryCode)) {
       const ytErr = document.createElement('h2');
       ytErr.innerText = 'Region not supported by YouTube';
@@ -383,7 +383,8 @@ class UniqueWindowHandler {
     this.marker = marker;
     this.countryCode = marker.countryCode;
     this.countryName = marker.countryName;
-  }
+  }	 
+
 
   /**
   * Returns current country code
