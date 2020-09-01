@@ -25,9 +25,9 @@ function initMap() {
   const markerCluster = new MarkerClusterer(map, [],
       {imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m'});
   addAllMarkers(markerCluster);
-  google.maps.event.addListener(map, 'click', function(){
-            windowsHandler.currentWindow.close();
-        });
+  google.maps.event.addListener(map, 'click', function() {
+    windowsHandler.currentWindow.close();
+  });
 } /* eslint-enable no-unused-vars */
 
 /**
@@ -157,62 +157,6 @@ function prepareYTPosts(marker) {
 }
 
 /**
- * Fetches twitter data from TwitterServlet.
- * Caches fetched twitter data for being re-displayed in
- * the current window.
- * @param {Marker} marker
- */
-function prepareTwitterPosts(marker) {
-  fetch('/twitter?woeid=' + marker.woeidCode).
-    then((response) => {
-      if (response.ok) {
-        return response.json();
-      } else {
-        return 'error';
-      }
-      }).then((topics) => {
-        var content;
-        
-        if (topics == 'error') {
-          content = document.createElement('h2');
-          content.innerText = "No Twitter data available for this country";
-        } else {
-          content = getTopics(topics);
-        }
-        windowsHandler.loadTwitterData(content);
-      });
-}
-
-/**
-  * Creates DOM node element with videos
-  * @param {Array} topics list that was fetched from servlet
-  * @return {HTMLElement}
-  */
-function getTopics(topics) {
-  const ul = document.createElement('ul');
-  for (let i = 0; i < topics.length; i++) {
-    const currentTopic = createTrendElement(topics[i]);
-    ul.appendChild(currentTopic);
-  }
-  return ul;
-}
-
-/**
-* Creates li element with link based on topic
-* @param {object} topic one topic
-* @return {HTMLElement}
-*/
-function createTrendElement(topic) {
-  const topicEl = document.createElement('li');
-  const link = document.createElement('a');
-  link.href = topic.url;
-  link.innerText = topic.name;
-  link.target = '_blank';
-  topicEl.appendChild(link);
-  return topicEl;
-}
-
-/**
  * Creates iframe element
  * @param {object} video id of video on Youtube
  * @param {number} id id that will have iframe element
@@ -247,6 +191,62 @@ function getVideosNode(videos) {
     div.appendChild(currentVideo);
   }
   return div;
+}
+
+/**
+ * Fetches twitter data from TwitterServlet.
+ * Caches fetched twitter data for being re-displayed in
+ * the current window.
+ * @param {Marker} marker
+ */
+function prepareTwitterPosts(marker) {
+  fetch('/twitter?woeid=' + marker.woeidCode).
+      then((response) => {
+        if (response.ok) {
+          return response.json();
+        } else {
+          return 'error';
+        }
+      }).then((topics) => {
+        let content;
+
+        if (topics == 'error') {
+          content = document.createElement('h2');
+          content.innerText = 'No Twitter data available for this country';
+        } else {
+          content = getTopics(topics);
+        }
+        windowsHandler.loadTwitterData(content);
+      });
+}
+
+/**
+  * Creates DOM node element with videos
+  * @param {Array} topics list that was fetched from servlet
+  * @return {HTMLElement}
+  */
+function getTopics(topics) {
+  const ul = document.createElement('ul');
+  for (let i = 0; i < topics.length; i++) {
+    const currentTopic = createTrendElement(topics[i]);
+    ul.appendChild(currentTopic);
+  }
+  return ul;
+}
+
+/**
+* Creates li element with link based on topic
+* @param {object} topic one topic
+* @return {HTMLElement}
+*/
+function createTrendElement(topic) {
+  const topicEl = document.createElement('li');
+  const link = document.createElement('a');
+  link.href = topic.url;
+  link.innerText = topic.name;
+  link.target = '_blank';
+  topicEl.appendChild(link);
+  return topicEl;
 }
 
 /**
@@ -390,8 +390,7 @@ class UniqueWindowHandler {
     this.marker = marker;
     this.countryCode = marker.countryCode;
     this.countryName = marker.countryName;
-  }	 
-
+  }
 
   /**
   * Returns current country code
