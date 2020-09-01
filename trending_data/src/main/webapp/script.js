@@ -110,9 +110,9 @@ function isCountrySupportedbyYT(countryCode) {
  * @param {Marker} marker
  */
 function displayPosts(marker) {
-  if (marker.countryCode != windowsHandler.getCountryCode()) {
+  if (!windowsHandler.isInfoWindowOpen() || marker.countryCode != windowsHandler.getCountryCode()) {
     windowsHandler.update(marker);
-
+    
     if (!isCountrySupportedbyYT(marker.countryCode)) {
       const ytErr = document.createElement('h2');
       ytErr.innerText = 'Region not supported by YouTube';
@@ -212,9 +212,19 @@ class UniqueWindowHandler {
     this.currentWindow = new google.maps.InfoWindow();
     this.currentWindow.setContent(content);
     this.currentWindow.open(map, marker);
-    this.countryCode = marker.countryCode;
+
+     }
+
+  /**
+  * Update the country code and name
+  * that correspond to the currently open window
+  * @param {Marker} marker
+  */
+  update(marker) {
+    this.countryCode = marker.countryCode;	  
     this.countryName = marker.countryName;
-  }
+  }	 
+
 
   /**
   * Returns current country code
