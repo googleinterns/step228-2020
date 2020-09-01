@@ -106,6 +106,8 @@ function addMarkerToMapGivenInfo(countryName, countryCode, woeidCode, lat, lng,
     /** cache Twitter posts (they will be displayed when
       Twitter button is pressed) */
     prepareTwitterPosts(marker);
+
+    displayTwitterData(marker);
   });
 }
 
@@ -161,16 +163,13 @@ function prepareYTPosts(marker) {
  * @param {Marker} marker
  */
 function prepareTwitterPosts(marker) {
-  /** Fetch data from servlet here */
-    woeidCode = marker.woeidCode;
-    console.log(woeidCode);
-    fetch('/twitter?woeid=' + woeidCode).
-      then((response) => {
-          if (response.ok) {
-            return response.json();
-          } else {
-            return 'error';
-          }
+  fetch('/twitter?woeid=' + marker.woeidCode).
+    then((response) => {
+      if (response.ok) {
+        return response.json();
+      } else {
+        return 'error';
+      }
       }).then((topics) => {
         var content;
         
@@ -184,29 +183,34 @@ function prepareTwitterPosts(marker) {
       });
 }
 
-  /**
+/**
   * Creates DOM node element with videos
-  * @param {Array} videos list that was fetched from servlet
+  * @param {Array} topics list that was fetched from servlet
   * @return {HTMLElement}
   */
-  function getTopics(topics) {
-    const ul = document.createElement('ul');
-    for (let i = 0; i < topics.length; i++) {
-        const currentTopic = createTrendElement(topics[i]);
-        ul.appendChild(currentTopic);
-    }
-    return ul;
+function getTopics(topics) {
+  const ul = document.createElement('ul');
+  for (let i = 0; i < topics.length; i++) {
+    const currentTopic = createTrendElement(topics[i]);
+    ul.appendChild(currentTopic);
   }
+  return ul;
+}
 
-  function createTrendElement(topic) {
-      const topicEl = document.createElement('li');
-      const link =document.createElement('a');
-      link.href = topic.url;
-      link.innerText = topic.name;
-      link.target='_blank';
-      topicEl.appendChild(link);
-      return topicEl;
-  }
+/**
+* Creates li element with link based on topic
+* @param {object} topic one topic
+* @return {HTMLElement}
+*/
+function createTrendElement(topic) {
+  const topicEl = document.createElement('li');
+  const link = document.createElement('a');
+  link.href = topic.url;
+  link.innerText = topic.name;
+  link.target = '_blank';
+  topicEl.appendChild(link);
+  return topicEl;
+}
 
 /**
  * Creates iframe element
