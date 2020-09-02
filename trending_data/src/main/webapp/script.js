@@ -328,15 +328,18 @@ class UniqueWindowHandler {
   */
   createBttnDiv() {
     const bttnDiv = document.createElement('div');
+    bttnDiv.className = 'toggle-btns';
 
     /** YouTube button */
     const ytBttn = document.createElement('button');
     ytBttn.textContent = 'YouTube';
+    ytBttn.className = 'btn btn-danger';
     bttnDiv.appendChild(ytBttn);
 
     /** Twitter button */
     const twitterBttn = document.createElement('button');
     twitterBttn.textContent = 'Twitter';
+    twitterBttn.className = 'btn btn-info';
     bttnDiv.appendChild(twitterBttn);
 
     /** Toggle platforms. If YouTube button is clicked ->
