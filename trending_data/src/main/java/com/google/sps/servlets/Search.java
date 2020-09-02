@@ -30,6 +30,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
+import java.math.BigInteger;
 
 public class Search {
   public static final HttpTransport HTTP_TRANSPORT = new NetHttpTransport();
@@ -96,8 +97,20 @@ public class Search {
     ArrayList result = new ArrayList<>();
     while (iteratorSearchResults.hasNext()) {
       Video singleVideo = iteratorSearchResults.next();
-      String Id = singleVideo.getId();
-      YTVid video = new YTVid(Id);
+
+      /** Get metadata about YouTube video */
+      VideoSnippet videoDetails = singleVideo.getSnippet();
+      String title = videoDetails.getTitle();
+      String channelName = videoDetails.getChannelTitle();
+
+      /** Get statistics for YouTube video: like + view count */
+      VideoStatistics videoStats = singleVideo.getStatistics();
+      BigInteger viewCount = videoStats.getViewCount();
+      BigInteger likeCount = videoStats.getLikeCount();
+
+      String Id = singleVideo.getId(); /** id of video*/
+
+      YTVid video = new YTVid(Id, title, channelName, viewCount, likeCount);
       result.add(video);
     }
     return result;
