@@ -73,3 +73,13 @@ iframe {
 .btn {
   margin: 5px;
 }
+
+.btn-info,
+.btn-info:hover {
+  background-color: #38a1f2;
+}
+
+.btn-danger,
+.btn-danger:hover {
+  background-color: #c4302b;
+}
