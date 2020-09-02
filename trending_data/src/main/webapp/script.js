@@ -224,12 +224,13 @@ function prepareTwitterPosts(marker) {
   * @return {HTMLElement}
   */
 function getTrends(trends) {
-  const ul = document.createElement('ul');
+  const hashtagContainer = document.createElement('div');
+  hashtagContainer.className = 'hashtag-container';
   for (let i = 0; i < trends.length; i++) {
     const currentTrend = createTrendElement(trends[i]);
-    ul.appendChild(currentTrend);
+    hashtagContainer.appendChild(currentTrend);
   }
-  return ul;
+  return hashtagContainer;
 }
 
 /**
@@ -238,12 +239,23 @@ function getTrends(trends) {
 * @return {HTMLElement}
 */
 function createTrendElement(trend) {
-  const trendEl = document.createElement('li');
-  const link = document.createElement('a');
-  link.href = trend.url;
-  link.innerText = trend.name;
-  link.target = '_blank'; /** open link in new tab */
-  trendEl.appendChild(link);
+  const trendName = document.createElement('p');
+  trendName.innerText = trend.name;
+  trendName.className = 'hashtag';
+
+  const tweetVolume = document.createElement('p');
+  tweetVolume.className = 'tweet-volume';
+  tweetVolume.innerText = 'Tweets: ' + trend.tweetVolume;
+
+  const trendEl = document.createElement('a');
+  trendEl.href = trend.url;
+  trendEl.target = '_blank'; /** open link in new tab */
+  trendEl.className = 'trend-element';
+  trendEl.appendChild(trendName);
+  if (trend.tweetVolume != -1) {
+    /** diplay tweet volume if available */
+    trendEl.appendChild(tweetVolume);
+  }
   return trendEl;
 }
 
