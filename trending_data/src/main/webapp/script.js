@@ -23,9 +23,9 @@ function initMap() {
   const markerCluster = new MarkerClusterer(map, [],
       {imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m'});
   addAllMarkers(markerCluster);
-  google.maps.event.addListener(map, 'click', function(){
-            windowsHandler.currentWindow.close();
-        });
+  google.maps.event.addListener(map, 'click', function() {
+    windowsHandler.currentWindow.close();
+  });
 } /* eslint-enable no-unused-vars */
 
 /**
@@ -113,7 +113,8 @@ function isCountrySupportedbyYT(countryCode) {
  * @param {Marker} marker
  */
 function displayPosts(marker) {
-  if (!windowsHandler.isInfoWindowOpen() || marker.countryCode != windowsHandler.getCountryCode()) {
+  if (!windowsHandler.isInfoWindowOpen() ||
+      marker.countryCode != windowsHandler.getCountryCode()) {
     windowsHandler.update(marker);
 
     if (!isCountrySupportedbyYT(marker.countryCode)) {
@@ -215,8 +216,7 @@ class UniqueWindowHandler {
     this.currentWindow = new google.maps.InfoWindow();
     this.currentWindow.setContent(content);
     this.currentWindow.open(map, marker);
-
-     }
+  }
 
   /**
   * Update the country code and name
@@ -224,9 +224,9 @@ class UniqueWindowHandler {
   * @param {Marker} marker
   */
   update(marker) {
-    this.countryCode = marker.countryCode;	  
+    this.countryCode = marker.countryCode;
     this.countryName = marker.countryName;
-  }	 
+  }
 
 
   /**
