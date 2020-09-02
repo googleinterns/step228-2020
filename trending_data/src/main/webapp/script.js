@@ -17,12 +17,16 @@ function initMap() {
   });
 
   getYTSupportedCountries();
+
   windowsHandler = new UniqueWindowHandler(map);
 
   // Add a marker clusterer to manage the markers.
   const markerCluster = new MarkerClusterer(map, [],
       {imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m'});
   addAllMarkers(markerCluster);
+  google.maps.event.addListener(map, 'click', function() {
+    windowsHandler.currentWindow.close();
+  });
 } /* eslint-enable no-unused-vars */
 
 /**
@@ -88,7 +92,19 @@ function addMarkerToMapGivenInfo(countryName, countryCode, woeidCode, lat, lng,
   data is available for this country => fetch posts for the country
   corresponding to that marker and display them. */
   marker.addListener('click', () => {
-    displayTwitterData(marker);
+    /** initialize the section where data will be displayed */
+    windowsHandler.initDataWindow();
+
+    /** initialize YouTube and Twitter divs
+      (the data will be cached in these divs)*/
+    windowsHandler.initDataDivs();
+
+    /** cache YouTube posts and open popup which contains them */
+    prepareYTPosts(marker);
+
+    /** cache Twitter posts (they will be displayed when
+      Twitter button is pressed) */
+    prepareTwitterPosts(marker);
   });
 }
 
@@ -107,17 +123,19 @@ function isCountrySupportedbyYT(countryCode) {
  * Displays in a popup trending posts based on the country code of marker.
  * Sends country code to servlet which then sends back trending
  * data based on that country code.
+ * Caches the data for being re-displayed in the current window.
  * @param {Marker} marker
  */
-function displayYoutubeData(marker) {
-  if (marker.countryCode != windowsHandler.getCountryCode()) {
+function prepareYTPosts(marker) {
+  if (!windowsHandler.isInfoWindowOpen() ||
+    marker.countryCode != windowsHandler.getCountryCode()) {
     windowsHandler.update(marker);
 
     if (!isCountrySupportedbyYT(marker.countryCode)) {
       const ytErr = document.createElement('h2');
       ytErr.innerText = 'Region not supported by YouTube';
 
-      windowsHandler.openwindow(marker, ytErr);
+      windowsHandler.loadYTDataAndOpenWindow(marker, ytErr);
     } else { // if country is supported, fetch data
       fetch('/GetTrendingYTVideos?country-code=' + marker.countryCode).
           then((response) => response.json()).then((videos) => {
@@ -126,64 +144,15 @@ function displayYoutubeData(marker) {
 
             if (videos.length == 0) {
               ytErr.innerText = 'No YouTube videos available for this country';
-              windowsHandler.openwindow(marker, ytErr);
+              windowsHandler.loadYTDataAndOpenWindow(marker, ytErr);
             } else {
               vidNode = getVideosNode(videos);
-              windowsHandler.openwindow(marker, vidNode);
+              windowsHandler.loadYTDataAndOpenWindow(marker, vidNode);
             }
           });
     }
   }
 }
-
-/**
- * Displays in a popup trending topics based on the woeid code of marker.
- * Sends country code to servlet which then sends back trending
- * data based on that country code.
- * @param {Marker} marker
- */
-function displayTwitterData(marker) {
-  woeidCode = marker.woeidCode;
-  fetch('/twitter?woeid=' + woeidCode).
-      then((response) => response.json()).then((topics) => {
-        if (topics.length == 0) {
-          content = '<h2>No Twitter data available for this country<h2>';
-        } else {
-          content = getTopics(topics);
-        }
-        windowsHandler.openwindow(marker, content);
-      });
-}
-
-/**
-  * Creates DOM node element with videos
-  * @param {Array} topics list that was fetched from servlet
-  * @return {HTMLElement}
-  */
-function getTopics(topics) {
-  const ul = document.createElement('ul');
-  for (let i = 0; i < topics.length; i++) {
-    const currentTopic = createTrendElement(topics[i]);
-    ul.appendChild(currentTopic);
-  }
-  return ul;
-}
-
-/**
-* Creates li element with link based on topic
-* @param {object} topic one topic
-* @return {HTMLElement}
-*/
-function createTrendElement(topic) {
-  const topicEl = document.createElement('li');
-  const link = document.createElement('a');
-  link.href = topic.url;
-  link.innerText = topic.name;
-  link.target = '_blank';
-  topicEl.appendChild(link);
-  return topicEl;
-}
-
 
 /**
  * Creates iframe element
@@ -223,7 +192,66 @@ function getVideosNode(videos) {
 }
 
 /**
-*  Class to keep only one open info window
+ * Fetches twitter data from TwitterServlet.
+ * Caches fetched twitter data for being re-displayed in
+ * the current window.
+ * @param {Marker} marker
+ */
+function prepareTwitterPosts(marker) {
+  fetch('/twitter?woeid=' + marker.woeidCode).
+      then((response) => {
+        if (response.ok) {
+          return response.json();
+        } else {
+          return 'error';
+        }
+      }).then((trends) => {
+        let content;
+
+        if (trends == 'error') {
+          content = document.createElement('h2');
+          content.innerText = 'No Twitter data available for this country';
+        } else {
+          content = getTrends(trends);
+        }
+        windowsHandler.loadTwitterData(content);
+      });
+}
+
+/**
+  * Creates list of Twitter trends
+  * @param {Array} trends list of Twitter trends
+  * @return {HTMLElement}
+  */
+function getTrends(trends) {
+  const ul = document.createElement('ul');
+  for (let i = 0; i < trends.length; i++) {
+    const currentTrend = createTrendElement(trends[i]);
+    ul.appendChild(currentTrend);
+  }
+  return ul;
+}
+
+/**
+* Creates li element with link based on trend
+* @param {object} trend Twitter trend
+* @return {HTMLElement}
+*/
+function createTrendElement(trend) {
+  const trendEl = document.createElement('li');
+  const link = document.createElement('a');
+  link.href = trend.url;
+  link.innerText = trend.name;
+  link.target = '_blank'; /** open link in new tab */
+  trendEl.appendChild(link);
+  return trendEl;
+}
+
+/**
+*  Class to keep only one open info window and
+* deal with displaying data. Saves data so that
+* it does not need to be re-fetched so long as
+* the window is open
 */
 class UniqueWindowHandler {
   /**
@@ -232,8 +260,85 @@ class UniqueWindowHandler {
   contructor(map) {
     this.currentWindow = null;
     this.map = map;
+    this.marker = marker;
     this.countryCode = null;
     this.countryName = null;
+  }
+
+  /**
+  * Initializes the divs where YouTube and Twitter data
+  * will be cached.
+  */
+  initDataDivs() {
+    this.ytDataDiv = document.createElement('div');
+    this.twitterDataDiv = document.createElement('div');
+  }
+
+  /**
+  * DataWindow contains a button container with the 2
+  * buttons (YouTube, Twitter) and the content corresponding
+  * to each platform. This method initializes the DataWindow
+  * with the button container.
+  */
+  initDataWindow() {
+    this.dataWindow = document.createElement('div');
+    this.dataWindow.className = 'popup';
+    this.dataWindow.appendChild(this.createBttnDiv());
+  }
+
+  /**
+  * Called when Twitter button is clicked. Clears
+  * current content of window and shows the most recently
+  * cached Twitter data
+  */
+  showYTData() {
+    this.initDataWindow(); // clear current content and re-add buttons
+    this.dataWindow.appendChild(this.ytDataDiv);
+    this.currentWindow.setContent(this.dataWindow);
+  }
+
+  /**
+  * Called when YouTube button is clicked. Clears
+  * current content of window and shows the most recently
+  * cached YouTube data
+  */
+  showTwitterData() {
+    this.initDataWindow();
+    this.dataWindow.appendChild(this.twitterDataDiv);
+    this.currentWindow.setContent(this.dataWindow);
+  }
+
+  /**
+  * Creates a container with 2 buttons, one for Twitter
+  * and one for YouTube and adds them to the top of the
+  * window where data will be displayed
+  * @return {HTMLElement} bttnDiv
+  */
+  createBttnDiv() {
+    const bttnDiv = document.createElement('div');
+
+    /** YouTube button */
+    const ytBttn = document.createElement('button');
+    ytBttn.textContent = 'YouTube';
+    bttnDiv.appendChild(ytBttn);
+
+    /** Twitter button */
+    const twitterBttn = document.createElement('button');
+    twitterBttn.textContent = 'Twitter';
+    bttnDiv.appendChild(twitterBttn);
+
+    /** Toggle platforms. If YouTube button is clicked ->
+      show YouTube data. If Twitter button is clicked ->
+      show Twitter data */
+    ytBttn.addEventListener('click', () => {
+      this.showYTData();
+    });
+
+    twitterBttn.addEventListener('click', () => {
+      this.showTwitterData();
+    });
+
+    return bttnDiv;
   }
 
   /**
@@ -250,17 +355,37 @@ class UniqueWindowHandler {
   }
 
   /**
-  * Creates a new current window
+  * Loads the current YouTube data and opens a window
+  * which contains it
   * @param {Marker} marker
   * @param {HTMLElement} content
   */
-  openwindow(marker, content) {
+  loadYTDataAndOpenWindow(marker, content) {
+    this.ytDataDiv = content; /** save the current yt data */
     if (this.isInfoWindowOpen()) {
       this.currentWindow.close();
     }
     this.currentWindow = new google.maps.InfoWindow();
-    this.currentWindow.setContent(content);
+    this.dataWindow.appendChild(content);
+    this.currentWindow.setContent(this.dataWindow);
     this.currentWindow.open(map, marker);
+  }
+
+  /**
+  * Loads the current Twitter data
+  * @param {HTMLElement} content
+  */
+  loadTwitterData(content) {
+    this.twitterDataDiv = content;
+  }
+
+  /**
+  * Update the country code and name
+  * that correspond to the currently open window
+  * @param {Marker} marker
+  */
+  update(marker) {
+    this.marker = marker;
     this.countryCode = marker.countryCode;
     this.countryName = marker.countryName;
   }
