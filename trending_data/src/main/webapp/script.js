@@ -115,7 +115,7 @@ function isCountrySupportedbyYT(countryCode) {
 function displayYoutubeData(marker) {
   if (!windowsHandler.isInfoWindowOpen() ||
       marker.countryCode != windowsHandler.getCountryCode()) {
-        windowsHandler.update(marker);
+    windowsHandler.update(marker);
 
     if (!isCountrySupportedbyYT(marker.countryCode)) {
       const ytErr = document.createElement('h2');
