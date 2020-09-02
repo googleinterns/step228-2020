@@ -19,7 +19,6 @@ function initMap() {
   getYTSupportedCountries();
 
   windowsHandler = new UniqueWindowHandler(map);
-  windowsHandler.initDataWindow();
 
   // Add a marker clusterer to manage the markers.
   const markerCluster = new MarkerClusterer(map, [],
