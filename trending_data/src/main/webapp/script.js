@@ -106,8 +106,6 @@ function addMarkerToMapGivenInfo(countryName, countryCode, woeidCode, lat, lng,
     /** cache Twitter posts (they will be displayed when
       Twitter button is pressed) */
     prepareTwitterPosts(marker);
-
-    displayTwitterData(marker);
   });
 }
 
@@ -130,7 +128,8 @@ function isCountrySupportedbyYT(countryCode) {
  * @param {Marker} marker
  */
 function prepareYTPosts(marker) {
-  if (!windowsHandler.isInfoWindowOpen() || marker.countryCode != windowsHandler.getCountryCode()) {
+  if (!windowsHandler.isInfoWindowOpen() ||
+    marker.countryCode != windowsHandler.getCountryCode()) {
     windowsHandler.update(marker);
 
     if (!isCountrySupportedbyYT(marker.countryCode)) {
@@ -207,46 +206,46 @@ function prepareTwitterPosts(marker) {
         } else {
           return 'error';
         }
-      }).then((topics) => {
+      }).then((trends) => {
         let content;
 
-        if (topics == 'error') {
+        if (trends == 'error') {
           content = document.createElement('h2');
           content.innerText = 'No Twitter data available for this country';
         } else {
-          content = getTopics(topics);
+          content = getTrends(trends);
         }
         windowsHandler.loadTwitterData(content);
       });
 }
 
 /**
-  * Creates DOM node element with videos
-  * @param {Array} topics list that was fetched from servlet
+  * Creates list of Twitter trends
+  * @param {Array} trends list of Twitter trends
   * @return {HTMLElement}
   */
-function getTopics(topics) {
+function getTrends(trends) {
   const ul = document.createElement('ul');
-  for (let i = 0; i < topics.length; i++) {
-    const currentTopic = createTrendElement(topics[i]);
-    ul.appendChild(currentTopic);
+  for (let i = 0; i < trends.length; i++) {
+    const currentTrend = createTrendElement(trends[i]);
+    ul.appendChild(currentTrend);
   }
   return ul;
 }
 
 /**
-* Creates li element with link based on topic
-* @param {object} topic one topic
+* Creates li element with link based on trend
+* @param {object} trend Twitter trend
 * @return {HTMLElement}
 */
-function createTrendElement(topic) {
-  const topicEl = document.createElement('li');
+function createTrendElement(trend) {
+  const trendEl = document.createElement('li');
   const link = document.createElement('a');
-  link.href = topic.url;
-  link.innerText = topic.name;
-  link.target = '_blank';
-  topicEl.appendChild(link);
-  return topicEl;
+  link.href = trend.url;
+  link.innerText = trend.name;
+  link.target = '_blank'; /** open link in new tab */
+  trendEl.appendChild(link);
+  return trendEl;
 }
 
 /**
