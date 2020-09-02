@@ -91,7 +91,7 @@ function addMarkerToMapGivenInfo(countryName, countryCode, woeidCode, lat, lng,
   data is available for this country => fetch posts for the country
   corresponding to that marker and display them. */
   marker.addListener('click', () => {
-    displayPosts(marker);
+    displayTwitterData(marker);
   });
 }
 
@@ -112,10 +112,10 @@ function isCountrySupportedbyYT(countryCode) {
  * data based on that country code.
  * @param {Marker} marker
  */
-function displayPosts(marker) {
+function displayYoutubeData(marker) {
   if (!windowsHandler.isInfoWindowOpen() ||
       marker.countryCode != windowsHandler.getCountryCode()) {
-    windowsHandler.update(marker);
+      windowsHandler.update(marker);
 
     if (!isCountrySupportedbyYT(marker.countryCode)) {
       const ytErr = document.createElement('h2');
@@ -139,6 +139,55 @@ function displayPosts(marker) {
     }
   }
 }
+
+/**
+ * Displays in a popup trending topics based on the woeid code of marker.
+ * Sends country code to servlet which then sends back trending
+ * data based on that country code.
+ * @param {Marker} marker
+ */
+function displayTwitterData(marker) {
+  woeidCode = marker.woeidCode;
+  fetch('/twitter?woeid=' + woeidCode).
+      then((response) => response.json()).then((topics) => {
+        if (topics.length == 0) {
+          content = '<h2>No Twitter data available for this country<h2>';
+        } else {
+          content = getTopics(topics);
+        }
+        windowsHandler.openwindow(marker, content);
+      });
+}
+
+/**
+  * Creates DOM node element with videos
+  * @param {Array} topics list that was fetched from servlet
+  * @return {HTMLElement}
+  */
+function getTopics(topics) {
+  const ul = document.createElement('ul');
+  for (let i = 0; i < topics.length; i++) {
+    const currentTopic = createTrendElement(topics[i]);
+    ul.appendChild(currentTopic);
+  }
+  return ul;
+}
+
+/**
+* Creates li element with link based on topic
+* @param {object} topic one topic
+* @return {HTMLElement}
+*/
+function createTrendElement(topic) {
+  const topicEl = document.createElement('li');
+  const link = document.createElement('a');
+  link.href = topic.url;
+  link.innerText = topic.name;
+  link.target = '_blank';
+  topicEl.appendChild(link);
+  return topicEl;
+}
+
 
 /**
  * Creates iframe element
