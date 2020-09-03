@@ -10,8 +10,12 @@ body {
 }
 
 iframe {
-  height: 450px;
-  width: 600px;
+  height: 230px;
+  width: 350px;
+  margin-left: 10px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  border-radius: 10px;
 }
 
 .video-list {
@@ -21,6 +25,47 @@ iframe {
   flex-wrap: wrap;
   justify-content: center;
   overflow: scroll;
+}
+
+.video-container {
+  display: flex;
+  justify-content: space-between;
+  height: 250px;
+  width: 600px;
+  background-color: #F5F5F5;
+  border-radius: 25px;
+  margin-bottom: 5px;
+}
+
+.yt-metadata {
+  margin: 10px;
+  width: 250px;
+}
+
+.yt-metadata-bit {
+  display: flex;
+  justify-content: space-between;
+}
+
+.yt-metadata-tag {
+  color: white;
+  font-weight: bold;
+  background-color: #c4302b;
+  border-radius: 25px;
+  padding: 5px;
+}
+
+.yt-metadata-tag-wrap {
+  border-radius: 25px;
+  background-color: #F5F5F5;
+}
+
+.yt-metadata-value {
+  border-radius: 25px;
+  background-color: #F5F5F5;
+  font-weight: bold;
+  padding: 5px;
+  text-align: right;
 }
 
 .popup {
