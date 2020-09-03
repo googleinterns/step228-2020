@@ -23,16 +23,14 @@ import java.math.BigInteger;
 public final class YTVid {
 
   private final String id;
-  private final String title;
   private final String channelName;
   private final BigInteger viewCount;
   private final BigInteger likeCount;
   private final String embeddedLink;
 
-  public YTVid(String id, String title, String channelName,
+  public YTVid(String id, String channelName,
     BigInteger viewCount, BigInteger likeCount) {
     this.id = id;
-    this.title = title;
     this.channelName = channelName;
     this.viewCount = viewCount;
     this.likeCount = likeCount;

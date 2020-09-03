@@ -73,8 +73,7 @@ public class Search {
       List<Video> searchResultList = searchResponse.getItems();
 
       if (searchResultList != null) {
-        ArrayList result = convertToYTVid(searchResultList.iterator());
-        return result;
+        return convertToYTVid(searchResultList.iterator());
       } else {
         System.err.println("Result of the search was null");
       }
@@ -102,7 +101,6 @@ public class Search {
 
       /** Get metadata about YouTube video */
       VideoSnippet videoDetails = singleVideo.getSnippet();
-      String title = videoDetails.getTitle();
       String channelName = videoDetails.getChannelTitle();
 
       /** Get statistics for YouTube video: like + view count */
@@ -112,7 +110,7 @@ public class Search {
 
       String Id = singleVideo.getId(); /** id of video*/
 
-      YTVid video = new YTVid(Id, title, channelName, viewCount, likeCount);
+      YTVid video = new YTVid(Id, channelName, viewCount, likeCount);
       result.add(video);
     }
     return result;
