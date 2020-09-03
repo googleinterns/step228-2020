@@ -22,17 +22,17 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.youtube.YouTube;
 import com.google.api.services.youtube.model.Video;
-import com.google.api.services.youtube.model.VideoStatistics;
-import com.google.api.services.youtube.model.VideoSnippet;
 import com.google.api.services.youtube.model.VideoListResponse;
+import com.google.api.services.youtube.model.VideoSnippet;
+import com.google.api.services.youtube.model.VideoStatistics;
 import com.google.sps.data.YTVid;
 import java.io.*;
 import java.io.IOException;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
-import java.math.BigInteger;
 
 public class Search {
   public static final HttpTransport HTTP_TRANSPORT = new NetHttpTransport();
@@ -108,8 +108,8 @@ public class Search {
       BigInteger viewCount = videoStats.getViewCount();
       BigInteger likeCount = videoStats.getLikeCount();
 
-      String Id = singleVideo.getId(); /** id of video*/
-
+      String Id = singleVideo.getId();
+      /** id of video */
       YTVid video = new YTVid(Id, channelName, viewCount, likeCount);
       result.add(video);
     }

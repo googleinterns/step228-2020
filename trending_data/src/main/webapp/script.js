@@ -184,7 +184,7 @@ function getVideosNode(videos) {
   videoList.appendChild(ytTitle);
 
   for (let i = 0; i < videos.length; i++) {
-    videoList.appendChild(createVideoContainer(videos[i], i))
+    videoList.appendChild(createVideoContainer(videos[i], i));
   }
   return videoList;
 }
@@ -220,11 +220,13 @@ function createMetadataContainer(video) {
   metadata.className = 'yt-metadata';
 
   const channelNameDiv = createMetadataBit('Channel', video.channelName);
-  const viewCountDiv = createMetadataBit('Views', numberWithCommas(video.viewCount));
-  const likeCountDiv = createMetadataBit('Likes', numberWithCommas(video.likeCount));
+  const viewCountDiv = createMetadataBit('Views',
+      numberWithCommas(video.viewCount));
+  const likeCountDiv = createMetadataBit('Likes',
+      numberWithCommas(video.likeCount));
 
   metadata.appendChild(channelNameDiv);
-  metadata.appendChild(viewCountDiv);;
+  metadata.appendChild(viewCountDiv); ;
   metadata.appendChild(likeCountDiv);
 
   return metadata;
@@ -499,5 +501,5 @@ class UniqueWindowHandler {
 * @return {String} formatted number
 */
 function numberWithCommas(x) {
-    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 }

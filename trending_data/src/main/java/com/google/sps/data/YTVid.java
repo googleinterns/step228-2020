@@ -13,12 +13,13 @@
 // limitations under the License.
 
 package com.google.sps.data;
+
 import java.math.BigInteger;
 
 /**
  * Class that constructs a YTVid object from a base link and an id which uniquely identifies a
- * YouTube video. The object also contains YouTube video metadata: title of video,
- * channel name, view count and like count.
+ * YouTube video. The object also contains YouTube video metadata: title of video, channel name,
+ * view count and like count.
  */
 public final class YTVid {
 
@@ -28,8 +29,7 @@ public final class YTVid {
   private final BigInteger likeCount;
   private final String embeddedLink;
 
-  public YTVid(String id, String channelName,
-    BigInteger viewCount, BigInteger likeCount) {
+  public YTVid(String id, String channelName, BigInteger viewCount, BigInteger likeCount) {
     this.id = id;
     this.channelName = channelName;
     this.viewCount = viewCount;

@@ -32,7 +32,7 @@ iframe {
   justify-content: space-between;
   height: 250px;
   width: 600px;
-  background-color: #F5F5F5;
+  background-color: #f5f5f5;
   border-radius: 25px;
   margin-bottom: 5px;
 }
@@ -57,12 +57,12 @@ iframe {
 
 .yt-metadata-tag-wrap {
   border-radius: 25px;
-  background-color: #F5F5F5;
+  background-color: #f5f5f5;
 }
 
 .yt-metadata-value {
   border-radius: 25px;
-  background-color: #F5F5F5;
+  background-color: #f5f5f5;
   font-weight: bold;
   padding: 5px;
   text-align: right;
