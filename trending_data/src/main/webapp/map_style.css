@@ -42,7 +42,7 @@ iframe {
   width: 250px;
 }
 
-.yt-metadata-bit {
+.yt-metadata-field {
   display: flex;
   justify-content: space-between;
 }

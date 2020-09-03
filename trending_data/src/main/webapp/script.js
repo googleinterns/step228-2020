@@ -219,10 +219,10 @@ function createMetadataContainer(video) {
   const metadata = document.createElement('div');
   metadata.className = 'yt-metadata';
 
-  const channelNameDiv = createMetadataBit('Channel', video.channelName);
-  const viewCountDiv = createMetadataBit('Views',
+  const channelNameDiv = createMetadataField('Channel', video.channelName);
+  const viewCountDiv = createMetadataField('Views',
       numberWithCommas(video.viewCount));
-  const likeCountDiv = createMetadataBit('Likes',
+  const likeCountDiv = createMetadataField('Likes',
       numberWithCommas(video.likeCount));
 
   metadata.appendChild(channelNameDiv);
@@ -240,9 +240,9 @@ function createMetadataContainer(video) {
 * @param {object} value value of data displayed
 * @return {HTMLElement}
 */
-function createMetadataBit(tag, value) {
-  const metadataBit = document.createElement('div');
-  metadataBit.className = 'yt-metadata-bit';
+function createMetadataField(tag, value) {
+  const metadataField = document.createElement('div');
+  metadataField.className = 'yt-metadata-field';
 
   const tagDiv = document.createElement('p');
   tagDiv.className = 'yt-metadata-tag';
@@ -250,7 +250,7 @@ function createMetadataBit(tag, value) {
 
   /** Wrap tag element in another div so that
   if the value takes more rows, the tag itself is not
-  enlarged to fill the metadataBit container */
+  enlarged to fill the metadataField container */
   const tagWrap = document.createElement('div');
   tagWrap.className = 'yt-metadata-tag-wrap';
   tagWrap.appendChild(tagDiv);
@@ -259,9 +259,9 @@ function createMetadataBit(tag, value) {
   valueDiv.className = 'yt-metadata-value';
   valueDiv.innerText = value;
 
-  metadataBit.appendChild(tagWrap);
-  metadataBit.appendChild(valueDiv);
-  return metadataBit;
+  metadataField.appendChild(tagWrap);
+  metadataField.appendChild(valueDiv);
+  return metadataField;
 }
 
 /**
