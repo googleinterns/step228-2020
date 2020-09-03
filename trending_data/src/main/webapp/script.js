@@ -220,8 +220,8 @@ function createMetadataContainer(video) {
   metadata.className = 'yt-metadata';
 
   const channelNameDiv = createMetadataBit('Channel', video.channelName);
-  const viewCountDiv = createMetadataBit('Views', video.viewCount);
-  const likeCountDiv = createMetadataBit('Likes', video.likeCount);
+  const viewCountDiv = createMetadataBit('Views', numberWithCommas(video.viewCount));
+  const likeCountDiv = createMetadataBit('Likes', numberWithCommas(video.likeCount));
 
   metadata.appendChild(channelNameDiv);
   metadata.appendChild(viewCountDiv);;
@@ -316,7 +316,7 @@ function createTrendElement(trend) {
 
   const tweetVolume = document.createElement('p');
   tweetVolume.className = 'tweet-volume';
-  tweetVolume.innerText = 'Tweets: ' + trend.tweetVolume;
+  tweetVolume.innerText = 'Tweets: ' + numberWithCommas(trend.tweetVolume);
 
   const trendEl = document.createElement('a');
   trendEl.href = trend.url;
@@ -491,4 +491,13 @@ class UniqueWindowHandler {
   getCountryName() {
     return this.countryName;
   }
+}
+
+/**
+* Formats numbers with commas
+* @param {Number} x
+* @return {String} formatted number
+*/
+function numberWithCommas(x) {
+    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
