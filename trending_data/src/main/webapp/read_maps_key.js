@@ -11,6 +11,7 @@ file.onreadystatechange = function() {
       const mapScriptTag = document.createElement('script');
       mapScriptTag.src = mapsAPIScript;
       mapScriptTag.type = 'text/javascript';
+      mapScriptTag.setAttribute('defer', 'defer');
 
       document.head.appendChild(mapScriptTag);
     }

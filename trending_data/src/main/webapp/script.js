@@ -243,6 +243,8 @@ function createTrendElement(trend) {
   link.href = trend.url;
   link.innerText = trend.name;
   link.target = '_blank'; /** open link in new tab */
+//   link.addEventListener('click', showTweets(trend.query));
+  link.addEventListener('click', console.log(trend.query));
   trendEl.appendChild(link);
   return trendEl;
 }
