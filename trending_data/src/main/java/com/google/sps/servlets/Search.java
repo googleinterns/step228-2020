@@ -95,7 +95,7 @@ public class Search {
    * function that creates YTVid file from singleVideo object
    */
   private static ArrayList<YTVid> convertToYTVid(Iterator<Video> iteratorSearchResults) {
-    ArrayList result = new ArrayList<>();
+    ArrayList<YTVid> result = new ArrayList<>();
     while (iteratorSearchResults.hasNext()) {
       Video singleVideo = iteratorSearchResults.next();
 

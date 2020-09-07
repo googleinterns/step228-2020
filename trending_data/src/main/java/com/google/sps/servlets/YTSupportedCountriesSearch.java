@@ -71,13 +71,13 @@ public class YTSupportedCountriesSearch {
     return new ArrayList<String>();
   }
 
-  /*
-   * Creates a list of Alpha-2 codes by getting the id of each region in the
-   * list of I18nRegion objects
+  /**
+   * Creates a list of Alpha-2 codes by getting the id of each region in the list of I18nRegion
+   * objects
    */
   private static ArrayList<String> convertToListOfCountryCodes(
       Iterator<I18nRegion> iteratorSearchResults) {
-    ArrayList result = new ArrayList<>();
+    ArrayList<String> result = new ArrayList<>();
     while (iteratorSearchResults.hasNext()) {
       I18nRegion region = iteratorSearchResults.next();
       String id = region.getId(); // this is the country code of the region (Alpha-2 code)
