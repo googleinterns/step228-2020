@@ -1,29 +1,26 @@
-
 /**
  * Fetches twitter data from TwitterServlet.
  * Caches fetched twitter data for being re-displayed in
  * the current window.
  * @param {Marker} marker
  */
-function prepareTwitterPosts(marker) {
-  fetch('/twitter?woeid=' + marker.woeidCode).
+export async function prepareTwitterPosts(marker) {
+  const trends = await fetch('/twitter?woeid=' + marker.woeidCode).
       then((response) => {
         if (response.ok) {
           return response.json();
         } else {
           return 'error';
         }
-      }).then((trends) => {
-        let content;
-
-        if (trends == 'error') {
-          content = document.createElement('h2');
-          content.innerText = 'No Twitter data available for this country';
-        } else {
-          content = getTrends(trends);
-        }
-        windowsHandler.loadTwitterData(content);
       });
+  let content;
+  if (trends == 'error') {
+    content = document.createElement('h2');
+    content.innerText = 'No Twitter data available for this country';
+  } else {
+    content = getTrends(trends);
+  }
+  return content;
 }
 
 /**

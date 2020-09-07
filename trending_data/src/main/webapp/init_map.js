@@ -1,14 +1,13 @@
 /** Array of country codes supported by YouTube API */
-let ytSupportedCountries;
 let windowsHandler;
-
 let map;
+import {UniqueWindowHandler} from './unique_window_handler.js';
 
 /* eslint-disable no-unused-vars */
 /**
  * Initialise map
  */
-function initMap() {
+export function initMap() {
   const initPos = new google.maps.LatLng(0, 0);
   map = new google.maps.Map(document.getElementById('map'), {
     center: initPos,
@@ -16,7 +15,6 @@ function initMap() {
     minZoom: 2,
   });
 
-  getYTSupportedCountries();
 
   windowsHandler = new UniqueWindowHandler(map);
 
@@ -28,18 +26,6 @@ function initMap() {
     windowsHandler.currentWindow.close();
   });
 } /* eslint-enable no-unused-vars */
-
-/**
- * Fetch country codes that are supported by the
- * YouTube API and store them in the global array:
- * ytSupportedCountries
- */
-function getYTSupportedCountries() {
-  fetch('yt-supported-countries').then((response) =>
-    response.json()).then((supported) => {
-    ytSupportedCountries = supported;
-  });
-}
 
 /**
  * Adds one marker for each country to the markerCluster
@@ -99,22 +85,8 @@ function addMarkerToMapGivenInfo(countryName, countryCode, woeidCode, lat, lng,
       (the data will be cached in these divs)*/
     windowsHandler.initDataDivs();
 
-    /** cache YouTube posts and open popup which contains them */
-    prepareYTPosts(marker);
-
-    /** cache Twitter posts (they will be displayed when
-      Twitter button is pressed) */
-    prepareTwitterPosts(marker);
+    windowsHandler.openWindow(marker);
   });
 }
 
-/**
- * Returns true if the country code belongs to a country that
- * is supported by the YouTube API.
- * @param {String} countryCode alpha-2 code
- * @return {Boolean} true if countryCode is amongst supported countries
- * false otherwise
- */
-function isCountrySupportedbyYT(countryCode) {
-  return ytSupportedCountries.includes(countryCode);
-}
+

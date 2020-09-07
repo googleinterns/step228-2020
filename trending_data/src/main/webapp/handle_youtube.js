@@ -1,4 +1,3 @@
-
 /**
  * Displays in a popup trending posts based on the country code of marker.
  * Sends country code to servlet which then sends back trending
@@ -6,33 +5,28 @@
  * Caches the data for being re-displayed in the current window.
  * @param {Marker} marker
  */
-function prepareYTPosts(marker) {
-  if (!windowsHandler.isInfoWindowOpen() ||
-    marker.countryCode != windowsHandler.getCountryCode()) {
-    windowsHandler.update(marker);
+export async function prepareYTPosts(marker) {
+  if (!isCountrySupportedbyYT(marker.countryCode)) {
+    const ytErr = document.createElement('h2');
+    ytErr.innerText = 'Region not supported by YouTube';
 
-    if (!isCountrySupportedbyYT(marker.countryCode)) {
-      const ytErr = document.createElement('h2');
-      ytErr.innerText = 'Region not supported by YouTube';
-
-      windowsHandler.loadYTDataAndOpenWindow(marker, ytErr);
-    } else { // if country is supported, fetch data
-      fetch('/GetTrendingYTVideos?country-code=' + marker.countryCode).
-          then((response) => response.json()).then((videos) => {
-            let vidNode;
-            const ytErr = document.createElement('h2');
-
-            if (videos.length == 0) {
-              ytErr.innerText = 'No YouTube videos available for this country';
-              windowsHandler.loadYTDataAndOpenWindow(marker, ytErr);
-            } else {
-              vidNode = getVideosNode(videos);
-              windowsHandler.loadYTDataAndOpenWindow(marker, vidNode);
-            }
-          });
+    return ytErr;
+  } else { // if country is supported, fetch data
+    const videos = await fetch('/GetTrendingYTVideos?country-code=' +
+                          marker.countryCode).
+        then((response) => response.json());
+    console.log('HERE: ' + videos);
+    const ytErr = document.createElement('h2');
+    if (videos.length == 0) {
+      ytErr.innerText = 'No YouTube videos available for this country';
+      return ytErr;
+    } else {
+      const content = getVideosNode(videos, marker.countryName);
+      return content;
     }
   }
 }
+
 
 /**
  * Creates iframe element
@@ -51,9 +45,10 @@ function createIframeById(video, id) {
 /**
  * Creates DOM node element with videos
  * @param {Array} videos list that was fetched from servlet
+ * @param {String} countryName
  * @return {HTMLElement}
  */
-function getVideosNode(videos) {
+function getVideosNode(videos, countryName) {
   const div = document.createElement('div');
   div.className = 'video-list';
 
@@ -61,7 +56,7 @@ function getVideosNode(videos) {
     what data is being displayed */
   const ytTitle = document.createElement('h2');
   ytTitle.innerText = 'YouTube videos trending in ' +
-    windowsHandler.getCountryName();
+    countryName;
   div.appendChild(ytTitle);
 
   for (let i = 0; i < videos.length; i++) {
@@ -69,4 +64,30 @@ function getVideosNode(videos) {
     div.appendChild(currentVideo);
   }
   return div;
+}
+
+let ytSupportedCountries;
+getYTSupportedCountries();
+
+/**
+ * Fetch country codes that are supported by the
+ * YouTube API and store them in the global array:
+ * ytSupportedCountries
+ */
+function getYTSupportedCountries() {
+  fetch('yt-supported-countries').then((response) =>
+    response.json()).then((supported) => {
+    ytSupportedCountries = supported;
+  });
+}
+
+/**
+ * Returns true if the country code belongs to a country that
+ * is supported by the YouTube API.
+ * @param {String} countryCode alpha-2 code
+ * @return {Boolean} true if countryCode is amongst supported countries
+ * false otherwise
+ */
+function isCountrySupportedbyYT(countryCode) {
+  return ytSupportedCountries.includes(countryCode);
 }

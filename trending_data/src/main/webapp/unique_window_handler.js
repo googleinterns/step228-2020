@@ -1,10 +1,13 @@
+import {prepareYTPosts} from './handle_youtube.js';
+import {prepareTwitterPosts} from './handle_twitter.js';
+
 /**
 *  Class to keep only one open info window and
 * deal with displaying data. Saves data so that
 * it does not need to be re-fetched so long as
 * the window is open
 */
-class UniqueWindowHandler {
+export class UniqueWindowHandler {
   /**
   * @param {Map} map
   */
@@ -109,13 +112,24 @@ class UniqueWindowHandler {
   }
 
   /**
+  * Checks if the current window is open
+  * @param {Marker} marker
+  * @return {boolean}
+  */
+  isCkickOnDifferentWindow(marker) {
+    return (!this.isInfoWindowOpen() ||
+      marker.countryCode != this.getCountryCode());
+  }
+
+  /**
   * Loads the current YouTube data and opens a window
   * which contains it
   * @param {Marker} marker
   * @param {HTMLElement} content
   */
-  loadYTDataAndOpenWindow(marker, content) {
-    this.ytDataDiv = content; /** save the current yt data */
+  async openWindow(marker) {
+    const content = await this.loadYTData(marker);
+    this.loadTwitterData(marker);
     if (this.isInfoWindowOpen()) {
       this.currentWindow.close();
     }
@@ -127,10 +141,25 @@ class UniqueWindowHandler {
 
   /**
   * Loads the current Twitter data
-  * @param {HTMLElement} content
+  * @param {Marker} marker
   */
-  loadTwitterData(content) {
-    this.twitterDataDiv = content;
+  async loadTwitterData(marker) {
+    if (this.isCkickOnDifferentWindow()) {
+      this.twitterDataDiv = await prepareTwitterPosts(marker, this);
+    }
+    return this.twitterDataDiv;
+  }
+
+  /**
+  * Loads the current Youtube data
+  * @param {Marker} marker
+  */
+  async loadYTData(marker) {
+    if (this.isCkickOnDifferentWindow(marker)) {
+      this.update(marker);
+      this.ytDataDiv = await prepareYTPosts(marker, this).then();
+    }
+    return this.ytDataDiv;
   }
 
   /**
