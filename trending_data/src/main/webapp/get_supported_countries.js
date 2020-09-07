@@ -6,7 +6,7 @@ export async function getSupportedCountries() {
   // let twitterSupportedCountries = await
   // getSupportedCountries('/twitter-supported-countries');
   const ytSupportedCountries = await
-   FetchSupportedCountries('/yt-supported-countries');
+  fetchSupportedCountries('/yt-supported-countries');
   return ytSupportedCountries;
   /** Find which countries are supported by at least one platform */
   /* countriesWithSomeData = union(ytSupportedCountries,
@@ -45,7 +45,7 @@ change the initial arrays */
  * @param {String} url url of servlet to fetch from
  * @return {Array} the countries supported by one of the platforms
  */
-async function FetchSupportedCountries(url) {
+async function fetchSupportedCountries(url) {
   const response = await fetch(url);
   const supported = await response.json();
   return supported;
