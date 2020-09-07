@@ -15,7 +15,6 @@ export async function prepareYTPosts(marker) {
     const videos = await fetch('/GetTrendingYTVideos?country-code=' +
                           marker.countryCode).
         then((response) => response.json());
-    console.log('HERE: ' + videos);
     const ytErr = document.createElement('h2');
     if (videos.length == 0) {
       ytErr.innerText = 'No YouTube videos available for this country';
@@ -35,7 +34,6 @@ export async function prepareYTPosts(marker) {
  * @return {HTMLElement}
  */
 function createIframeById(video, id) {
-  console.log(typeof(video));
   const videoEl = document.createElement('iframe');
   videoEl.id = id;
   videoEl.src = video.embeddedLink;
@@ -60,8 +58,8 @@ function getVideosNode(videos, countryName) {
   div.appendChild(ytTitle);
 
   for (let i = 0; i < videos.length; i++) {
-    const currentVideo = createIframeById(videos[i], i);
-    div.appendChild(currentVideo);
+    const currentContainer = createVideoContainer(videos[i], i);
+    div.appendChild(currentContainer);
   }
   return div;
 }
@@ -90,4 +88,88 @@ function getYTSupportedCountries() {
  */
 function isCountrySupportedbyYT(countryCode) {
   return ytSupportedCountries.includes(countryCode);
+}
+
+/**
+* Creates video container for one video.
+* Contains the video (iframe) and a
+* metadta section
+* @param {object} video id of video on Youtube
+* @param {number} id id that will have iframe element
+* @return {HTMLElement}
+*/
+function createVideoContainer(video, id) {
+  const videoContainer = document.createElement('div');
+  videoContainer.className = 'video-container';
+
+  const iframe = createIframeById(video, id);
+  const metadata = createMetadataContainer(video);
+
+  videoContainer.appendChild(iframe);
+  videoContainer.appendChild(metadata);
+  return videoContainer;
+}
+
+/**
+* Creates the video metadata section with
+* channel name, view and like count
+* @param {object} video id of video on Youtube
+* @return {HTMLElement}
+*/
+function createMetadataContainer(video) {
+  const metadata = document.createElement('div');
+  metadata.className = 'yt-metadata';
+
+  const channelNameDiv = createMetadataField('Channel', video.channelName);
+  const viewCountDiv = createMetadataField('Views',
+      numberWithCommas(100000)); //video.viewCount));
+  const likeCountDiv = createMetadataField('Likes',
+      numberWithCommas(1000000));//video.likeCount));
+
+  metadata.appendChild(channelNameDiv);
+  metadata.appendChild(viewCountDiv); ;
+  metadata.appendChild(likeCountDiv);
+
+  return metadata;
+}
+
+/**
+* Creates a piece of metadata: comprised of a tag
+* and the corresponding value
+* e.g. channel (tag): good music (value)
+* @param {String} tag what metadata is displayed
+* @param {object} value value of data displayed
+* @return {HTMLElement}
+*/
+function createMetadataField(tag, value) {
+  const metadataField = document.createElement('div');
+  metadataField.className = 'yt-metadata-field';
+
+  const tagDiv = document.createElement('p');
+  tagDiv.className = 'yt-metadata-tag';
+  tagDiv.innerText = tag;
+
+  /** Wrap tag element in another div so that
+  if the value takes more rows, the tag itself is not
+  enlarged to fill the metadataField container */
+  const tagWrap = document.createElement('div');
+  tagWrap.className = 'yt-metadata-tag-wrap';
+  tagWrap.appendChild(tagDiv);
+
+  const valueDiv = document.createElement('p');
+  valueDiv.className = 'yt-metadata-value';
+  valueDiv.innerText = value;
+
+  metadataField.appendChild(tagWrap);
+  metadataField.appendChild(valueDiv);
+  return metadataField;
+  }
+
+/**
+* Formats numbers with commas
+* @param {Number} x
+* @return {String} formatted number
+*/
+function numberWithCommas(x) {
+  return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 }

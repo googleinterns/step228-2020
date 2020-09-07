@@ -1,13 +1,17 @@
 /** Array of country codes supported by YouTube API */
 let windowsHandler;
 let map;
+let countriesWithSomeData;
+
 import {UniqueWindowHandler} from './unique_window_handler.js';
+import {getSupportedCountries} from './get_supported_countries.js'
 
 /* eslint-disable no-unused-vars */
 /**
  * Initialise map
  */
 export function initMap() {
+  countriesWithSomeData = getSupportedCountries();
   const initPos = new google.maps.LatLng(0, 0);
   map = new google.maps.Map(document.getElementById('map'), {
     center: initPos,
@@ -36,7 +40,9 @@ function addAllMarkers(markerCluster) {
   fetch('/countries').then((response) => response.json())
       .then((countries) => {
         for (const country of countries) {
-          addMarkerToMapGivenCountry(country, markerCluster);
+          if (countriesWithSomeData.includes(country.alpha2Code)) {
+            addMarkerToMapGivenCountry(country, markerCluster);
+          }
         }
       });
 }
