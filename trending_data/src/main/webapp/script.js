@@ -161,7 +161,6 @@ function prepareYTPosts(marker) {
  * @return {HTMLElement}
  */
 function createIframeById(video, id) {
-  console.log(typeof(video));
   const videoEl = document.createElement('iframe');
   videoEl.id = id;
   videoEl.src = video.embeddedLink;
@@ -174,21 +173,95 @@ function createIframeById(video, id) {
  * @return {HTMLElement}
  */
 function getVideosNode(videos) {
-  const div = document.createElement('div');
-  div.className = 'video-list';
+  const videoList = document.createElement('div');
+  videoList.className = 'video-list';
 
   /** Add title to list of videos to make it clear
     what data is being displayed */
   const ytTitle = document.createElement('h2');
   ytTitle.innerText = 'YouTube videos trending in ' +
     windowsHandler.getCountryName();
-  div.appendChild(ytTitle);
+  videoList.appendChild(ytTitle);
 
   for (let i = 0; i < videos.length; i++) {
-    const currentVideo = createIframeById(videos[i], i);
-    div.appendChild(currentVideo);
+    videoList.appendChild(createVideoContainer(videos[i], i));
   }
-  return div;
+  return videoList;
+}
+
+/**
+* Creates video container for one video.
+* Contains the video (iframe) and a
+* metadta section
+* @param {object} video id of video on Youtube
+* @param {number} id id that will have iframe element
+* @return {HTMLElement}
+*/
+function createVideoContainer(video, id) {
+  const videoContainer = document.createElement('div');
+  videoContainer.className = 'video-container';
+
+  const iframe = createIframeById(video, id);
+  const metadata = createMetadataContainer(video);
+
+  videoContainer.appendChild(iframe);
+  videoContainer.appendChild(metadata);
+  return videoContainer;
+}
+
+/**
+* Creates the video metadata section with
+* channel name, view and like count
+* @param {object} video id of video on Youtube
+* @return {HTMLElement}
+*/
+function createMetadataContainer(video) {
+  const metadata = document.createElement('div');
+  metadata.className = 'yt-metadata';
+
+  const channelNameDiv = createMetadataField('Channel', video.channelName);
+  const viewCountDiv = createMetadataField('Views',
+      numberWithCommas(video.viewCount));
+  const likeCountDiv = createMetadataField('Likes',
+      numberWithCommas(video.likeCount));
+
+  metadata.appendChild(channelNameDiv);
+  metadata.appendChild(viewCountDiv); ;
+  metadata.appendChild(likeCountDiv);
+
+  return metadata;
+}
+
+/**
+* Creates a piece of metadata: comprised of a tag
+* and the corresponding value
+* e.g. channel (tag): good music (value)
+* @param {String} tag what metadata is displayed
+* @param {object} value value of data displayed
+* @return {HTMLElement}
+*/
+function createMetadataField(tag, value) {
+  const metadataField = document.createElement('div');
+  metadataField.className = 'yt-metadata-field';
+
+  const tagDiv = document.createElement('p');
+  tagDiv.className = 'yt-metadata-tag';
+  tagDiv.innerText = tag;
+
+  /** Wrap tag element in another div so that
+  if the value takes more rows, the tag itself is not
+  enlarged to fill the metadataField container */
+  const tagWrap = document.createElement('div');
+  tagWrap.className = 'yt-metadata-tag-wrap';
+  tagWrap.appendChild(tagDiv);
+
+  const valueDiv = document.createElement('p');
+  valueDiv.className = 'yt-metadata-value';
+  valueDiv.innerText = value;
+
+  metadataField.appendChild(tagWrap);
+  metadataField.appendChild(valueDiv);
+  return metadataField;
 }
 
 /**
@@ -224,12 +297,13 @@ function prepareTwitterPosts(marker) {
   * @return {HTMLElement}
   */
 function getTrends(trends) {
-  const ul = document.createElement('ul');
+  const hashtagContainer = document.createElement('div');
+  hashtagContainer.className = 'hashtag-container';
   for (let i = 0; i < trends.length; i++) {
     const currentTrend = createTrendElement(trends[i]);
-    ul.appendChild(currentTrend);
+    hashtagContainer.appendChild(currentTrend);
   }
-  return ul;
+  return hashtagContainer;
 }
 
 /**
@@ -238,6 +312,7 @@ function getTrends(trends) {
 * @return {HTMLElement}
 */
 function createTrendElement(trend) {
+<<<<<<< HEAD
   const trendEl = document.createElement('li');
   const link = document.createElement('a');
   link.href = trend.url;
@@ -246,6 +321,25 @@ function createTrendElement(trend) {
 //   link.addEventListener('click', showTweets(trend.query));
   link.addEventListener('click', console.log(trend.query));
   trendEl.appendChild(link);
+=======
+  const trendName = document.createElement('p');
+  trendName.innerText = trend.name;
+  trendName.className = 'hashtag';
+
+  const tweetVolume = document.createElement('p');
+  tweetVolume.className = 'tweet-volume';
+  tweetVolume.innerText = 'Tweets: ' + numberWithCommas(trend.tweetVolume);
+
+  const trendEl = document.createElement('a');
+  trendEl.href = trend.url;
+  trendEl.target = '_blank'; /** open link in new tab */
+  trendEl.className = 'trend-element';
+  trendEl.appendChild(trendName);
+  if (trend.tweetVolume != -1) {
+    /** diplay tweet volume if available */
+    trendEl.appendChild(tweetVolume);
+  }
+>>>>>>> dev
   return trendEl;
 }
 
@@ -318,15 +412,18 @@ class UniqueWindowHandler {
   */
   createBttnDiv() {
     const bttnDiv = document.createElement('div');
+    bttnDiv.className = 'toggle-btns';
 
     /** YouTube button */
     const ytBttn = document.createElement('button');
     ytBttn.textContent = 'YouTube';
+    ytBttn.className = 'btn btn-danger';
     bttnDiv.appendChild(ytBttn);
 
     /** Twitter button */
     const twitterBttn = document.createElement('button');
     twitterBttn.textContent = 'Twitter';
+    twitterBttn.className = 'btn btn-info';
     bttnDiv.appendChild(twitterBttn);
 
     /** Toggle platforms. If YouTube button is clicked ->
@@ -407,4 +504,13 @@ class UniqueWindowHandler {
   getCountryName() {
     return this.countryName;
   }
+}
+
+/**
+* Formats numbers with commas
+* @param {Number} x
+* @return {String} formatted number
+*/
+function numberWithCommas(x) {
+  return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 }
