@@ -16,28 +16,30 @@ import twitter4j.TwitterFactory;
 
 @WebServlet("/get-tweets")
 public class TweetsGetterServlet extends HttpServlet {
+  // The maximum number of tweets returned
   static final int NUMBER_OF_TWEETS = 5;
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     response.setContentType("application/json; charset=UTF-8");
     String query = request.getParameter("query");
-    System.out.println(query);
     try {
       List<String> tweetIds = getTweetIds(query);
       response.getWriter().println(new Gson().toJson(tweetIds));
     } catch (TwitterException twException) {
-      response.getWriter().println("[]");
+      response.getWriter().println(new Gson().toJson(Collections.emptyList()));
     }
   }
-
+  /**
+   * Returns a list of strings of tweet ids corresponding to the given queries. The size of the list
+   * <= NUMBER_OF_TWEETS.
+   */
   private List<String> getTweetIds(String query) throws TwitterException {
     Twitter twitter = new TwitterFactory().getInstance();
-    QueryResult qr = twitter.search().search(new Query(query));
+    QueryResult qr = twitter.search().search(new Query(query).count(NUMBER_OF_TWEETS));
     List<String> tweetIds = new ArrayList<String>();
     for (Status s : qr.getTweets()) {
       tweetIds.add(s.getId() + "");
-      if (tweetIds.size() == NUMBER_OF_TWEETS) break;
     }
     return Collections.unmodifiableList(tweetIds);
   }

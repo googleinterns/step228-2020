@@ -312,16 +312,6 @@ function getTrends(trends) {
 * @return {HTMLElement}
 */
 function createTrendElement(trend) {
-<<<<<<< HEAD
-  const trendEl = document.createElement('li');
-  const link = document.createElement('a');
-  link.href = trend.url;
-  link.innerText = trend.name;
-  link.target = '_blank'; /** open link in new tab */
-//   link.addEventListener('click', showTweets(trend.query));
-  link.addEventListener('click', console.log(trend.query));
-  trendEl.appendChild(link);
-=======
   const trendName = document.createElement('p');
   trendName.innerText = trend.name;
   trendName.className = 'hashtag';
@@ -339,9 +329,28 @@ function createTrendElement(trend) {
     /** diplay tweet volume if available */
     trendEl.appendChild(tweetVolume);
   }
->>>>>>> dev
+  trendEl.addEventListener('click', () => {
+    if (windowsHandler.isInfoWindowOpen()) {
+      showTweets(trend.query);
+    }
+  });
   return trendEl;
 }
+/**
+ * @param {string} query
+ * Clears the tweets container then
+ * Adds the top tweets returned by the query to the tweets container.
+ */
+function showTweets(query) {
+  const tweetContainer = document.getElementById('tweets-container');
+  tweetContainer.innerHTML = '';
+  fetch('/get-tweets?query='+query).then((response) => response.json())
+      .then((tweetIDs) => {
+        for (const id of tweetIDs) {
+          twttr.widgets.createTweet(id, tweetContainer);
+        }
+      } );
+};
 
 /**
 *  Class to keep only one open info window and
