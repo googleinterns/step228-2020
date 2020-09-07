@@ -4,14 +4,14 @@ let map;
 let countriesWithSomeData;
 
 import {UniqueWindowHandler} from './unique_window_handler.js';
-import {getSupportedCountries} from './get_supported_countries.js'
+import {getSupportedCountries} from './get_supported_countries.js';
 
 /* eslint-disable no-unused-vars */
 /**
  * Initialise map
  */
-export function initMap() {
-  countriesWithSomeData = getSupportedCountries();
+export async function initMap() {
+  countriesWithSomeData = await getSupportedCountries();
   const initPos = new google.maps.LatLng(0, 0);
   map = new google.maps.Map(document.getElementById('map'), {
     center: initPos,

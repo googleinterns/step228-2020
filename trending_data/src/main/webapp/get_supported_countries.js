@@ -1,20 +1,24 @@
+/**
+*@return {Array}
+*/
 export async function getSupportedCountries() {
   /** Fetch countries supported by YouTube and Twitter API */
-  //let twitterSupportedCountries = await
-  getSupportedCountries('/twitter-supported-countries');
-  let ytSupportedCountries = await getSupportedCountries('/yt-supported-countries');
-
+  // let twitterSupportedCountries = await
+  // getSupportedCountries('/twitter-supported-countries');
+  const ytSupportedCountries = await
+   FetchSupportedCountries('/yt-supported-countries');
+  return ytSupportedCountries;
   /** Find which countries are supported by at least one platform */
-  /*countriesWithSomeData = union(ytSupportedCountries,
+  /* countriesWithSomeData = union(ytSupportedCountries,
       twitterSupportedCountries);*/
 }
 
 /** Computes the union of two arrays that are
- * YouTube API and store them in the global array:	 * passed by refference.
- * ytSupportedCountries	 * @param {Array} arr1Ref
- * @param {Array} arr2Ref
- * @return {Array} result of union
- */	
+* passed by refference.
+* @param {Array} arr1Ref
+* @param {Array} arr2Ref
+* @return {Array} result of union
+*/
 function union(arr1Ref, arr2Ref) {
 /** Arrays are passed by reference so
 copy them to new variables so as not to

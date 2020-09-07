@@ -122,9 +122,9 @@ function createMetadataContainer(video) {
 
   const channelNameDiv = createMetadataField('Channel', video.channelName);
   const viewCountDiv = createMetadataField('Views',
-      numberWithCommas(100000)); //video.viewCount));
+      numberWithCommas(100000)); // video.viewCount));
   const likeCountDiv = createMetadataField('Likes',
-      numberWithCommas(1000000));//video.likeCount));
+      numberWithCommas(1000000));// video.likeCount));
 
   metadata.appendChild(channelNameDiv);
   metadata.appendChild(viewCountDiv); ;
@@ -163,7 +163,7 @@ function createMetadataField(tag, value) {
   metadataField.appendChild(tagWrap);
   metadataField.appendChild(valueDiv);
   return metadataField;
-  }
+}
 
 /**
 * Formats numbers with commas
