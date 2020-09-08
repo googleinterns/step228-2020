@@ -1,16 +1,22 @@
+export let twitterSupportedCountries;
+export let ytSupportedCountries;
+export let countriesWithSomeData;
+
+getSupportedCountries();
+
 /**
 *@return {Array}
 */
 export async function getSupportedCountries() {
   /** Fetch countries supported by YouTube and Twitter API */
-  const twitterSupportedCountries = await
+  twitterSupportedCountries = await
   fetchSupportedCountries('/twitter-supported-countries');
-  const ytSupportedCountries = await
+  ytSupportedCountries = await
   fetchSupportedCountries('/yt-supported-countries');
-  return ytSupportedCountries;
   /** Find which countries are supported by at least one platform */
   countriesWithSomeData = union(ytSupportedCountries,
       twitterSupportedCountries);
+  return countriesWithSomeData;
 }
 
 /** Computes the union of two arrays that are

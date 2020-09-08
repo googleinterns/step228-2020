@@ -11,7 +11,6 @@ import {getSupportedCountries} from './get_supported_countries.js';
  * Initialise map
  */
 export async function initMap() {
-  countriesWithSomeData = await getSupportedCountries();
   const initPos = new google.maps.LatLng(0, 0);
   map = new google.maps.Map(document.getElementById('map'), {
     center: initPos,
@@ -19,7 +18,7 @@ export async function initMap() {
     minZoom: 2,
   });
 
-
+  countriesWithSomeData = await getSupportedCountries();
   windowsHandler = new UniqueWindowHandler(map);
 
   // Add a marker clusterer to manage the markers.

@@ -116,7 +116,7 @@ export class UniqueWindowHandler {
   * @param {Marker} marker
   * @return {boolean}
   */
-  isCkickOnDifferentWindow(marker) {
+  isClickOnDifferentWindow(marker) {
     return (!this.isInfoWindowOpen() ||
       marker.countryCode != this.getCountryCode());
   }
@@ -128,13 +128,13 @@ export class UniqueWindowHandler {
   * @param {HTMLElement} content
   */
   async openWindow(marker) {
-    const content = await this.loadYTData(marker);
+    const YTcontent = await this.loadYTData(marker);
     this.loadTwitterData(marker);
     if (this.isInfoWindowOpen()) {
       this.currentWindow.close();
     }
     this.currentWindow = new google.maps.InfoWindow();
-    this.dataWindow.appendChild(content);
+    this.dataWindow.appendChild(YTcontent);
     this.currentWindow.setContent(this.dataWindow);
     this.currentWindow.open(map, marker);
   }
@@ -144,8 +144,8 @@ export class UniqueWindowHandler {
   * @param {Marker} marker
   */
   async loadTwitterData(marker) {
-    if (this.isCkickOnDifferentWindow()) {
-      this.twitterDataDiv = await prepareTwitterPosts(marker, this);
+    if (this.isClickOnDifferentWindow()) {
+      this.twitterDataDiv = await prepareTwitterPosts(marker);
     }
     return this.twitterDataDiv;
   }
@@ -155,9 +155,9 @@ export class UniqueWindowHandler {
   * @param {Marker} marker
   */
   async loadYTData(marker) {
-    if (this.isCkickOnDifferentWindow(marker)) {
+    if (this.isClickOnDifferentWindow(marker)) {
       this.update(marker);
-      this.ytDataDiv = await prepareYTPosts(marker, this).then();
+      this.ytDataDiv = await prepareYTPosts(marker).then();
     }
     return this.ytDataDiv;
   }

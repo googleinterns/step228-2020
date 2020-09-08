@@ -1,3 +1,5 @@
+import {ytSupportedCountries} from './get_supported_countries.js';
+
 /**
  * Displays in a popup trending posts based on the country code of marker.
  * Sends country code to servlet which then sends back trending
@@ -64,20 +66,6 @@ function getVideosNode(videos, countryName) {
   return div;
 }
 
-let ytSupportedCountries;
-getYTSupportedCountries();
-
-/**
- * Fetch country codes that are supported by the
- * YouTube API and store them in the global array:
- * ytSupportedCountries
- */
-function getYTSupportedCountries() {
-  fetch('yt-supported-countries').then((response) =>
-    response.json()).then((supported) => {
-    ytSupportedCountries = supported;
-  });
-}
 
 /**
  * Returns true if the country code belongs to a country that
