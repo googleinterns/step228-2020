@@ -3,7 +3,7 @@
 */
 export async function getSupportedCountries() {
   /** Fetch countries supported by YouTube and Twitter API */
-  let twitterSupportedCountries = await
+  const twitterSupportedCountries = await
   fetchSupportedCountries('/twitter-supported-countries');
   const ytSupportedCountries = await
   fetchSupportedCountries('/yt-supported-countries');

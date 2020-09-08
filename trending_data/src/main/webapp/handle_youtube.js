@@ -171,6 +171,6 @@ function createMetadataField(tag, value) {
 * @return {String} formatted number
 */
 function numberWithCommas(x) {
-    console.log(x);
+  console.log(x);
   return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 }
