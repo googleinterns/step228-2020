@@ -133,9 +133,6 @@ function addMarkerToMapGivenInfo(countryName, countryCode, woeidCode, lat, lng,
   data is available for this country => fetch posts for the country
   corresponding to that marker and display them. */
   marker.addListener('click', () => {
-    /** initialize the section where data will be displayed */
-    // windowsHandler.initDataWindow();
-
     /** initialize YouTube and Twitter divs
       (the data will be cached in these divs)*/
     windowsHandler.initDataDivs();
