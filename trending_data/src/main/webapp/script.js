@@ -134,7 +134,7 @@ function addMarkerToMapGivenInfo(countryName, countryCode, woeidCode, lat, lng,
   corresponding to that marker and display them. */
   marker.addListener('click', () => {
     /** initialize the section where data will be displayed */
-    windowsHandler.initDataWindow();
+    // windowsHandler.initDataWindow();
 
     /** initialize YouTube and Twitter divs
       (the data will be cached in these divs)*/
@@ -413,22 +413,24 @@ class UniqueWindowHandler {
   }
 
   /**
-  * Called when Twitter button is clicked. Clears
+  * Called when YouTube button is clicked. Clears
   * current content of window and shows the most recently
-  * cached Twitter data
+  * cached YouTube data
   */
   showYTData() {
+    this.showing = 'yt';
     this.initDataWindow(); // clear current content and re-add buttons
     this.dataWindow.appendChild(this.ytDataDiv);
     this.currentWindow.setContent(this.dataWindow);
   }
 
   /**
-  * Called when YouTube button is clicked. Clears
+  * Called when Twitter button is clicked. Clears
   * current content of window and shows the most recently
-  * cached YouTube data
+  * cached Twitter data
   */
   showTwitterData() {
+    this.showing = 'twitter';
     this.initDataWindow();
     this.dataWindow.appendChild(this.twitterDataDiv);
     this.currentWindow.setContent(this.dataWindow);
@@ -447,14 +449,23 @@ class UniqueWindowHandler {
     /** YouTube button */
     const ytBttn = document.createElement('button');
     ytBttn.textContent = 'YouTube';
-    ytBttn.className = 'btn btn-danger';
+    /** When open window, youtube data will be shown hence
+    youtube button has to be selected */
+    ytBttn.className = 'btn btn-default yt yt-selected';
     bttnDiv.appendChild(ytBttn);
 
     /** Twitter button */
     const twitterBttn = document.createElement('button');
     twitterBttn.textContent = 'Twitter';
-    twitterBttn.className = 'btn btn-info';
+    twitterBttn.className = 'btn btn-default twitter';
     bttnDiv.appendChild(twitterBttn);
+
+    if (this.showing == 'twitter') {
+      /** if showing twitter make Twitter
+      button selected and unselect YouTube*/
+      twitterBttn.className += ' twitter-selected';
+      ytBttn.className = 'btn btn-default yt';
+    }
 
     /** Toggle platforms. If YouTube button is clicked ->
       show YouTube data. If Twitter button is clicked ->
@@ -490,6 +501,8 @@ class UniqueWindowHandler {
   * @param {HTMLElement} content
   */
   loadYTDataAndOpenWindow(marker, content) {
+    this.showing = 'yt';
+    this.initDataWindow();
     this.ytDataDiv = content; /** save the current yt data */
     if (this.isInfoWindowOpen()) {
       this.currentWindow.close();
