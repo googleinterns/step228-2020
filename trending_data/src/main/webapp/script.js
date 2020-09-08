@@ -61,7 +61,7 @@ function union(arr1Ref, arr2Ref) {
     res.push(arr1[i]);
     if (arr2.includes(arr1[i])) {
       /** Remove duplicates - items that are both in
-      arr1 and arr2*/
+      arr1 and arr2 */
       arr2.splice(arr2.indexOf(arr1[i]), 1);
     }
   }
@@ -134,7 +134,7 @@ function addMarkerToMapGivenInfo(countryName, countryCode, woeidCode, lat, lng,
   corresponding to that marker and display them. */
   marker.addListener('click', () => {
     /** initialize YouTube and Twitter divs
-      (the data will be cached in these divs)*/
+      (the data will be cached in these divs) */
     windowsHandler.initDataDivs();
 
     /** cache YouTube posts and open popup which contains them */
@@ -458,8 +458,8 @@ class UniqueWindowHandler {
     bttnDiv.appendChild(twitterBttn);
 
     if (this.showing == 'twitter') {
-      /** if showing twitter make Twitter
-      button selected and unselect YouTube*/
+      /** if showing Twitter make Twitter
+      button selected and unselect YouTube */
       twitterBttn.className += ' twitter-selected';
       ytBttn.className = 'btn btn-default yt';
     }
