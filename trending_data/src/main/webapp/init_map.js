@@ -1,4 +1,3 @@
-/** Array of country codes supported by YouTube API */
 let windowsHandler;
 let map;
 let countriesWithSomeData;
@@ -62,7 +61,7 @@ function addMarkerToMapGivenCountry(country, markerCluster) {
  * Adds one marker given country name, code, average longitude and latitude
  * @param {string} countryName
  * @param {string} countryCode  (ISO 3166-1) Alpha-2 code
-  * @param {string} woeidCode  WOEID code
+ * @param {string} woeidCode  WOEID code
  * @param {number} lat Latitude (average)
  * @param {number} lng Longitude (average)
  * @param {Object} markerCluster
@@ -79,19 +78,7 @@ function addMarkerToMapGivenInfo(countryName, countryCode, woeidCode, lat, lng,
   marker.countryName = countryName;
   markerCluster.addMarker(marker);
 
-  /* For each new marker, listen for a click event; If marker is clicked and
-  data is available for this country => fetch posts for the country
-  corresponding to that marker and display them. */
   marker.addListener('click', () => {
-    /** initialize the section where data will be displayed */
-    windowsHandler.initDataWindow();
-
-    /** initialize YouTube and Twitter divs
-      (the data will be cached in these divs)*/
-    windowsHandler.initDataDivs();
-
     windowsHandler.openWindow(marker);
   });
 }
-
-

@@ -11,23 +11,20 @@ export async function prepareYTPosts(marker) {
   if (!isCountrySupportedbyYT(marker.countryCode)) {
     const ytErr = document.createElement('h2');
     ytErr.innerText = 'Region not supported by YouTube';
-
     return ytErr;
   } else { // if country is supported, fetch data
     const videos = await fetch('/GetTrendingYTVideos?country-code=' +
                           marker.countryCode).
         then((response) => response.json());
-    const ytErr = document.createElement('h2');
     if (videos.length == 0) {
+      const ytErr = document.createElement('h2');
       ytErr.innerText = 'No YouTube videos available for this country';
       return ytErr;
     } else {
-      const content = getVideosNode(videos, marker.countryName);
-      return content;
+      return getVideosNode(videos, marker.countryName);
     }
   }
 }
-
 
 /**
  * Creates iframe element
@@ -65,7 +62,6 @@ function getVideosNode(videos, countryName) {
   }
   return div;
 }
-
 
 /**
  * Returns true if the country code belongs to a country that
@@ -159,6 +155,5 @@ function createMetadataField(tag, value) {
 * @return {String} formatted number
 */
 function numberWithCommas(x) {
-  console.log(x);
   return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 }

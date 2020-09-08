@@ -14,18 +14,8 @@ export class UniqueWindowHandler {
   contructor(map) {
     this.currentWindow = null;
     this.map = map;
-    this.marker = marker;
-    this.countryCode = null;
-    this.countryName = null;
-  }
-
-  /**
-  * Initializes the divs where YouTube and Twitter data
-  * will be cached.
-  */
-  initDataDivs() {
-    this.ytDataDiv = document.createElement('div');
-    this.twitterDataDiv = document.createElement('div');
+    this.currentCode = 'null';
+    this.lastCode = 'null';
   }
 
   /**
@@ -41,22 +31,24 @@ export class UniqueWindowHandler {
   }
 
   /**
-  * Called when Twitter button is clicked. Clears
+  * Called when YouTube button is clicked. Clears
   * current content of window and shows the most recently
-  * cached Twitter data
+  * cached YouTube data
   */
   showYTData() {
+    this.showing = 'yt';
     this.initDataWindow(); // clear current content and re-add buttons
     this.dataWindow.appendChild(this.ytDataDiv);
     this.currentWindow.setContent(this.dataWindow);
   }
 
   /**
-  * Called when YouTube button is clicked. Clears
+  * Called when Twitter button is clicked. Clears
   * current content of window and shows the most recently
-  * cached YouTube data
+  * cached Twitter data
   */
   showTwitterData() {
+    this.showing = 'twitter';
     this.initDataWindow();
     this.dataWindow.appendChild(this.twitterDataDiv);
     this.currentWindow.setContent(this.dataWindow);
@@ -75,14 +67,23 @@ export class UniqueWindowHandler {
     /** YouTube button */
     const ytBttn = document.createElement('button');
     ytBttn.textContent = 'YouTube';
-    ytBttn.className = 'btn btn-danger';
+    /** When open window, youtube data will be shown hence
+    youtube button has to be selected */
+    ytBttn.className = 'btn btn-default yt yt-selected';
     bttnDiv.appendChild(ytBttn);
 
     /** Twitter button */
     const twitterBttn = document.createElement('button');
     twitterBttn.textContent = 'Twitter';
-    twitterBttn.className = 'btn btn-info';
+    twitterBttn.className = 'btn btn-default twitter';
     bttnDiv.appendChild(twitterBttn);
+
+    if (this.showing == 'twitter') {
+      /** if showing Twitter make Twitter
+      button selected and unselect YouTube */
+      twitterBttn.className += ' twitter-selected';
+      ytBttn.className = 'btn btn-default yt';
+    }
 
     /** Toggle platforms. If YouTube button is clicked ->
       show YouTube data. If Twitter button is clicked ->
@@ -112,24 +113,22 @@ export class UniqueWindowHandler {
   }
 
   /**
-  * Checks if the current window is open
-  * @param {Marker} marker
-  * @return {boolean}
-  */
-  isClickOnDifferentWindow(marker) {
-    return (!this.isInfoWindowOpen() ||
-      marker.countryCode != this.getCountryCode());
-  }
-
-  /**
   * Loads the current YouTube data and opens a window
   * which contains it
   * @param {Marker} marker
-  * @param {HTMLElement} content
   */
   async openWindow(marker) {
-    const YTcontent = await this.loadYTData(marker);
-    this.loadTwitterData(marker);
+    this.marker = marker;
+    this.currentCode = this.marker.countryCode;
+    if (this.currentCode == this.lastCode) {
+      this.lastCode = this.currentCode;
+      return;
+    }
+    this.lastCode = this.currentCode;
+    this.showing = 'yt';
+    this.initDataWindow();
+    const YTcontent = await this.loadYTData();
+    this.loadTwitterData();
     if (this.isInfoWindowOpen()) {
       this.currentWindow.close();
     }
@@ -141,51 +140,16 @@ export class UniqueWindowHandler {
 
   /**
   * Loads the current Twitter data
-  * @param {Marker} marker
   */
-  async loadTwitterData(marker) {
-    if (this.isClickOnDifferentWindow()) {
-      this.twitterDataDiv = await prepareTwitterPosts(marker);
-    }
-    return this.twitterDataDiv;
+  async loadTwitterData() {
+    this.twitterDataDiv = await prepareTwitterPosts(this.marker);
   }
 
   /**
   * Loads the current Youtube data
-  * @param {Marker} marker
   */
-  async loadYTData(marker) {
-    if (this.isClickOnDifferentWindow(marker)) {
-      this.update(marker);
-      this.ytDataDiv = await prepareYTPosts(marker).then();
-    }
+  async loadYTData() {
+    this.ytDataDiv = await prepareYTPosts(this.marker);
     return this.ytDataDiv;
-  }
-
-  /**
-  * Update the country code and name
-  * that correspond to the currently open window
-  * @param {Marker} marker
-  */
-  update(marker) {
-    this.marker = marker;
-    this.countryCode = marker.countryCode;
-    this.countryName = marker.countryName;
-  }
-
-  /**
-  * Returns current country code
-  * @return {String}
-  */
-  getCountryCode() {
-    return this.countryCode;
-  }
-
-  /**
-  * Returns current country name
-  * @return {String}
-  */
-  getCountryName() {
-    return this.countryName;
   }
 }

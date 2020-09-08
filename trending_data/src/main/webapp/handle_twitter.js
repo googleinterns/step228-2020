@@ -63,4 +63,3 @@ function createTrendElement(trend) {
   }
   return trendEl;
 }
-

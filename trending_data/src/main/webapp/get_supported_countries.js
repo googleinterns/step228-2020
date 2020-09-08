@@ -1,8 +1,5 @@
 export let twitterSupportedCountries;
 export let ytSupportedCountries;
-export let countriesWithSomeData;
-
-getSupportedCountries();
 
 /**
 *@return {Array}
@@ -13,10 +10,9 @@ export async function getSupportedCountries() {
   fetchSupportedCountries('/twitter-supported-countries');
   ytSupportedCountries = await
   fetchSupportedCountries('/yt-supported-countries');
+
   /** Find which countries are supported by at least one platform */
-  countriesWithSomeData = union(ytSupportedCountries,
-      twitterSupportedCountries);
-  return countriesWithSomeData;
+  return union(ytSupportedCountries, twitterSupportedCountries);
 }
 
 /** Computes the union of two arrays that are
