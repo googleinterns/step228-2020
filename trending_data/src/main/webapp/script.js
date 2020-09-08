@@ -1,14 +1,25 @@
-/** Array of country codes supported by YouTube API */
 let ytSupportedCountries;
-let windowsHandler;
+let twitterSupportedCountries;
+let countriesWithSomeData;
 
+let windowsHandler;
 let map;
+let markerCluster;
 
 /* eslint-disable no-unused-vars */
 /**
  * Initialise map
  */
-function initMap() {
+async function initMap() {
+  /** Fetch countries supported by YouTube and Twitter API */
+  twitterSupportedCountries = await
+  getSupportedCountries('/twitter-supported-countries');
+  ytSupportedCountries = await getSupportedCountries('/yt-supported-countries');
+
+  /** Find which countries are supported by at least one platform */
+  countriesWithSomeData = union(ytSupportedCountries,
+      twitterSupportedCountries);
+
   const initPos = new google.maps.LatLng(0, 0);
   map = new google.maps.Map(document.getElementById('map'), {
     center: initPos,
@@ -16,29 +27,57 @@ function initMap() {
     minZoom: 2,
   });
 
-  getYTSupportedCountries();
-
   windowsHandler = new UniqueWindowHandler(map);
 
   // Add a marker clusterer to manage the markers.
-  const markerCluster = new MarkerClusterer(map, [],
+  markerCluster = new MarkerClusterer(map, [],
       {imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m'});
-  addAllMarkers(markerCluster);
+
+  /** If used clicks on map, close current window */
   google.maps.event.addListener(map, 'click', function() {
     windowsHandler.currentWindow.close();
   });
+
+  addAllMarkers(markerCluster);
 } /* eslint-enable no-unused-vars */
 
 /**
- * Fetch country codes that are supported by the
- * YouTube API and store them in the global array:
- * ytSupportedCountries
+ * Computes the union of two arrays that are
+ * passed by refference.
+ * @param {Array} arr1Ref
+ * @param {Array} arr2Ref
+ * @return {Array} result of union
  */
-function getYTSupportedCountries() {
-  fetch('yt-supported-countries').then((response) =>
-    response.json()).then((supported) => {
-    ytSupportedCountries = supported;
-  });
+function union(arr1Ref, arr2Ref) {
+  /** Arrays are passed by reference so
+  copy them to new variables so as not to
+  change the initial arrays */
+  const arr1 = arr1Ref.slice();
+  const arr2 = arr2Ref.slice();
+
+  const res=[]; /** will contain the union */
+
+  for (let i = 0; i < arr1.length; i++) {
+    res.push(arr1[i]);
+    if (arr2.includes(arr1[i])) {
+      /** Remove duplicates - items that are both in
+      arr1 and arr2*/
+      arr2.splice(arr2.indexOf(arr1[i]), 1);
+    }
+  }
+  /** Add whatever is left in second array */
+  return res.concat(arr2);
+}
+
+/**
+ * Fetches supported countries from specified servlet.
+ * @param {String} url url of servlet to fetch from
+ * @return {Array} the countries supported by one of the platforms
+ */
+async function getSupportedCountries(url) {
+  const response = await fetch(url);
+  const supported = await response.json();
+  return supported;
 }
 
 /**
@@ -50,7 +89,9 @@ function addAllMarkers(markerCluster) {
   fetch('/countries').then((response) => response.json())
       .then((countries) => {
         for (const country of countries) {
-          addMarkerToMapGivenCountry(country, markerCluster);
+          if (countriesWithSomeData.includes(country.alpha2Code)) {
+            addMarkerToMapGivenCountry(country, markerCluster);
+          }
         }
       });
 }
@@ -71,7 +112,7 @@ function addMarkerToMapGivenCountry(country, markerCluster) {
  * Adds one marker given country name, code, average longitude and latitude
  * @param {string} countryName
  * @param {string} countryCode  (ISO 3166-1) Alpha-2 code
-  * @param {string} woeidCode  WOEID code
+ * @param {string} woeidCode  WOEID code
  * @param {number} lat Latitude (average)
  * @param {number} lng Longitude (average)
  * @param {Object} markerCluster
