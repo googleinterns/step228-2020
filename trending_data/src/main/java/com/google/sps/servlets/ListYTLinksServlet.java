@@ -36,7 +36,7 @@ public class ListYTLinksServlet extends HttpServlet {
     ArrayList<YTVid> videos = Search.getData(countryCode);
     String json = convertToJson(videos);
 
-    response.setContentType("application/json;");
+    response.setContentType("application/json; charset=UTF-8");
     response.getWriter().println(json);
   }
 
