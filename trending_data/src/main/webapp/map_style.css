@@ -9,6 +9,21 @@ body {
   padding: 0;
 }
 
+#container {
+  height: 100%;
+  width: 100%;
+  position: relative;
+}
+
+#tweets-container {
+  height: 100%;
+  overflow: scroll;
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: fit-content;
+}
+
 iframe {
   height: 230px;
   width: 350px;

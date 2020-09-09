@@ -61,5 +61,24 @@ function createTrendElement(trend) {
     /** diplay tweet volume if available */
     trendEl.appendChild(tweetVolume);
   }
+  trendEl.addEventListener('click', () => {
+    showTweets(trend.query);
+  });
   return trendEl;
 }
+
+/**
+ * @param {string} query
+ * Clears the tweets container then
+ * Adds the top tweets returned by the query to the tweets container.
+ */
+function showTweets(query) {
+  const tweetContainer = document.getElementById('tweets-container');
+  tweetContainer.innerHTML = '';
+  fetch('/get-tweets?query='+query).then((response) => response.json())
+      .then((tweetIDs) => {
+        for (const id of tweetIDs) {
+          twttr.widgets.createTweet(id, tweetContainer);
+        }
+      } );
+};
