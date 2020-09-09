@@ -14,6 +14,10 @@ import twitter4j.Twitter;
 import twitter4j.TwitterException;
 import twitter4j.TwitterFactory;
 
+/**
+ * Given a search query, return a JSON array of Strings containing the ids of the top 5 most
+ * recent/popular (mixed) tweets
+ */
 @WebServlet("/get-tweets")
 public class TweetsGetterServlet extends HttpServlet {
   // The maximum number of tweets returned

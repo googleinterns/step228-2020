@@ -16,12 +16,12 @@ body {
 }
 
 #tweets-container {
+  background-color: white;
   height: 100%;
   overflow: scroll;
   position: absolute;
   right: 0;
   top: 0;
-  width: fit-content;
 }
 
 iframe {
@@ -175,4 +175,12 @@ iframe {
   font-size: 9px;
   color: #707070;
   font-weight: bold;
+}
+
+.twitter-close {
+  background-color: red;
+  color: white;
+  left: 0;
+  position: relative;
+  top: 0;
 }

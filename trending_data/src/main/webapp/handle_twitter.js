@@ -74,7 +74,11 @@ function createTrendElement(trend) {
  */
 function showTweets(query) {
   const tweetContainer = document.getElementById('tweets-container');
+  const closeButton = createTwitterCloseButton();
   tweetContainer.innerHTML = '';
+  tweetContainer.style.width = '500px';
+  tweetContainer.appendChild(closeButton);
+
   fetch('/get-tweets?query='+query).then((response) => response.json())
       .then((tweetIDs) => {
         for (const id of tweetIDs) {
@@ -82,3 +86,18 @@ function showTweets(query) {
         }
       } );
 };
+/**
+ * returns a button that closes the tweets container
+ * @return {HTMLButtonElement}
+ */
+function createTwitterCloseButton() {
+  const closeButton = document.createElement('button');
+  closeButton.className = 'btn btn-default twitter-close';
+  closeButton.textContent = 'Close';
+  closeButton.addEventListener('click', () => {
+    const tweetContainer = document.getElementById('tweets-container');
+    tweetContainer.innerHTML = '';
+    tweetContainer.style.width = '0px';
+  });
+  return closeButton;
+}
