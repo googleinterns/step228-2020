@@ -92,20 +92,20 @@ export class UniqueWindowHandler {
   */
   addClickListeners() {
     this.ytBtn.addEventListener('click', () => {
-      this.ytBtn.className = 'btn btn-default yt yt-selected';
-      this.twitterBtn.className = 'btn btn-default twitter';
       if (this.showing == 'yt') {
         return;
       }
+      this.ytBtn.className = 'btn btn-default yt yt-selected';
+      this.twitterBtn.className = 'btn btn-default twitter';
       this.showYTData();
     });
 
     this.twitterBtn.addEventListener('click', () => {
-      this.twitterBtn.className = 'btn btn-default twitter twitter-selected';
-      this.ytBtn.className = 'btn btn-default yt';
       if (this.showing == 'twitter') {
         return;
       }
+      this.twitterBtn.className = 'btn btn-default twitter twitter-selected';
+      this.ytBtn.className = 'btn btn-default yt';
       this.showTwitterData();
     });
   }

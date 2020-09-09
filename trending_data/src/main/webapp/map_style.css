@@ -127,12 +127,22 @@ iframe {
   color: white;
 }
 
+.yt-selected:enabled {
+  background-color: #f00;
+  color: white;
+}
+
 .twitter:hover {
   background-color: #1da1f2;
   color: white;
 }
 
 .twitter-selected {
+  background-color: #1da1f2;
+  color: white;
+}
+
+.twitter-selected:enabled {
   background-color: #1da1f2;
   color: white;
 }
