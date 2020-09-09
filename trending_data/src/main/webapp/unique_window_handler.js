@@ -18,6 +18,14 @@ export class UniqueWindowHandler {
   }
 
   /**
+  * Adds the buttons to switch between platforms
+  * to the popup
+  */
+  initPopup() {
+    this.initBtnDiv();
+  }
+
+  /**
   * DataWindow contains a button container with the 2
   * buttons (YouTube, Twitter) and the content corresponding
   * to each platform. This method initializes the DataWindow
@@ -26,7 +34,7 @@ export class UniqueWindowHandler {
   initDataWindow() {
     this.dataWindow = document.createElement('div');
     this.dataWindow.className = 'popup';
-    this.dataWindow.appendChild(this.createBttnDiv());
+    this.dataWindow.appendChild(this.btnDiv);
   }
 
   /**
@@ -35,8 +43,7 @@ export class UniqueWindowHandler {
   * cached YouTube data
   */
   showYTData() {
-    this.showing = 'yt';
-    this.initDataWindow(); // clear current content and re-add buttons
+    this.initDataWindow(); // clear current content
     this.dataWindow.appendChild(this.ytDataDiv);
     this.currentWindow.setContent(this.dataWindow);
   }
@@ -47,7 +54,6 @@ export class UniqueWindowHandler {
   * cached Twitter data
   */
   showTwitterData() {
-    this.showing = 'twitter';
     this.initDataWindow();
     this.dataWindow.appendChild(this.twitterDataDiv);
     this.currentWindow.setContent(this.dataWindow);
@@ -57,45 +63,42 @@ export class UniqueWindowHandler {
   * Creates a container with 2 buttons, one for Twitter
   * and one for YouTube and adds them to the top of the
   * window where data will be displayed
-  * @return {HTMLElement} bttnDiv
   */
-  createBttnDiv() {
-    const bttnDiv = document.createElement('div');
-    bttnDiv.className = 'toggle-btns';
+  initBtnDiv() {
+    this.btnDiv = document.createElement('div');
+    this.btnDiv.className = 'toggle-btns';
 
     /** YouTube button */
-    const ytBttn = document.createElement('button');
-    ytBttn.textContent = 'YouTube';
-    /** When open window, youtube data will be shown hence
-    youtube button has to be selected */
-    ytBttn.className = 'btn btn-default yt yt-selected';
-    bttnDiv.appendChild(ytBttn);
+    this.ytBtn = document.createElement('button');
+    this.ytBtn.textContent = 'YouTube';
+    this.ytBtn.className = 'btn btn-default yt yt-selected';
+    this.btnDiv.appendChild(this.ytBtn);
 
     /** Twitter button */
-    const twitterBttn = document.createElement('button');
-    twitterBttn.textContent = 'Twitter';
-    twitterBttn.className = 'btn btn-default twitter';
-    bttnDiv.appendChild(twitterBttn);
+    this.twitterBtn = document.createElement('button');
+    this.twitterBtn.textContent = 'Twitter';
+    this.twitterBtn.className = 'btn btn-default twitter';
+    this.btnDiv.appendChild(this.twitterBtn);
 
-    if (this.showing == 'twitter') {
-      /** if showing Twitter make Twitter
-      button selected and unselect YouTube */
-      twitterBttn.className += ' twitter-selected';
-      ytBttn.className = 'btn btn-default yt';
-    }
+    this.addClickListeners();
+  }
 
-    /** Toggle platforms. If YouTube button is clicked ->
-      show YouTube data. If Twitter button is clicked ->
-      show Twitter data */
-    ytBttn.addEventListener('click', () => {
+  /**
+  * If a buttons is clicked, the corresponding data is shown.
+  * The clicked button is selected and the other one is unselected
+  */
+  addClickListeners() {
+    this.ytBtn.addEventListener('click', () => {
+      this.ytBtn.className += ' yt-selected';
+      this.twitterBtn.className = 'btn btn-default twitter';
       this.showYTData();
     });
 
-    twitterBttn.addEventListener('click', () => {
+    this.twitterBtn.addEventListener('click', () => {
+      this.twitterBtn.className += ' twitter-selected';
+      this.ytBtn.className = 'btn btn-default yt';
       this.showTwitterData();
     });
-
-    return bttnDiv;
   }
 
   /**
@@ -131,7 +134,6 @@ export class UniqueWindowHandler {
       return;
     }
     this.lastCode = this.marker.countryCode;
-    this.showing = 'yt';
     this.initDataWindow();
     const ytContent = await this.loadYTData();
     this.loadTwitterData();

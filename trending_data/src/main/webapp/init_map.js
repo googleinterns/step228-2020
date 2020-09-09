@@ -79,6 +79,7 @@ function addMarkerToMapGivenInfo(countryName, countryCode, woeidCode, lat, lng,
   markerCluster.addMarker(marker);
 
   marker.addListener('click', () => {
+    windowsHandler.initPopup();
     windowsHandler.openWindow(marker);
   });
 }
