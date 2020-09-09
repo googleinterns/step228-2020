@@ -22,6 +22,7 @@ export class UniqueWindowHandler {
   * to the popup
   */
   initPopup() {
+    this.showing = 'yt';
     this.initBtnDiv();
   }
 
@@ -43,6 +44,7 @@ export class UniqueWindowHandler {
   * cached YouTube data
   */
   showYTData() {
+    this.showing = 'yt';
     this.initDataWindow(); // clear current content
     this.dataWindow.appendChild(this.ytDataDiv);
     this.currentWindow.setContent(this.dataWindow);
@@ -54,6 +56,7 @@ export class UniqueWindowHandler {
   * cached Twitter data
   */
   showTwitterData() {
+    this.showing = 'twitter';
     this.initDataWindow();
     this.dataWindow.appendChild(this.twitterDataDiv);
     this.currentWindow.setContent(this.dataWindow);
@@ -89,14 +92,20 @@ export class UniqueWindowHandler {
   */
   addClickListeners() {
     this.ytBtn.addEventListener('click', () => {
-      this.ytBtn.className += ' yt-selected';
+      this.ytBtn.className = 'btn btn-default yt yt-selected';
       this.twitterBtn.className = 'btn btn-default twitter';
+      if (this.showing == 'yt') {
+        return;
+      }
       this.showYTData();
     });
 
     this.twitterBtn.addEventListener('click', () => {
-      this.twitterBtn.className += ' twitter-selected';
+      this.twitterBtn.className = 'btn btn-default twitter twitter-selected';
       this.ytBtn.className = 'btn btn-default yt';
+      if (this.showing == 'twitter') {
+        return;
+      }
       this.showTwitterData();
     });
   }
