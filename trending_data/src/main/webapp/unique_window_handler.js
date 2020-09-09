@@ -14,7 +14,6 @@ export class UniqueWindowHandler {
   contructor(map) {
     this.currentWindow = null;
     this.map = map;
-    this.currentCode = 'null';
     this.lastCode = 'null';
   }
 
@@ -113,27 +112,34 @@ export class UniqueWindowHandler {
   }
 
   /**
+  * Checks if user clicked on the same marker
+  * @return {boolean}
+  */
+  clickOnSameMarker() {
+    return this.isInfoWindowOpen() &&
+     this.marker.countryCode == this.lastCode;
+  }
+
+  /**
   * Loads the current YouTube data and opens a window
   * which contains it
   * @param {Marker} marker
   */
   async openWindow(marker) {
     this.marker = marker;
-    this.currentCode = this.marker.countryCode;
-    if (this.currentCode == this.lastCode) {
-      this.lastCode = this.currentCode;
+    if (this.clickOnSameMarker()) {
       return;
     }
-    this.lastCode = this.currentCode;
+    this.lastCode = this.marker.countryCode;
     this.showing = 'yt';
     this.initDataWindow();
-    const YTcontent = await this.loadYTData();
+    const ytContent = await this.loadYTData();
     this.loadTwitterData();
     if (this.isInfoWindowOpen()) {
       this.currentWindow.close();
     }
     this.currentWindow = new google.maps.InfoWindow();
-    this.dataWindow.appendChild(YTcontent);
+    this.dataWindow.appendChild(ytContent);
     this.currentWindow.setContent(this.dataWindow);
     this.currentWindow.open(map, marker);
   }
