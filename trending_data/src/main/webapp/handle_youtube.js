@@ -14,7 +14,7 @@ export async function prepareYTPosts(marker) {
     return ytErr;
   } else { // if country is supported, fetch data
     const videos = await fetch('/GetTrendingYTVideos?country-code=' +
-                          marker.countryCode).
+                          marker.countryCode + '&category-id=19').
         then((response) => response.json());
     if (videos.length == 0) {
       const ytErr = document.createElement('h2');

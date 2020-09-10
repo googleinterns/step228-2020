@@ -43,7 +43,7 @@ public class Search {
   private static YouTube youtube;
 
   /** Initialize a YouTube object to search for videos on YouTube */
-  public static ArrayList<YTVid> getData(String regionCode) {
+  public static ArrayList<YTVid> getData(String regionCode, String categoryId) {
     try {
       Properties properties = new Properties();
       InputStream in = Search.class.getResourceAsStream("/config.properties");
@@ -66,6 +66,7 @@ public class Search {
       search.setKey(apiKey);
       search.setMaxResults(NUMBER_OF_VIDEOS_RETURNED);
       search.setRegionCode(regionCode);
+      search.setVideoCategoryId(categoryId);
       search.setChart("mostPopular");
 
       // Call the API and return results.

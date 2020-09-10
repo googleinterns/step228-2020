@@ -32,8 +32,9 @@ public class ListYTLinksServlet extends HttpServlet {
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     String countryCode = request.getParameter("country-code");
+    String categoryId = request.getParameter("category-id");
 
-    ArrayList<YTVid> videos = Search.getData(countryCode);
+    ArrayList<YTVid> videos = Search.getData(countryCode, categoryId);
     String json = convertToJson(videos);
 
     response.setContentType("application/json; charset=UTF-8");
