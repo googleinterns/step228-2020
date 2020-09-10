@@ -4,6 +4,7 @@ let countriesWithSomeData;
 
 import {UniqueWindowHandler} from './unique_window_handler.js';
 import {getSupportedCountries} from './get_supported_countries.js';
+import {standard} from './map_styles.js';
 
 /* eslint-disable no-unused-vars */
 /**
@@ -15,6 +16,7 @@ export async function initMap() {
     center: initPos,
     zoom: 3,
     minZoom: 2,
+    styles: standard,
   });
 
   countriesWithSomeData = await getSupportedCountries();
