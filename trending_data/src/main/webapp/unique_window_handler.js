@@ -1,5 +1,6 @@
 import {prepareYTPosts} from './handle_youtube.js';
 import {prepareTwitterPosts} from './handle_twitter.js';
+import {standard} from './map_styles.js';
 
 /**
 *  Class to keep only one open info window and
@@ -153,6 +154,11 @@ export class UniqueWindowHandler {
     this.dataWindow.appendChild(ytContent);
     this.currentWindow.setContent(this.dataWindow);
     this.currentWindow.open(map, marker);
+    this.currentWindow.addListener('closeclick', function() {
+        map.setOptions({styles : standard});
+        //map.set('zoomControl', true);
+        //map.set('gestureHandling','auto'); 
+    });
   }
 
   /**
