@@ -1,5 +1,5 @@
-export {darkMode, darkModeWithBoarders, standart, darkerStandart,
-  blueCountriesWithBoarders, simplifiedStandartWithBoarders};
+export {darkMode, darkModeWithBorders, standard, darkerStandard,
+  blueCountriesWithBorders, simplifiedStandardWithBorders};
 
 const darkMode = [
   {
@@ -277,9 +277,9 @@ const darkMode = [
   },
 ];
 
-const standart = [];
+const standard = [];
 
-const darkerStandart = [
+const darkerStandard = [
   {
     'featureType': 'landscape',
     'stylers': [
@@ -304,7 +304,7 @@ const darkerStandart = [
   },
 ];
 
-const darkModeWithBoarders = [
+const darkModeWithBorders = [
   {
     'elementType': 'geometry',
     'stylers': [
@@ -644,7 +644,7 @@ const darkModeWithBoarders = [
   },
 ];
 
-const simplifiedStandartWithBoarders = [
+const simplifiedStandardWithBorders = [
   {
     'featureType': 'administrative',
     'elementType': 'geometry.stroke',
@@ -676,7 +676,7 @@ const simplifiedStandartWithBoarders = [
   },
 ];
 
-const blueCountriesWithBoarders = [
+const blueCountriesWithBorders = [
   {
     'featureType': 'administrative.country',
     'elementType': 'geometry.stroke',
