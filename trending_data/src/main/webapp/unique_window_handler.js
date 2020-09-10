@@ -155,9 +155,9 @@ export class UniqueWindowHandler {
     this.currentWindow.setContent(this.dataWindow);
     this.currentWindow.open(map, marker);
     this.currentWindow.addListener('closeclick', function() {
-        map.setOptions({styles : standard});
-        //map.set('zoomControl', true);
-        //map.set('gestureHandling','auto'); 
+      map.setOptions({styles: standard});
+      // map.set('zoomControl', true);
+      // map.set('gestureHandling','auto');
     });
   }
 
