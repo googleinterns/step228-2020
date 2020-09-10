@@ -43,7 +43,7 @@ public class TweetsGetterServlet extends HttpServlet {
     QueryResult qr = twitter.search().search(new Query(query).count(NUMBER_OF_TWEETS));
     List<String> tweetIds = new ArrayList<String>();
     for (Status s : qr.getTweets()) {
-      tweetIds.add(s.getId() + "");
+      tweetIds.add(String.valueOf(s.getId()));
     }
     return Collections.unmodifiableList(tweetIds);
   }
