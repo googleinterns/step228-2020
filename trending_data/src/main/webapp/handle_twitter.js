@@ -105,6 +105,7 @@ function createTwitterCloseButton() {
   });
   return closeButton;
 }
+
 /**
  * returns a button that redirects the user to the url in a new tab
  * @param {string} url The url that searches the hashtag/topic
@@ -113,7 +114,7 @@ function createTwitterCloseButton() {
 function createOpenInTwitterLink(url) {
   const link = document.createElement('a');
   link.href = url;
-  link.target = '_blank';// open link in new tab
+  link.target = '_blank'; // open link in new tab
   link.id = 'open-in-twitter';
   link.innerText = 'Open in twitter';
   return link;
