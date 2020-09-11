@@ -78,7 +78,7 @@ public class YTCategorySearch {
    * of VideoCategory objects objects
    */
   private static ArrayList<YTCategory> convertToListOfCategories(
-      Iterator<VideoCategory> iteratorSearchResults, String regionCode) {
+      Iterator<VideoCategory> iteratorSearchResults) {
     ArrayList<YTCategory> result = new ArrayList<>();
 
     // add default category as it is not returned in the response
@@ -87,6 +87,7 @@ public class YTCategorySearch {
     while (iteratorSearchResults.hasNext()) {
       VideoCategory category = iteratorSearchResults.next();
       if (category.getSnippet().getAssignable()) {
+        // assignable indicates whether a video can be associated with a category
         String name = category.getSnippet().getTitle();
         String id = category.getId();
         result.add(new YTCategory(id, name));
