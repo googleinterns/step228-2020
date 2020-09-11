@@ -1,5 +1,7 @@
 import {prepareYTPosts} from './handle_youtube.js';
+import {getYTCategories} from './handle_youtube.js';
 import {prepareTwitterPosts} from './handle_twitter.js';
+import {windowsHandler} from './init_map.js';
 
 /**
 *  Class to keep only one open info window and
@@ -23,6 +25,7 @@ export class UniqueWindowHandler {
   */
   initPopup() {
     this.showing = 'yt';
+    this.defaultYTCategory = '0';
     this.initBtnDiv();
   }
 
@@ -46,6 +49,7 @@ export class UniqueWindowHandler {
   showYTData() {
     this.showing = 'yt';
     this.initDataWindow(); // clear current content
+    this.dataWindow.appendChild(this.categoryDropdown);
     this.dataWindow.appendChild(this.ytDataDiv);
     this.currentWindow.setContent(this.dataWindow);
   }
@@ -144,15 +148,29 @@ export class UniqueWindowHandler {
     }
     this.lastCode = this.marker.countryCode;
     this.initDataWindow();
-    const ytContent = await this.loadYTData();
+    await this.loadYTData(this.defaultYTCategory);
+    await this.loadYTCategories();
     this.loadTwitterData();
     if (this.isInfoWindowOpen()) {
       this.currentWindow.close();
     }
     this.currentWindow = new google.maps.InfoWindow();
-    this.dataWindow.appendChild(ytContent);
+    this.dataWindow.appendChild(this.categoryDropdown);
+    this.dataWindow.appendChild(this.ytDataDiv);
     this.currentWindow.setContent(this.dataWindow);
     this.currentWindow.open(map, marker);
+  }
+
+  async loadYTCategories() {
+    this.categoryDropdown = await getYTCategories(this.marker);
+    this.categoryDropdown.onchange = function() {
+        windowsHandler.fetchYTForCategory();
+    };
+  }
+
+  async fetchYTForCategory() {
+    await this.loadYTData(this.categoryDropdown.value);
+    this.showYTData();
   }
 
   /**
@@ -165,8 +183,7 @@ export class UniqueWindowHandler {
   /**
   * Loads the current Youtube data
   */
-  async loadYTData() {
-    this.ytDataDiv = await prepareYTPosts(this.marker);
-    return this.ytDataDiv;
+  async loadYTData(categoryId) {
+    this.ytDataDiv = await prepareYTPosts(this.marker, categoryId);
   }
 }

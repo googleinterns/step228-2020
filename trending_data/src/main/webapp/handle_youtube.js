@@ -7,24 +7,52 @@ import {ytSupportedCountries} from './get_supported_countries.js';
  * Caches the data for being re-displayed in the current window.
  * @param {Marker} marker
  */
-export async function prepareYTPosts(marker) {
+export async function prepareYTPosts(marker, categoryId) {
   if (!isCountrySupportedbyYT(marker.countryCode)) {
     const ytErr = document.createElement('h2');
     ytErr.innerText = 'Region not supported by YouTube';
     return ytErr;
   } else { // if country is supported, fetch data
     const videos = await fetch('/GetTrendingYTVideos?country-code=' +
-                          marker.countryCode + '&category-id=19').
+                          marker.countryCode + '&category-id=' + categoryId).
         then((response) => response.json());
     if (videos.length == 0) {
       const ytErr = document.createElement('h2');
-      ytErr.innerText = 'No YouTube videos available for this country';
+      ytErr.innerText = 'No videos available for selected category';
       return ytErr;
     } else {
       return getVideosNode(videos, marker.countryName);
     }
   }
 }
+
+export async function getYTCategories(marker) {
+  if (!isCountrySupportedbyYT(marker.countryCode)) {
+    return document.createElement('div'); // empty div
+  } else {
+    const categories = await fetch('/yt-categories?country-code=' +
+                        marker.countryCode).
+        then((response) => response.json());
+    return createDropdown(categories);
+  }
+}
+
+function createDropdown(categories) {
+  const categoryDropdown = document.createElement('select');
+  categoryDropdown.className = 'dropdown-primary';
+  for (let i = 0; i < categories.length; i++) {
+    const option = document.createElement('option');
+    option.value = categories[i].id;
+    option.innerText = categories[i].name;
+    categoryDropdown.appendChild(option);
+  }
+  return categoryDropdown;
+}
+
+/* eslint-disable no-unused-vars */
+export function fetchYTForCategory() {
+  windowsHandler.fetchYTForCategory();
+} /* eslint-enable no-unused-vars */
 
 /**
  * Creates iframe element
