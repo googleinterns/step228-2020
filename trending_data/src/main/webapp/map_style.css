@@ -24,6 +24,22 @@ body {
   top: 0;
 }
 
+#open-in-twitter {
+  background-color: #1da1f2;
+  color: white;
+  padding: 14px 25px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  position: relative;
+  left: 20%;
+}
+
+#open-in-twitter:hover,
+#open-in-twitter:active {
+  background-color: lightblue;
+}
+
 iframe {
   height: 230px;
   width: 350px;
@@ -103,8 +119,7 @@ iframe {
   font-weight: bold;
 }
 
-.trend-element:link,
-.trend-element:visited {
+.trend-element {
   text-decoration: none;
   background-color: white;
   display: inline-block;
@@ -175,12 +190,4 @@ iframe {
   font-size: 9px;
   color: #707070;
   font-weight: bold;
-}
-
-.twitter-close {
-  background-color: red;
-  color: white;
-  left: 0;
-  position: relative;
-  top: 0;
 }
