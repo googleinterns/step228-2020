@@ -26,8 +26,8 @@ public class YTCategorySearch {
   private static YouTube youtube;
 
   /*
-   * Return a list of ids of supported countries as specified by the
-   * YouTube API. The ids are the country codes in the format of Alpha-2 codes.
+   * Returns a list of YouTube categories for a specified country code
+   * in format Alpha-2 code.
    */
   public static ArrayList<YTCategory> getCategories(String regionCode) {
     try {
@@ -74,24 +74,22 @@ public class YTCategorySearch {
   }
 
   /**
-   * Creates a list of Alpha-2 codes by getting the id of each region in the list of I18nRegion
-   * objects
+   * Creates a list of YTCategory objects by getting the id and title of each category in the list
+   * of VideoCategory objects objects
    */
   private static ArrayList<YTCategory> convertToListOfCategories(
       Iterator<VideoCategory> iteratorSearchResults, String regionCode) {
     ArrayList<YTCategory> result = new ArrayList<>();
-    // if (!regionCode.equals("EG") && !regionCode.equals("LY")) {
-    //   // default category does not work for Egypt and Libya
-      result.add(new YTCategory("0", "Default"));
-    //}
+
+    // add default category as it is not returned in the response
+    result.add(new YTCategory("0", "Default"));
+
     while (iteratorSearchResults.hasNext()) {
       VideoCategory category = iteratorSearchResults.next();
       if (category.getSnippet().getAssignable()) {
         String name = category.getSnippet().getTitle();
         String id = category.getId();
-        // if (!Search.getData(regionCode, id).isEmpty()) {
-          result.add(new YTCategory(id, name)); 
-        //}
+        result.add(new YTCategory(id, name));
       }
     }
     return result;

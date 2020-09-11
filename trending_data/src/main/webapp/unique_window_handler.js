@@ -148,9 +148,9 @@ export class UniqueWindowHandler {
     }
     this.lastCode = this.marker.countryCode;
     this.initDataWindow();
-    await this.loadYTData(this.defaultYTCategory);
     await this.loadYTCategories();
-    this.loadTwitterData();
+    await this.loadYTData(this.defaultYTCategory);
+    await this.loadTwitterData();
     if (this.isInfoWindowOpen()) {
       this.currentWindow.close();
     }
@@ -161,13 +161,24 @@ export class UniqueWindowHandler {
     this.currentWindow.open(map, marker);
   }
 
+  /**
+  * Calls method that fetches YouTube categories
+  * according to the country code and populates the
+  * category dropdown. If user selects a category
+  * the videos for that category are fetched.
+  */
   async loadYTCategories() {
     this.categoryDropdown = await getYTCategories(this.marker);
     this.categoryDropdown.onchange = function() {
-        windowsHandler.fetchYTForCategory();
+      windowsHandler.fetchYTForCategory();
     };
   }
 
+  /**
+  * Calls method that fetches YouTube categories
+  * using the category id selected by the user
+  * in the dropdown
+  */
   async fetchYTForCategory() {
     await this.loadYTData(this.categoryDropdown.value);
     this.showYTData();
@@ -181,7 +192,8 @@ export class UniqueWindowHandler {
   }
 
   /**
-  * Loads the current Youtube data
+  * Loads the current Youtube data for given category id
+  * @param {string} categoryId
   */
   async loadYTData(categoryId) {
     this.ytDataDiv = await prepareYTPosts(this.marker, categoryId);

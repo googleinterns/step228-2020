@@ -1,11 +1,12 @@
 import {ytSupportedCountries} from './get_supported_countries.js';
 
 /**
- * Displays in a popup trending posts based on the country code of marker.
- * Sends country code to servlet which then sends back trending
- * data based on that country code.
+ * Displays in a popup trending posts based on the country code of marker
+ * and a category id. Sends country code to servlet which then sends
+ * back trending data based on that country code.
  * Caches the data for being re-displayed in the current window.
  * @param {Marker} marker
+ * @param {string} categoryId
  */
 export async function prepareYTPosts(marker, categoryId) {
   if (!isCountrySupportedbyYT(marker.countryCode)) {
@@ -26,6 +27,13 @@ export async function prepareYTPosts(marker, categoryId) {
   }
 }
 
+/**
+ * Fetches YouTube categories based on country code and
+ * puts them in dropdown. If country is not supported
+ * by YouTube then returns an empty div.
+ * @param {Marker} marker
+ * @return {HTMLElement}
+ */
 export async function getYTCategories(marker) {
   if (!isCountrySupportedbyYT(marker.countryCode)) {
     return document.createElement('div'); // empty div
@@ -37,9 +45,13 @@ export async function getYTCategories(marker) {
   }
 }
 
+/**
+ * Creates dropdown of YouTube categories
+ * @param {array} categories
+ * @return {HTMLElement} categoryDropdown
+ */
 function createDropdown(categories) {
   const categoryDropdown = document.createElement('select');
-  categoryDropdown.className = 'dropdown-primary';
   for (let i = 0; i < categories.length; i++) {
     const option = document.createElement('option');
     option.value = categories[i].id;
@@ -48,11 +60,6 @@ function createDropdown(categories) {
   }
   return categoryDropdown;
 }
-
-/* eslint-disable no-unused-vars */
-export function fetchYTForCategory() {
-  windowsHandler.fetchYTForCategory();
-} /* eslint-enable no-unused-vars */
 
 /**
  * Creates iframe element

@@ -24,7 +24,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /*
- *  Servlet that returns json file of top videos
+ *  Servlet that returns json of YouTube categories for
+ * a specified country code
  */
 @WebServlet("/yt-categories")
 public class YTCategoryServlet extends HttpServlet {
