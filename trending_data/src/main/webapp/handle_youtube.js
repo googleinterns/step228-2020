@@ -51,14 +51,16 @@ export async function getYTCategories(marker) {
  * @return {HTMLElement} categoryDropdown
  */
 function createDropdown(categories) {
-  const categoryDropdown = document.createElement('select');
+  const dropdownMenu = document.createElement('select');
+  dropdownMenu.className = 'form-control';
+
   for (let i = 0; i < categories.length; i++) {
     const option = document.createElement('option');
     option.value = categories[i].id;
     option.innerText = categories[i].name;
-    categoryDropdown.appendChild(option);
+    dropdownMenu.appendChild(option);
   }
-  return categoryDropdown;
+  return dropdownMenu;
 }
 
 /**

@@ -49,7 +49,7 @@ export class UniqueWindowHandler {
   showYTData() {
     this.showing = 'yt';
     this.initDataWindow(); // clear current content
-    this.dataWindow.appendChild(this.categoryDropdown);
+    this.dataWindow.appendChild(this.dropdownDiv);
     this.dataWindow.appendChild(this.ytDataDiv);
     this.currentWindow.setContent(this.dataWindow);
   }
@@ -155,7 +155,7 @@ export class UniqueWindowHandler {
       this.currentWindow.close();
     }
     this.currentWindow = new google.maps.InfoWindow();
-    this.dataWindow.appendChild(this.categoryDropdown);
+    this.dataWindow.appendChild(this.dropdownDiv);
     this.dataWindow.appendChild(this.ytDataDiv);
     this.currentWindow.setContent(this.dataWindow);
     this.currentWindow.open(map, marker);
@@ -172,6 +172,10 @@ export class UniqueWindowHandler {
     this.categoryDropdown.onchange = function() {
       windowsHandler.fetchYTForCategory();
     };
+    // wrap dropdown in div to style it
+    this.dropdownDiv = document.createElement('div');
+    this.dropdownDiv.className = 'col';
+    this.dropdownDiv.appendChild(this.categoryDropdown);
   }
 
   /**

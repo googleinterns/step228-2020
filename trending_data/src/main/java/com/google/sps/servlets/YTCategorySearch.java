@@ -57,7 +57,7 @@ public class YTCategorySearch {
       List<VideoCategory> videoCategories = response.getItems();
 
       if (videoCategories != null) {
-        return convertToListOfCategories(videoCategories.iterator(), regionCode);
+        return convertToListOfCategories(videoCategories.iterator());
       }
     } catch (GoogleJsonResponseException e) {
       System.err.println(
