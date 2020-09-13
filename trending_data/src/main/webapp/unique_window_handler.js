@@ -148,9 +148,10 @@ export class UniqueWindowHandler {
     }
     this.lastCode = this.marker.countryCode;
     this.initDataWindow();
-    await this.loadYTCategories();
-    await this.loadYTData(this.defaultYTCategory);
-    await this.loadTwitterData();
+    // execute data fetches in parallel
+    await Promise.all([this.loadYTCategories(),
+      this.loadYTData(this.defaultYTCategory),
+      this.loadTwitterData()]);
     if (this.isInfoWindowOpen()) {
       this.currentWindow.close();
     }
