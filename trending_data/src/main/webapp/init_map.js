@@ -29,8 +29,10 @@ export async function initMap() {
   google.maps.event.addListener(map, 'click', function() {
     windowsHandler.currentWindow.close();
     map.setOptions({styles: standard});
-    // map.set('zoomControl', true);
-    // map.set('gestureHandling','auto');
+    if (map.freeze_when_popup_is == true) {
+      map.set('zoomControl', true);
+      map.set('gestureHandling', 'auto');
+    }
   });
 } /* eslint-enable no-unused-vars */
 
@@ -86,8 +88,11 @@ function addMarkerToMapGivenInfo(countryName, countryCode, woeidCode, lat, lng,
   marker.addListener('click', () => {
     map.setCenter({lat: lat, lng: lng});
     map.setOptions({styles: darkerStandard});
-    // map.set('zoomControl', false);
-    // map.set('gestureHandling','none');
+    if (map.freeze_when_popup_is == true) {
+      map.set('zoomControl', false);
+      map.set('gestureHandling', 'none');
+    }
+
     windowsHandler.initPopup();
     windowsHandler.openWindow(marker);
   });

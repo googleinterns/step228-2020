@@ -163,8 +163,10 @@ export class UniqueWindowHandler {
     this.currentWindow.open(map, marker);
     this.currentWindow.addListener('closeclick', function() {
       map.setOptions({styles: standard});
-      // map.set('zoomControl', true);
-      // map.set('gestureHandling','auto');
+      if (map.freeze_when_popup_is == true) {
+        map.set('zoomControl', true);
+        map.set('gestureHandling', 'auto');
+      }
     });
   }
 
