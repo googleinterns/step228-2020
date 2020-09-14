@@ -25,7 +25,7 @@ export async function initMap() {
     },
   });
   map.mapTypes.set('dark_mode', darkModeType);
-  map.setMapTypeId('dark_mode');
+  map.setMapTypeId('roadmap');
 
   countriesWithSomeData = await getSupportedCountries();
   windowsHandler = new UniqueWindowHandler(map);
