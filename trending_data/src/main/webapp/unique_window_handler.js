@@ -1,6 +1,8 @@
 import {prepareYTPosts} from './handle_youtube.js';
+import {getYTCategories} from './handle_youtube.js';
 import {prepareTwitterPosts} from './handle_twitter.js';
 import {standard} from './map_styles.js';
+
 
 /**
 *  Class to keep only one open info window and
@@ -24,6 +26,7 @@ export class UniqueWindowHandler {
   */
   initPopup() {
     this.showing = 'yt';
+    this.defaultYTCategory = '0';
     this.initBtnDiv();
   }
 
@@ -47,6 +50,7 @@ export class UniqueWindowHandler {
   showYTData() {
     this.showing = 'yt';
     this.initDataWindow(); // clear current content
+    this.dataWindow.appendChild(this.dropdownDiv);
     this.dataWindow.appendChild(this.ytDataDiv);
     this.currentWindow.setContent(this.dataWindow);
   }
@@ -145,13 +149,16 @@ export class UniqueWindowHandler {
     }
     this.lastCode = this.marker.countryCode;
     this.initDataWindow();
-    const ytContent = await this.loadYTData();
-    this.loadTwitterData();
+    // execute data fetches in parallel
+    await Promise.all([this.loadYTCategories(),
+      this.loadYTData(this.defaultYTCategory),
+      this.loadTwitterData()]);
     if (this.isInfoWindowOpen()) {
       this.currentWindow.close();
     }
     this.currentWindow = new google.maps.InfoWindow();
-    this.dataWindow.appendChild(ytContent);
+    this.dataWindow.appendChild(this.dropdownDiv);
+    this.dataWindow.appendChild(this.ytDataDiv);
     this.currentWindow.setContent(this.dataWindow);
     this.currentWindow.open(map, marker);
     this.currentWindow.addListener('closeclick', function() {
@@ -162,6 +169,33 @@ export class UniqueWindowHandler {
   }
 
   /**
+  * Calls method that fetches YouTube categories
+  * according to the country code and populates the
+  * category dropdown. If user selects a category
+  * the videos for that category are fetched.
+  */
+  async loadYTCategories() {
+    this.categoryDropdown = await getYTCategories(this.marker);
+    this.categoryDropdown.onchange = function() {
+      this.fetchYTForCategory();
+    };
+    // wrap dropdown in div to style it
+    this.dropdownDiv = document.createElement('div');
+    this.dropdownDiv.className = 'col';
+    this.dropdownDiv.appendChild(this.categoryDropdown);
+  }
+
+  /**
+  * Calls method that fetches YouTube categories
+  * using the category id selected by the user
+  * in the dropdown
+  */
+  async fetchYTForCategory() {
+    await this.loadYTData(this.categoryDropdown.value);
+    this.showYTData();
+  }
+
+  /**
   * Loads the current Twitter data
   */
   async loadTwitterData() {
@@ -169,10 +203,10 @@ export class UniqueWindowHandler {
   }
 
   /**
-  * Loads the current Youtube data
+  * Loads the current Youtube data for given category id
+  * @param {string} categoryId
   */
-  async loadYTData() {
-    this.ytDataDiv = await prepareYTPosts(this.marker);
-    return this.ytDataDiv;
+  async loadYTData(categoryId) {
+    this.ytDataDiv = await prepareYTPosts(this.marker, categoryId);
   }
 }
