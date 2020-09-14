@@ -1,7 +1,8 @@
 import {prepareYTPosts} from './handle_youtube.js';
 import {getYTCategories} from './handle_youtube.js';
 import {prepareTwitterPosts} from './handle_twitter.js';
-import {windowsHandler} from './init_map.js';
+import {standard, darkerStandard} from './map_styles.js';
+
 
 /**
 *  Class to keep only one open info window and
@@ -13,7 +14,7 @@ export class UniqueWindowHandler {
   /**
   * @param {Map} map
   */
-  contructor(map) {
+  constructor(map) {
     this.currentWindow = null;
     this.map = map;
     this.lastCode = 'null';
@@ -160,7 +161,34 @@ export class UniqueWindowHandler {
     this.dataWindow.appendChild(this.ytDataDiv);
     this.currentWindow.setContent(this.dataWindow);
     this.currentWindow.open(map, marker);
+    this.makeMapDarker();
+    this.currentWindow.addListener('closeclick',
+        this.makeMapLighter.bind(this));
   }
+
+
+  /**
+* Makes map lighter
+*/
+  makeMapLighter() {
+    this.map.setOptions({styles: standard});
+    if (this.map.freeze_when_popup_is_open) {
+      this.map.set('zoomControl', true);
+      this.map.set('gestureHandling', 'auto');
+    }
+  }
+
+  /**
+* Makes map darker
+*/
+  makeMapDarker() {
+    this.map.setOptions({styles: darkerStandard});
+    if (this.map.freeze_when_popup_is_open) {
+      this.map.set('zoomControl', false);
+      this.map.set('gestureHandling', 'none');
+    }
+  }
+
 
   /**
   * Calls method that fetches YouTube categories
@@ -170,9 +198,7 @@ export class UniqueWindowHandler {
   */
   async loadYTCategories() {
     this.categoryDropdown = await getYTCategories(this.marker);
-    this.categoryDropdown.onchange = function() {
-      windowsHandler.fetchYTForCategory();
-    };
+    this.categoryDropdown.onchange = this.fetchYTForCategory.bind(this);
     // wrap dropdown in div to style it
     this.dropdownDiv = document.createElement('div');
     this.dropdownDiv.className = 'col';
