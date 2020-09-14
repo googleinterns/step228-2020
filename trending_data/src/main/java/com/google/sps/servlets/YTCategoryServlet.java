@@ -15,7 +15,7 @@
 package com.google.sps.servlets;
 
 import com.google.gson.Gson;
-import com.google.sps.data.YTVid;
+import com.google.sps.data.YTCategory;
 import java.io.IOException;
 import java.util.ArrayList;
 import javax.servlet.annotation.WebServlet;
@@ -24,24 +24,24 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /*
- *  Servlet that returns json file of top videos
+ *  Servlet that returns json of YouTube categories for
+ * a specified country code
  */
-@WebServlet("/GetTrendingYTVideos")
-public class ListYTLinksServlet extends HttpServlet {
+@WebServlet("/yt-categories")
+public class YTCategoryServlet extends HttpServlet {
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     String countryCode = request.getParameter("country-code");
-    String categoryId = request.getParameter("category-id");
 
-    ArrayList<YTVid> videos = Search.getData(countryCode, categoryId);
-    String json = convertToJson(videos);
+    ArrayList<YTCategory> categories = YTCategorySearch.getCategories(countryCode);
+    String json = convertToJson(categories);
 
     response.setContentType("application/json; charset=UTF-8");
     response.getWriter().println(json);
   }
 
-  private String convertToJson(ArrayList<YTVid> videos) {
+  private String convertToJson(ArrayList<YTCategory> videos) {
     Gson gson = new Gson();
     String json = gson.toJson(videos);
     return json;

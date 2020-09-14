@@ -1,29 +1,66 @@
 import {ytSupportedCountries} from './get_supported_countries.js';
 
 /**
- * Displays in a popup trending posts based on the country code of marker.
- * Sends country code to servlet which then sends back trending
- * data based on that country code.
+ * Displays in a popup trending posts based on the country code of marker
+ * and a category id. Sends country code to servlet which then sends
+ * back trending data based on that country code.
  * Caches the data for being re-displayed in the current window.
  * @param {Marker} marker
+ * @param {string} categoryId
  */
-export async function prepareYTPosts(marker) {
+export async function prepareYTPosts(marker, categoryId) {
   if (!isCountrySupportedbyYT(marker.countryCode)) {
     const ytErr = document.createElement('h2');
     ytErr.innerText = 'Region not supported by YouTube';
     return ytErr;
   } else { // if country is supported, fetch data
     const videos = await fetch('/GetTrendingYTVideos?country-code=' +
-                          marker.countryCode).
+                          marker.countryCode + '&category-id=' + categoryId).
         then((response) => response.json());
     if (videos.length == 0) {
       const ytErr = document.createElement('h2');
-      ytErr.innerText = 'No YouTube videos available for this country';
+      ytErr.innerText = 'No videos available for selected category';
       return ytErr;
     } else {
       return getVideosNode(videos, marker.countryName);
     }
   }
+}
+
+/**
+ * Fetches YouTube categories based on country code and
+ * puts them in dropdown. If country is not supported
+ * by YouTube then returns an empty div.
+ * @param {Marker} marker
+ * @return {HTMLElement}
+ */
+export async function getYTCategories(marker) {
+  if (!isCountrySupportedbyYT(marker.countryCode)) {
+    return document.createElement('div'); // empty div
+  } else {
+    const categories = await fetch('/yt-categories?country-code=' +
+                        marker.countryCode).
+        then((response) => response.json());
+    return createDropdown(categories);
+  }
+}
+
+/**
+ * Creates dropdown of YouTube categories
+ * @param {array} categories
+ * @return {HTMLElement} categoryDropdown
+ */
+function createDropdown(categories) {
+  const dropdownMenu = document.createElement('select');
+  dropdownMenu.className = 'form-control';
+
+  for (let i = 0; i < categories.length; i++) {
+    const option = document.createElement('option');
+    option.value = categories[i].id;
+    option.innerText = categories[i].name;
+    dropdownMenu.appendChild(option);
+  }
+  return dropdownMenu;
 }
 
 /**
