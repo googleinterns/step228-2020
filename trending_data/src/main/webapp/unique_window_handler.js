@@ -1,7 +1,7 @@
 import {prepareYTPosts} from './handle_youtube.js';
 import {getYTCategories} from './handle_youtube.js';
 import {prepareTwitterPosts} from './handle_twitter.js';
-import {standard} from './map_styles.js';
+import {standard, darkerStandard} from './map_styles.js';
 
 
 /**
@@ -14,7 +14,7 @@ export class UniqueWindowHandler {
   /**
   * @param {Map} map
   */
-  contructor(map) {
+  constructor(map) {
     this.currentWindow = null;
     this.map = map;
     this.lastCode = 'null';
@@ -161,13 +161,13 @@ export class UniqueWindowHandler {
     this.dataWindow.appendChild(this.ytDataDiv);
     this.currentWindow.setContent(this.dataWindow);
     this.currentWindow.open(map, marker);
-    this.currentWindow.addListener('closeclick', function() {
-      map.setOptions({styles: standard});
-      if (map.freeze_when_popup_is_open) {
-        map.set('zoomControl', true);
-        map.set('gestureHandling', 'auto');
-      }
-    });
+    this.map.setOptions({styles: darkerStandard});
+    if (this.map.freeze_when_popup_is_open) {
+      this.map.set('zoomControl', false);
+      this.map.set('gestureHandling', 'none');
+  } 
+   
+   this.currentWindow.addListener('closeclick', changeMapColor, this.map));
   }
 
   /**
@@ -212,3 +212,14 @@ export class UniqueWindowHandler {
     this.ytDataDiv = await prepareYTPosts(this.marker, categoryId);
   }
 }
+
+  function changeMapColor() {
+      console.log(this.map);
+    this.map.setOptions({styles: standard});
+    if (this.map.freeze_when_popup_is_open) {
+        this.map.set('zoomControl', true);
+        this.map.set('gestureHandling', 'auto');
+    }
+  }
+
+  let changeMapColorHandler = changeMapColor.bind(UniqueWindowHandler);
