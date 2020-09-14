@@ -161,14 +161,34 @@ export class UniqueWindowHandler {
     this.dataWindow.appendChild(this.ytDataDiv);
     this.currentWindow.setContent(this.dataWindow);
     this.currentWindow.open(map, marker);
+    this.makeMapDarker();
+    this.currentWindow.addListener('closeclick',
+        this.makeMapLighter.bind(this));
+  }
+
+
+  /**
+* Makes map lighter
+*/
+  makeMapLighter() {
+    this.map.setOptions({styles: standard});
+    if (this.map.freeze_when_popup_is_open) {
+      this.map.set('zoomControl', true);
+      this.map.set('gestureHandling', 'auto');
+    }
+  }
+
+  /**
+* Makes map darker
+*/
+  makeMapDarker() {
     this.map.setOptions({styles: darkerStandard});
     if (this.map.freeze_when_popup_is_open) {
       this.map.set('zoomControl', false);
       this.map.set('gestureHandling', 'none');
-  } 
-   
-   this.currentWindow.addListener('closeclick', changeMapColor, this.map));
+    }
   }
+
 
   /**
   * Calls method that fetches YouTube categories
@@ -178,9 +198,7 @@ export class UniqueWindowHandler {
   */
   async loadYTCategories() {
     this.categoryDropdown = await getYTCategories(this.marker);
-    this.categoryDropdown.onchange = function() {
-      this.fetchYTForCategory();
-    };
+    this.categoryDropdown.onchange = this.fetchYTForCategory.bind(this);
     // wrap dropdown in div to style it
     this.dropdownDiv = document.createElement('div');
     this.dropdownDiv.className = 'col';
@@ -212,14 +230,3 @@ export class UniqueWindowHandler {
     this.ytDataDiv = await prepareYTPosts(this.marker, categoryId);
   }
 }
-
-  function changeMapColor() {
-      console.log(this.map);
-    this.map.setOptions({styles: standard});
-    if (this.map.freeze_when_popup_is_open) {
-        this.map.set('zoomControl', true);
-        this.map.set('gestureHandling', 'auto');
-    }
-  }
-
-  let changeMapColorHandler = changeMapColor.bind(UniqueWindowHandler);

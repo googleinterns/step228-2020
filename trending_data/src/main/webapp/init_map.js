@@ -4,7 +4,7 @@ let countriesWithSomeData;
 
 import {UniqueWindowHandler} from './unique_window_handler.js';
 import {getSupportedCountries} from './get_supported_countries.js';
-import {standard, darkerStandard} from './map_styles.js';
+import {standard} from './map_styles.js';
 
 /* eslint-disable no-unused-vars */
 /**
@@ -30,13 +30,13 @@ export async function initMap() {
       {imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m'});
   addAllMarkers(markerCluster);
   google.maps.event.addListener(map, 'click', function() {
-    windowsHandler.currentWindow.close();});
-    /*map.setOptions({styles: standard});
+    windowsHandler.currentWindow.close();
+    map.setOptions({styles: standard});
     if (map.freeze_when_popup_is_open) {
       map.set('zoomControl', true);
       map.set('gestureHandling', 'auto');
     }
-  });*/
+  });
 } /* eslint-enable no-unused-vars */
 
 /**
@@ -90,12 +90,6 @@ function addMarkerToMapGivenInfo(countryName, countryCode, woeidCode, lat, lng,
 
   marker.addListener('click', () => {
     map.setCenter({lat: lat, lng: lng});
-    /*map.setOptions({styles: darkerStandard});
-    if (map.freeze_when_popup_is_open) {
-      map.set('zoomControl', false);
-      map.set('gestureHandling', 'none');
-    }*/
-
     windowsHandler.initPopup();
     windowsHandler.openWindow(marker);
   });
