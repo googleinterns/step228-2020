@@ -4,7 +4,7 @@ let countriesWithSomeData;
 
 import {UniqueWindowHandler} from './unique_window_handler.js';
 import {getSupportedCountries} from './get_supported_countries.js';
-import {standard, darkerStandard} from './map_styles.js';
+import {standard, darkerStandard, darkMode} from './map_styles.js';
 
 /* eslint-disable no-unused-vars */
 /**
@@ -12,12 +12,20 @@ import {standard, darkerStandard} from './map_styles.js';
  */
 export async function initMap() {
   const initPos = new google.maps.LatLng(0, 0);
+  const darkModeType = new google.maps.StyledMapType( darkMode,
+      {name: 'Dark Mode'});
   map = new google.maps.Map(document.getElementById('map'), {
     center: initPos,
     zoom: 3,
     minZoom: 2,
     styles: standard,
+    mapTypeControlOptions: {
+      mapTypeIds: ['roadmap', 'satellite', 'hybrid',
+        'dark_mode'],
+    },
   });
+  map.mapTypes.set('dark_mode', darkModeType);
+  map.setMapTypeId('dark_mode');
 
   countriesWithSomeData = await getSupportedCountries();
   windowsHandler = new UniqueWindowHandler(map);
