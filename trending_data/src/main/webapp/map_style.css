@@ -58,6 +58,15 @@ iframe {
   overflow: scroll;
 }
 
+.col {
+  width: 250px;
+  margin-top: 10px;
+}
+
+h2 {
+  margin-top: 10px;
+}
+
 .toggle-btns {
   background-color: #404040;
   width: 600px;

@@ -1,4 +1,4 @@
-let windowsHandler;
+export let windowsHandler;
 let map;
 let countriesWithSomeData;
 
