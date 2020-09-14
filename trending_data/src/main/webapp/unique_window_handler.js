@@ -163,7 +163,7 @@ export class UniqueWindowHandler {
     this.currentWindow.open(map, marker);
     this.currentWindow.addListener('closeclick', function() {
       map.setOptions({styles: standard});
-      if (map.freeze_when_popup_is == true) {
+      if (map.freeze_when_popup_is_open) {
         map.set('zoomControl', true);
         map.set('gestureHandling', 'auto');
       }

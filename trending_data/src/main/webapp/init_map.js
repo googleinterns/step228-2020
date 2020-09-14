@@ -19,6 +19,9 @@ export async function initMap() {
     styles: standard,
   });
 
+  // will map be frozen when popup is open
+  map.freeze_when_popup_is_open = false;
+
   countriesWithSomeData = await getSupportedCountries();
   windowsHandler = new UniqueWindowHandler(map);
 
@@ -29,7 +32,7 @@ export async function initMap() {
   google.maps.event.addListener(map, 'click', function() {
     windowsHandler.currentWindow.close();
     map.setOptions({styles: standard});
-    if (map.freeze_when_popup_is == true) {
+    if (map.freeze_when_popup_is_open) {
       map.set('zoomControl', true);
       map.set('gestureHandling', 'auto');
     }
@@ -88,7 +91,7 @@ function addMarkerToMapGivenInfo(countryName, countryCode, woeidCode, lat, lng,
   marker.addListener('click', () => {
     map.setCenter({lat: lat, lng: lng});
     map.setOptions({styles: darkerStandard});
-    if (map.freeze_when_popup_is == true) {
+    if (map.freeze_when_popup_is_open) {
       map.set('zoomControl', false);
       map.set('gestureHandling', 'none');
     }
