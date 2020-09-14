@@ -1,6 +1,8 @@
 import {prepareYTPosts} from './handle_youtube.js';
+import {getYTCategories} from './handle_youtube.js';
 import {prepareTwitterPosts} from './handle_twitter.js';
-import {standard} from './map_styles.js';
+import {standard, darkerStandard} from './map_styles.js';
+
 
 /**
 *  Class to keep only one open info window and
@@ -12,7 +14,7 @@ export class UniqueWindowHandler {
   /**
   * @param {Map} map
   */
-  contructor(map) {
+  constructor(map) {
     this.currentWindow = null;
     this.map = map;
     this.lastCode = 'null';
@@ -24,6 +26,7 @@ export class UniqueWindowHandler {
   */
   initPopup() {
     this.showing = 'yt';
+    this.defaultYTCategory = '0';
     this.initBtnDiv();
   }
 
@@ -47,6 +50,7 @@ export class UniqueWindowHandler {
   showYTData() {
     this.showing = 'yt';
     this.initDataWindow(); // clear current content
+    this.dataWindow.appendChild(this.dropdownDiv);
     this.dataWindow.appendChild(this.ytDataDiv);
     this.currentWindow.setContent(this.dataWindow);
   }
@@ -145,20 +149,70 @@ export class UniqueWindowHandler {
     }
     this.lastCode = this.marker.countryCode;
     this.initDataWindow();
-    const ytContent = await this.loadYTData();
-    this.loadTwitterData();
+    // execute data fetches in parallel
+    await Promise.all([this.loadYTCategories(),
+      this.loadYTData(this.defaultYTCategory),
+      this.loadTwitterData()]);
     if (this.isInfoWindowOpen()) {
       this.currentWindow.close();
     }
     this.currentWindow = new google.maps.InfoWindow();
-    this.dataWindow.appendChild(ytContent);
+    this.dataWindow.appendChild(this.dropdownDiv);
+    this.dataWindow.appendChild(this.ytDataDiv);
     this.currentWindow.setContent(this.dataWindow);
     this.currentWindow.open(map, marker);
-    this.currentWindow.addListener('closeclick', function() {
-      map.setOptions({styles: standard});
-      // map.set('zoomControl', true);
-      // map.set('gestureHandling','auto');
-    });
+    this.makeMapDarker();
+    this.currentWindow.addListener('closeclick',
+        this.makeMapLighter.bind(this));
+  }
+
+
+  /**
+* Makes map lighter
+*/
+  makeMapLighter() {
+    this.map.setOptions({styles: standard});
+    if (this.map.freeze_when_popup_is_open) {
+      this.map.set('zoomControl', true);
+      this.map.set('gestureHandling', 'auto');
+    }
+  }
+
+  /**
+* Makes map darker
+*/
+  makeMapDarker() {
+    this.map.setOptions({styles: darkerStandard});
+    if (this.map.freeze_when_popup_is_open) {
+      this.map.set('zoomControl', false);
+      this.map.set('gestureHandling', 'none');
+    }
+  }
+
+
+  /**
+  * Calls method that fetches YouTube categories
+  * according to the country code and populates the
+  * category dropdown. If user selects a category
+  * the videos for that category are fetched.
+  */
+  async loadYTCategories() {
+    this.categoryDropdown = await getYTCategories(this.marker);
+    this.categoryDropdown.onchange = this.fetchYTForCategory.bind(this);
+    // wrap dropdown in div to style it
+    this.dropdownDiv = document.createElement('div');
+    this.dropdownDiv.className = 'col';
+    this.dropdownDiv.appendChild(this.categoryDropdown);
+  }
+
+  /**
+  * Calls method that fetches YouTube categories
+  * using the category id selected by the user
+  * in the dropdown
+  */
+  async fetchYTForCategory() {
+    await this.loadYTData(this.categoryDropdown.value);
+    this.showYTData();
   }
 
   /**
@@ -169,10 +223,10 @@ export class UniqueWindowHandler {
   }
 
   /**
-  * Loads the current Youtube data
+  * Loads the current Youtube data for given category id
+  * @param {string} categoryId
   */
-  async loadYTData() {
-    this.ytDataDiv = await prepareYTPosts(this.marker);
-    return this.ytDataDiv;
+  async loadYTData(categoryId) {
+    this.ytDataDiv = await prepareYTPosts(this.marker, categoryId);
   }
 }

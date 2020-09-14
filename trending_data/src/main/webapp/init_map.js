@@ -1,10 +1,11 @@
-let windowsHandler;
+export let windowsHandler;
 let map;
 let countriesWithSomeData;
 
 import {UniqueWindowHandler} from './unique_window_handler.js';
 import {getSupportedCountries} from './get_supported_countries.js';
-import {standard, darkerStandard, darkMode} from './map_styles.js';
+import {standard, darkMode} from './map_styles.js';
+
 
 /* eslint-disable no-unused-vars */
 /**
@@ -27,6 +28,9 @@ export async function initMap() {
   map.mapTypes.set('dark_mode', darkModeType);
   map.setMapTypeId('roadmap');
 
+  // will map be frozen when popup is open
+  map.freeze_when_popup_is_open = false;
+
   countriesWithSomeData = await getSupportedCountries();
   windowsHandler = new UniqueWindowHandler(map);
 
@@ -37,8 +41,10 @@ export async function initMap() {
   google.maps.event.addListener(map, 'click', function() {
     windowsHandler.currentWindow.close();
     map.setOptions({styles: standard});
-    // map.set('zoomControl', true);
-    // map.set('gestureHandling','auto');
+    if (map.freeze_when_popup_is_open) {
+      map.set('zoomControl', true);
+      map.set('gestureHandling', 'auto');
+    }
   });
 } /* eslint-enable no-unused-vars */
 
@@ -93,9 +99,6 @@ function addMarkerToMapGivenInfo(countryName, countryCode, woeidCode, lat, lng,
 
   marker.addListener('click', () => {
     map.setCenter({lat: lat, lng: lng});
-    map.setOptions({styles: darkerStandard});
-    // map.set('zoomControl', false);
-    // map.set('gestureHandling','none');
     windowsHandler.initPopup();
     windowsHandler.openWindow(marker);
   });
