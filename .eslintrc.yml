@@ -4,6 +4,8 @@ env:
   es2020: true
 extends:
   - google
-parserOptions:
+parserOptions: {
+  sourceType: module,
   ecmaVersion: 11
+}
 rules: {}

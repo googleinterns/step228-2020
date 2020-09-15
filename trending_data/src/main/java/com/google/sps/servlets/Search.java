@@ -23,9 +23,12 @@ import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.youtube.YouTube;
 import com.google.api.services.youtube.model.Video;
 import com.google.api.services.youtube.model.VideoListResponse;
+import com.google.api.services.youtube.model.VideoSnippet;
+import com.google.api.services.youtube.model.VideoStatistics;
 import com.google.sps.data.YTVid;
 import java.io.*;
 import java.io.IOException;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -40,7 +43,7 @@ public class Search {
   private static YouTube youtube;
 
   /** Initialize a YouTube object to search for videos on YouTube */
-  public static ArrayList<YTVid> getData(String regionCode) {
+  public static ArrayList<YTVid> getData(String regionCode, String categoryId) {
     try {
       Properties properties = new Properties();
       InputStream in = Search.class.getResourceAsStream("/config.properties");
@@ -63,6 +66,7 @@ public class Search {
       search.setKey(apiKey);
       search.setMaxResults(NUMBER_OF_VIDEOS_RETURNED);
       search.setRegionCode(regionCode);
+      search.setVideoCategoryId(categoryId);
       search.setChart("mostPopular");
 
       // Call the API and return results.
@@ -70,8 +74,7 @@ public class Search {
       List<Video> searchResultList = searchResponse.getItems();
 
       if (searchResultList != null) {
-        ArrayList result = convertToYTVid(searchResultList.iterator());
-        return result;
+        return convertToYTVid(searchResultList.iterator());
       } else {
         System.err.println("Result of the search was null");
       }
@@ -93,11 +96,22 @@ public class Search {
    * function that creates YTVid file from singleVideo object
    */
   private static ArrayList<YTVid> convertToYTVid(Iterator<Video> iteratorSearchResults) {
-    ArrayList result = new ArrayList<>();
+    ArrayList<YTVid> result = new ArrayList<>();
     while (iteratorSearchResults.hasNext()) {
       Video singleVideo = iteratorSearchResults.next();
+
+      /** Get metadata about YouTube video */
+      VideoSnippet videoDetails = singleVideo.getSnippet();
+      String channelName = videoDetails.getChannelTitle();
+
+      /** Get statistics for YouTube video: like + view count */
+      VideoStatistics videoStats = singleVideo.getStatistics();
+      BigInteger viewCount = videoStats.getViewCount();
+      BigInteger likeCount = videoStats.getLikeCount();
+
       String Id = singleVideo.getId();
-      YTVid video = new YTVid(Id);
+      /** id of video */
+      YTVid video = new YTVid(Id, channelName, viewCount, likeCount);
       result.add(video);
     }
     return result;

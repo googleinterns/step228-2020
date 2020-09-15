@@ -8,8 +8,9 @@ import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.youtube.YouTube;
-import com.google.api.services.youtube.model.I18nRegion;
-import com.google.api.services.youtube.model.I18nRegionListResponse;
+import com.google.api.services.youtube.model.VideoCategory;
+import com.google.api.services.youtube.model.VideoCategoryListResponse;
+import com.google.sps.data.YTCategory;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -17,7 +18,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
 
-public class YTSupportedCountriesSearch {
+public class YTCategorySearch {
   public static final HttpTransport HTTP_TRANSPORT = new NetHttpTransport();
   public static final JsonFactory JSON_FACTORY = new JacksonFactory();
 
@@ -25,10 +26,10 @@ public class YTSupportedCountriesSearch {
   private static YouTube youtube;
 
   /*
-   * Return a list of ids of supported countries as specified by the
-   * YouTube API. The ids are the country codes in the format of Alpha-2 codes.
+   * Returns a list of YouTube categories for a specified country code
+   * in format Alpha-2 code.
    */
-  public static ArrayList<String> getSupportedCountries() {
+  public static ArrayList<YTCategory> getCategories(String regionCode) {
     try {
       Properties properties = new Properties();
       InputStream in = Search.class.getResourceAsStream("/config.properties");
@@ -43,19 +44,20 @@ public class YTSupportedCountriesSearch {
                   new HttpRequestInitializer() {
                     public void initialize(HttpRequest request) throws IOException {}
                   })
-              .setApplicationName("search-unsupported-countries")
+              .setApplicationName("search-yt-categories")
               .build();
 
       // Define and execute the API request
-      YouTube.I18nRegions.List request = youtube.i18nRegions().list("snippet");
+      YouTube.VideoCategories.List request = youtube.videoCategories().list("snippet");
 
       request.setKey(apiKey);
+      request.setRegionCode(regionCode);
 
-      I18nRegionListResponse response = request.execute();
-      List<I18nRegion> supportedCountriesResponse = response.getItems();
+      VideoCategoryListResponse response = request.execute();
+      List<VideoCategory> videoCategories = response.getItems();
 
-      if (supportedCountriesResponse != null) {
-        return convertToListOfCountryCodes(supportedCountriesResponse.iterator());
+      if (videoCategories != null) {
+        return convertToListOfCategories(videoCategories.iterator());
       }
     } catch (GoogleJsonResponseException e) {
       System.err.println(
@@ -68,20 +70,28 @@ public class YTSupportedCountriesSearch {
     } catch (Throwable t) {
       t.printStackTrace();
     }
-    return new ArrayList<String>();
+    return new ArrayList<YTCategory>();
   }
 
   /**
-   * Creates a list of Alpha-2 codes by getting the id of each region in the list of I18nRegion
-   * objects
+   * Creates a list of YTCategory objects by getting the id and title of each category in the list
+   * of VideoCategory objects objects
    */
-  private static ArrayList<String> convertToListOfCountryCodes(
-      Iterator<I18nRegion> iteratorSearchResults) {
-    ArrayList<String> result = new ArrayList<>();
+  private static ArrayList<YTCategory> convertToListOfCategories(
+      Iterator<VideoCategory> iteratorSearchResults) {
+    ArrayList<YTCategory> result = new ArrayList<>();
+
+    // add default category as it is not returned in the response
+    result.add(new YTCategory("0", "Default"));
+
     while (iteratorSearchResults.hasNext()) {
-      I18nRegion region = iteratorSearchResults.next();
-      String id = region.getId(); // this is the country code of the region (Alpha-2 code)
-      result.add(id);
+      VideoCategory category = iteratorSearchResults.next();
+      if (category.getSnippet().getAssignable()) {
+        // assignable indicates whether a video can be associated with a category
+        String name = category.getSnippet().getTitle();
+        String id = category.getId();
+        result.add(new YTCategory(id, name));
+      }
     }
     return result;
   }
