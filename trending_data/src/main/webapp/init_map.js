@@ -99,7 +99,7 @@ function addMarkerToMapGivenInfo(countryName, countryCode, woeidCode, lat, lng,
 
   marker.addListener('click', () => {
     map.setCenter({lat: lat, lng: lng});
-    windowsHandler.initPopup();
+    windowsHandler.initPopup(marker);
     windowsHandler.openWindow(marker);
   });
 }

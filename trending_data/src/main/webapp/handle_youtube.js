@@ -107,7 +107,7 @@ function getVideosNode(videos, countryName) {
  * @return {Boolean} true if countryCode is amongst supported countries
  * false otherwise
  */
-function isCountrySupportedbyYT(countryCode) {
+export function isCountrySupportedbyYT(countryCode) {
   return ytSupportedCountries.includes(countryCode);
 }
 
