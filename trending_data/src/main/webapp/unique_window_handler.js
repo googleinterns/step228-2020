@@ -24,6 +24,7 @@ export class UniqueWindowHandler {
   /**
   * Adds the buttons to switch between platforms
   * to the popup
+  * @param {Marker} marker
   */
   initPopup(marker) {
     this.marker = marker;
@@ -84,7 +85,8 @@ export class UniqueWindowHandler {
     this.twitterBtn = document.createElement('button');
     this.twitterBtn.textContent = 'Twitter';
 
-    if (isCountrySupportedbyYT(this.marker.countryCode) && isCountrySupportedbyTwitter(this.marker.countryCode)) {
+    if (isCountrySupportedbyYT(this.marker.countryCode) &&
+      isCountrySupportedbyTwitter(this.marker.countryCode)) {
       this.ytBtn.className = 'btn btn-default yt yt-selected';
       this.twitterBtn.className = 'btn btn-default twitter';
     } else if (!isCountrySupportedbyYT(this.marker.countryCode)) {
