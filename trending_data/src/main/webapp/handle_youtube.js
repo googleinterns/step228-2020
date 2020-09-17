@@ -191,7 +191,7 @@ function createMetadataField(tag, value) {
 * @param {Number} x
 * @return {String} formatted number
 */
-function numberWithCommas(x) {
+export function numberWithCommas(x) {
   if (typeof x == 'number') {
     return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
   } else {
