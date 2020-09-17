@@ -144,6 +144,7 @@ h2 {
   color: #38a1f2;
   background-color: #e7f5ff;
   font-weight: bold;
+  cursor: pointer;
 }
 
 .btn-default {
