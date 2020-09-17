@@ -1,3 +1,5 @@
+import {twitterSupportedCountries} from './get_supported_countries.js';
+
 /**
  * Fetches twitter data from TwitterServlet.
  * Caches fetched twitter data for being re-displayed in
@@ -118,4 +120,15 @@ function createOpenInTwitterLink(url) {
   link.id = 'open-in-twitter';
   link.innerText = 'Open in twitter';
   return link;
+}
+
+/**
+ * Returns true if the country code belongs to a country that
+ * is supported by the Twitter API.
+ * @param {String} countryCode alpha-2 code
+ * @return {Boolean} true if countryCode is amongst supported countries
+ * false otherwise
+ */
+export function isCountrySupportedbyTwitter(countryCode) {
+  return twitterSupportedCountries.includes(countryCode);
 }

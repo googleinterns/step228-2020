@@ -2,7 +2,8 @@ import {prepareYTPosts} from './handle_youtube.js';
 import {getYTCategories} from './handle_youtube.js';
 import {prepareTwitterPosts} from './handle_twitter.js';
 import {standard, darkerStandard} from './map_styles.js';
-
+import {isCountrySupportedbyYT} from './handle_youtube.js';
+import {isCountrySupportedbyTwitter} from './handle_twitter.js';
 
 /**
 *  Class to keep only one open info window and
@@ -24,7 +25,8 @@ export class UniqueWindowHandler {
   * Adds the buttons to switch between platforms
   * to the popup
   */
-  initPopup() {
+  initPopup(marker) {
+    this.marker = marker;
     this.showing = 'yt';
     this.defaultYTCategory = '0';
     this.initBtnDiv();
@@ -76,16 +78,26 @@ export class UniqueWindowHandler {
     this.btnDiv = document.createElement('div');
     this.btnDiv.className = 'toggle-btns';
 
-    /** YouTube button */
     this.ytBtn = document.createElement('button');
     this.ytBtn.textContent = 'YouTube';
-    this.ytBtn.className = 'btn btn-default yt yt-selected';
-    this.btnDiv.appendChild(this.ytBtn);
 
-    /** Twitter button */
     this.twitterBtn = document.createElement('button');
     this.twitterBtn.textContent = 'Twitter';
-    this.twitterBtn.className = 'btn btn-default twitter';
+
+    if (isCountrySupportedbyYT(this.marker.countryCode) && isCountrySupportedbyTwitter(this.marker.countryCode)) {
+      this.ytBtn.className = 'btn btn-default yt yt-selected';
+      this.twitterBtn.className = 'btn btn-default twitter';
+    } else if (!isCountrySupportedbyYT(this.marker.countryCode)) {
+      this.ytBtn.className = 'btn btn-default disabled';
+      this.ytBtn.title = 'Country not supported by YouTube';
+      this.twitterBtn.className = 'btn btn-default twitter twitter-selected';
+    } else if (!isCountrySupportedbyTwitter(this.marker.countryCode)) {
+      this.twitterBtn.className = 'btn btn-default disabled';
+      this.twitterBtn.title = 'Country not supported by Twitter';
+      this.ytBtn.className = 'btn btn-default yt yt-selected';
+    }
+
+    this.btnDiv.appendChild(this.ytBtn);
     this.btnDiv.appendChild(this.twitterBtn);
 
     this.addClickListeners();
@@ -96,23 +108,27 @@ export class UniqueWindowHandler {
   * The clicked button is selected and the other one is unselected
   */
   addClickListeners() {
-    this.ytBtn.addEventListener('click', () => {
-      if (this.showing == 'yt') {
-        return;
-      }
-      this.ytBtn.className = 'btn btn-default yt yt-selected';
-      this.twitterBtn.className = 'btn btn-default twitter';
-      this.showYTData();
-    });
+    if (isCountrySupportedbyYT(this.marker.countryCode)) {
+      this.ytBtn.addEventListener('click', () => {
+        if (this.showing == 'yt') {
+          return;
+        }
+        this.ytBtn.className = 'btn btn-default yt yt-selected';
+        this.twitterBtn.className = 'btn btn-default twitter';
+        this.showYTData();
+      });
+    }
 
-    this.twitterBtn.addEventListener('click', () => {
-      if (this.showing == 'twitter') {
-        return;
-      }
-      this.twitterBtn.className = 'btn btn-default twitter twitter-selected';
-      this.ytBtn.className = 'btn btn-default yt';
-      this.showTwitterData();
-    });
+    if (isCountrySupportedbyTwitter(this.marker.countryCode)) {
+      this.twitterBtn.addEventListener('click', () => {
+        if (this.showing == 'twitter') {
+          return;
+        }
+        this.twitterBtn.className = 'btn btn-default twitter twitter-selected';
+        this.ytBtn.className = 'btn btn-default yt';
+        this.showTwitterData();
+      });
+    }
   }
 
   /**
@@ -143,7 +159,6 @@ export class UniqueWindowHandler {
   * @param {Marker} marker
   */
   async openWindow(marker) {
-    this.marker = marker;
     if (this.clickOnSameMarker()) {
       return;
     }
@@ -157,8 +172,12 @@ export class UniqueWindowHandler {
       this.currentWindow.close();
     }
     this.currentWindow = new google.maps.InfoWindow();
-    this.dataWindow.appendChild(this.dropdownDiv);
-    this.dataWindow.appendChild(this.ytDataDiv);
+    if (isCountrySupportedbyYT(this.marker.countryCode)) {
+      this.dataWindow.appendChild(this.dropdownDiv);
+      this.dataWindow.appendChild(this.ytDataDiv);
+    } else {
+      this.dataWindow.appendChild(this.twitterDataDiv);
+    }
     this.currentWindow.setContent(this.dataWindow);
     this.currentWindow.open(map, marker);
     this.makeMapDarker();
@@ -166,10 +185,9 @@ export class UniqueWindowHandler {
         this.makeMapLighter.bind(this));
   }
 
-
   /**
-* Makes map lighter
-*/
+  * Makes map lighter
+  */
   makeMapLighter() {
     this.map.setOptions({styles: standard});
     if (this.map.freeze_when_popup_is_open) {
@@ -179,8 +197,8 @@ export class UniqueWindowHandler {
   }
 
   /**
-* Makes map darker
-*/
+  * Makes map darker
+  */
   makeMapDarker() {
     this.map.setOptions({styles: darkerStandard});
     if (this.map.freeze_when_popup_is_open) {
