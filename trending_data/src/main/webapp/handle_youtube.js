@@ -10,7 +10,7 @@ import {ytSupportedCountries} from './get_supported_countries.js';
  */
 export async function prepareYTPosts(marker, categoryId) {
   if (!isCountrySupportedbyYT(marker.countryCode)) {
-    const ytErr = document.createElement('h2');
+    const ytErr = document.createElement('h3');
     ytErr.innerText = 'Region not supported by YouTube';
     return ytErr;
   } else { // if country is supported, fetch data
@@ -18,7 +18,7 @@ export async function prepareYTPosts(marker, categoryId) {
                           marker.countryCode + '&category-id=' + categoryId).
         then((response) => response.json());
     if (videos.length == 0) {
-      const ytErr = document.createElement('h2');
+      const ytErr = document.createElement('h3');
       ytErr.innerText = 'No videos available for selected category';
       return ytErr;
     } else {
@@ -88,7 +88,7 @@ function getVideosNode(videos, countryName) {
 
   /** Add title to list of videos to make it clear
     what data is being displayed */
-  const ytTitle = document.createElement('h2');
+  const ytTitle = document.createElement('h3');
   ytTitle.innerText = 'YouTube videos trending in ' +
     countryName;
   div.appendChild(ytTitle);
@@ -107,7 +107,7 @@ function getVideosNode(videos, countryName) {
  * @return {Boolean} true if countryCode is amongst supported countries
  * false otherwise
  */
-function isCountrySupportedbyYT(countryCode) {
+export function isCountrySupportedbyYT(countryCode) {
   return ytSupportedCountries.includes(countryCode);
 }
 
@@ -126,8 +126,8 @@ function createVideoContainer(video, id) {
   const iframe = createIframeById(video, id);
   const metadata = createMetadataContainer(video);
 
-  videoContainer.appendChild(iframe);
   videoContainer.appendChild(metadata);
+  videoContainer.appendChild(iframe);
   return videoContainer;
 }
 
@@ -191,7 +191,7 @@ function createMetadataField(tag, value) {
 * @param {Number} x
 * @return {String} formatted number
 */
-function numberWithCommas(x) {
+export function numberWithCommas(x) {
   if (typeof x == 'number') {
     return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
   } else {

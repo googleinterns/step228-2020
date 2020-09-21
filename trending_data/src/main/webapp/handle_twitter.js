@@ -1,3 +1,6 @@
+import {twitterSupportedCountries} from './get_supported_countries.js';
+import {numberWithCommas} from './handle_youtube.js';
+
 /**
  * Fetches twitter data from TwitterServlet.
  * Caches fetched twitter data for being re-displayed in
@@ -50,7 +53,7 @@ function createTrendElement(trend) {
 
   const tweetVolume = document.createElement('p');
   tweetVolume.className = 'tweet-volume';
-  tweetVolume.innerText = 'Tweets: ' + trend.tweetVolume;
+  tweetVolume.innerText = 'Tweets: ' + numberWithCommas(trend.tweetVolume);
 
   const trendEl = document.createElement('p');
   trendEl.className = 'trend-element';
@@ -118,4 +121,15 @@ function createOpenInTwitterLink(url) {
   link.id = 'open-in-twitter';
   link.innerText = 'Open in twitter';
   return link;
+}
+
+/**
+ * Returns true if the country code belongs to a country that
+ * is supported by the Twitter API.
+ * @param {String} countryCode alpha-2 code
+ * @return {Boolean} true if countryCode is amongst supported countries
+ * false otherwise
+ */
+export function isCountrySupportedbyTwitter(countryCode) {
+  return twitterSupportedCountries.includes(countryCode);
 }
