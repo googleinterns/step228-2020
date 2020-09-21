@@ -217,12 +217,8 @@ export class UniqueWindowHandler {
   * the videos for that category are fetched.
   */
   async loadYTCategories() {
-    this.categoryDropdown = await getYTCategories(this.marker);
-    this.categoryDropdown.onchange = this.fetchYTForCategory.bind(this);
-    // wrap dropdown in div to style it
-    this.dropdownDiv = document.createElement('div');
-    this.dropdownDiv.className = 'col';
-    this.dropdownDiv.appendChild(this.categoryDropdown);
+    this.dropdownDiv = await getYTCategories(this.marker);
+    this.dropdownDiv.onchange = this.fetchYTForCategory.bind(this);
   }
 
   /**
@@ -231,7 +227,7 @@ export class UniqueWindowHandler {
   * in the dropdown
   */
   async fetchYTForCategory() {
-    await this.loadYTData(this.categoryDropdown.value);
+    await this.loadYTData(this.dropdownDiv.value);
     this.showYTData();
   }
 
